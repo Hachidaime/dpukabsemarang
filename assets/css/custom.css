@@ -7,6 +7,7 @@ td,
 .filter-option-inner-inner {
     font-family: 'Fira Code', monospace;
     font-size: 0.75rem;
+    caret-color: #3e3f3a !important;
 }
 
 @supports (font-variation-settings: normal) {
@@ -154,28 +155,28 @@ body {
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
   .gallery-item{
-    height: 200px;
+    width: 50%;
   }
 }
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
   .gallery-item{
-    height: 250px;
+    width: 50%;
   }
 }
 
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
   .gallery-item{
-    height: 250px;
+    width: 25%;
   }
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
   .gallery-item{
-    height: 250px;
+    width: 25%;
   }
 }
 
