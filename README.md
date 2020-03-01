@@ -1,4 +1,4 @@
-# Struktur Folder
+## Folder Structure
 ```
 ├── app
 │   ├── config
@@ -42,3 +42,10 @@
     └── video
         └── jalan
 ```
+
+## Built With
+
+* [Smarty](https://www.smarty.net/) - Template Engine
+* [ADOdb](https://adodb.org/) - Database Abstraction Layer
+* [jQuery](https://jquery.com/) - JavaScript library
+* [Bootstrap](https://getbootstrap.com/) - CSS Framework
