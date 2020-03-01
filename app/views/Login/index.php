@@ -23,7 +23,7 @@
 *}
 <div class="card card-2">
     <div class="card-heading"></div>
-    <div class="card-body">
+    <div class="card-body bg-secondary">
         <form id="loginForm">
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
