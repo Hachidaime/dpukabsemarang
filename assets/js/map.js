@@ -35,11 +35,11 @@ function initMap() {
 
     // Create the DIV to hold the control and call the CenterControl()
     // constructor passing in this DIV.
-    let controlDiv = document.createElement('div');
-    let control = new controlOpenNav(controlDiv, map);
+    // let controlDiv = document.createElement('div');
+    // let control = new controlOpenNav(controlDiv, map);
 
-    controlDiv.index = 1;
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlDiv);
+    // controlDiv.index = 1;
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlDiv);
     return map;
 }
 

@@ -304,6 +304,11 @@ $(document).ready(function () {
         closeNav();
     });
 
+    $(".nav-pills a").click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+
     const searchGisForm = $('.searchGisForm');
 
     searchGisForm.find('select#kepemilikan').change(function () {
