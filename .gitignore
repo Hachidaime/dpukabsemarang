@@ -5,4 +5,6 @@ app/libs/adodb5/
 upload/
 .vscode/
 *.sql
+*.rar
+*.zip
 
