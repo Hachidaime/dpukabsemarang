@@ -304,7 +304,7 @@ $(document).ready(function () {
         closeNav();
     });
 
-    $(".nav-pills a").click(function (e) {
+    $(".nav-tabs a").click(function (e) {
         e.preventDefault();
         $(this).tab('show');
     });

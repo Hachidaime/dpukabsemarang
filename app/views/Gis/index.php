@@ -11,7 +11,7 @@
     <div class="col-md-3 col-sm-4 order-sm-2 order-1 mb-3">
         <div class="border bg-white">
             <!-- Nav tabs -->
-            <ul class="nav nav-pills clr-2018-coconut-milk border-bottom">
+            <ul class="nav nav-tabs clr-2018-coconut-milk border-bottom">
                 <li class="nav-item">
                     <a class="nav-link active" href="#legend">Legend</a>
                 </li>
@@ -25,7 +25,7 @@
 
             <!-- Tab panes -->
             <div class="tab-content">
-                <div id="legend" class="container tab-pane active p-3">
+                <div id="legend" class="tab-pane active p-3">
                     <div class="d-flex flex-column">
                         <div class="pr-3 py-1">
                             <svg height="18" width="20">
@@ -71,7 +71,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="cari" class="container tab-pane fade p-3">
+                <div id="cari" class="tab-pane fade py-3">
                     {$data.searchform}
                     <div class=" search-btn d-flex justify-content-center mb-3">
                         {foreach from=$data.searchbtn key=k item=v}
@@ -79,7 +79,7 @@
                         {/foreach}
                     </div>
                 </div>
-                <div id="info" class="container tab-pane fade p-3">
+                <div id="info" class="tab-pane fade p-3">
                     <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
                 </div>
             </div>
