@@ -47,13 +47,13 @@
                     {/if}
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <li class="navbar-item active py-2 loading" style="display: none;">
+                    <li class="navbar-item active py-3 loading" style="display: none;">
                         <div class="spinner-border spinner-border-sm text-light" role="status">
                         </div>
                         <span class="text-light">Please Wait...</span>
                     </li>
                     {if isset($smarty.session.admin) && isset($smarty.session.USER)}
-                    <li class="nav-item px-2 dropdown active">
+                    <li class="nav-item px-3 dropdown active">
                         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
                             <span class="fas fa-map-marker-alt"></span>
                         </a>
