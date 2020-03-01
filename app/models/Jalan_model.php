@@ -1,7 +1,7 @@
 <?php
 class Jalan_model extends Database
 {
-    private $my_tables = ['jalan' => 'tjalan', 'detail' => 'tdetail_jalan', 'koordinat' => 'tkoordinat_jalan'];
+    private $my_tables = ['jalan' => 'tjalan', 'detail' => 'tdetail_jalan', 'koordinat' => 'tkoordinat_jalan', 'foto' => 'tfoto_jalan'];
 
     public function getTable(string $type = null)
     {
@@ -278,11 +278,13 @@ class Jalan_model extends Database
 
     public function createDetail()
     {
+        $no_jalan = $_POST['no_jalan'];
         $coord = Functions::getDataSession('coordinates', false);
         $koordinat = $coord['final'];
 
         $rows = [];
         $data = [];
+        $foto = [];
         foreach ($koordinat as $idx => $row) {
             $perkerasan[$idx] = 0;
             $kondisi[$idx] = 0;
@@ -300,7 +302,17 @@ class Jalan_model extends Database
             }
 
             $data[$perkerasan[$idx]][$kondisi[$idx]][$segment[$idx]][] = $rows[$idx];
+
+            if (!empty(trim($rows[$idx]['foto']))) {
+                $foto[$idx + 1]['row'] = $idx + 1;
+                $foto[$idx + 1]['no_jalan'] = $no_jalan;
+                $foto[$idx + 1]['latitude'] = $rows[$idx]['latitude'];
+                $foto[$idx + 1]['longitude'] = $rows[$idx]['longitude'];
+                $foto[$idx + 1]['foto'] = $rows[$idx]['foto'];
+            }
         }
+        $this->clearFoto($no_jalan);
+        $this->createFoto($foto);
 
         $values = [];
         $n = 0;
@@ -326,7 +338,7 @@ class Jalan_model extends Database
                     $latitude[$n] = $z[0]['latitude'];
                     $longitude[$n] = $z[0]['longitude'];
                     // ? no_detail, no_jalan, latitude, longitude, perkerasan, kondisi, segment, koordinat, koordinat_final, update_dt, login_id, remote_ip
-                    array_push($val, $n, $_POST['no_jalan'], $latitude[$n], $longitude[$n], $perkerasan, $kondisi, $segment, $c, $f, "NOW()", Auth::User('id'), $_SERVER['REMOTE_ADDR']);
+                    array_push($val, $n, $no_jalan, $latitude[$n], $longitude[$n], $perkerasan, $kondisi, $segment, $c, $f, "NOW()", Auth::User('id'), $_SERVER['REMOTE_ADDR']);
                     foreach ($field as $k => $v) {
                         $value[$n][$v] = $val[$k];
                     }
@@ -352,19 +364,40 @@ class Jalan_model extends Database
             $values[$idx] = '(' . implode(',', $row) . ')';
         }
 
-
-        // print "<pre>";
-        // print_r($values);
-        // print "</pre>";
-
         $field = implode(',', $field);
-        // var_dump($values);
         $values = implode(',', $values);
 
         $query = "INSERT INTO {$this->my_tables['detail']} ({$field}) VALUES {$values}";
-        // echo $query;
         $this->execute($query);
 
         return $this->affected_rows();
+    }
+
+    public function createFoto(array $foto)
+    {
+        $field = ['row_id', 'no_jalan', 'latitude', 'longitude', 'foto', 'update_dt', 'login_id', 'remote_ip'];
+        $values = [];
+        foreach ($foto as $row) {
+            $value = [];
+            foreach ($row as $val) {
+                $value[] = "'{$val}'";
+            }
+            array_push($value, "NOW()", Auth::User('id'), "'{$_SERVER['REMOTE_ADDR']}'");
+
+            $values[] = '(' . implode(',', $value) . ')';
+        }
+
+        $field = implode(',', $field);
+        $values = implode(',', $values);
+
+        $query = "INSERT INTO {$this->my_tables['foto']} ({$field}) VALUES {$values}";
+        $this->execute($query);
+    }
+
+    public function clearFoto(string $no_jalan)
+    {
+        $query = "DELETE FROM {$this->my_tables['foto']} WHERE no_jalan = ?";
+        $bindVar = [$no_jalan];
+        $this->execute($query, $bindVar);
     }
 }
