@@ -1,0 +1,8 @@
+app/views_c/
+app/config/Local.php
+app/libs/smarty/
+app/libs/adodb5/
+upload/
+.vscode/
+*.sql
+
