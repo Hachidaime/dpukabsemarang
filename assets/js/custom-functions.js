@@ -109,10 +109,10 @@ let scrollFunction = function () {
 
     if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
         title_wrapper.removeClass('h1').addClass('h3');
-        title_wrapper.parent().addClass('clr-border-2018-sargasso-sea clr-2018-sargasso-sea').removeClass('bg-light');
+        title_wrapper.parent().addClass('bg-primary text-light').removeClass('bg-light');
     } else {
         title_wrapper.removeClass('h3').addClass('h1');
-        title_wrapper.parent().removeClass('clr-border-2018-sargasso-sea clr-2018-sargasso-sea').addClass('bg-light');
+        title_wrapper.parent().removeClass('bg-primary text-light').addClass('bg-light');
     }
 }
 
