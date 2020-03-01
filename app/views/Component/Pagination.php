@@ -1,4 +1,4 @@
-<nav aria-label="Page navigation example" class="mb-3 px-2 table-responsive">
+<nav aria-label="Page navigation example" class="px-2 table-responsive">
     <ul class="pagination">
         {for $foo=1 to $data.total_page}
         <li class="page-item {if $foo eq 1}active{/if}">
