@@ -1,6 +1,6 @@
 {$data.pager}
 
-<div class="row" id="gallery-item"></div>
+<div class="d-flex flex-wrap" id="gallery-item"></div>
 
 <div class="modal fade" id="lightboxModal" tabindex="-1" role="dialog" aria-labelledby="lightboxModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
