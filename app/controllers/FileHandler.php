@@ -95,7 +95,7 @@ class FileHandler
         // TODO: Cek file ada di temporary directory
         if (file_exists(TEMP_UPLOAD_DIR . $filename)) { // ? file ada
             if ($clear) {
-                var_dump($clear);
+                // var_dump($clear);
                 self::clearOldFile($filedir);
             }
 
@@ -106,11 +106,11 @@ class FileHandler
 
     public function clearOldFile(string $filedir)
     {
-        var_dump($filedir);
+        // var_dump($filedir);
         $files = glob(UPLOAD_DIR . "{$filedir}/*"); // ?  get all file names
-        var_dump($files);
+        // var_dump($files);
         foreach ($files as $file) { // ?  iterate files
-            var_dump($file);
+            // var_dump($file);
             if (is_file($file))
                 @unlink($file); // TODO: delete file
         }
