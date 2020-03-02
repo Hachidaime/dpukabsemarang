@@ -1,5 +1,5 @@
 <div class="d-flex flex-wrap w-100">
-    <div class="map-wrapper order-md-1 order-sm-2 order-2 mb-3">
+    <div class="map-wrapper order-md-1 order-sm-2 order-2">
         <!--Star Map Area-->
         <div class="map-bg border">
             <div class="kotakpeta">

@@ -52,30 +52,72 @@ function initMap() {
         navigationControl: true,
         navigationControlOptions: {
             style: google.maps.NavigationControlStyle.SMALL
+        },
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.LEFT_CENTER
+        },
+        streetViewControlOptions: {
+            position: google.maps.ControlPosition.TOP_LEFT
         }
     });
     center = bounds.getCenter();
 
     // Create the DIV to hold the control and call the CenterControl()
     // constructor passing in this DIV.
-    // let controlDiv = document.createElement('div');
-    // let control = new controlOpenNav(controlDiv, map);
+    let controlDiv = document.createElement('div');
+    let control = new centerControl(controlDiv, map);
 
-    // controlDiv.index = 1;
-    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlDiv);
+    controlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+
     return map;
 }
+
+function centerControl(controlDiv, map) {
+
+    // Set CSS for the control border.
+    let controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.borderRadius = '2px';
+    controlUI.style.boxShadow = 'rgba(0, 0, 0, 0.3) 0px 1px 4px -1px';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.margin = '10px';
+    controlUI.style.textAlign = 'center';
+    controlUI.title = 'Click to recenter the map';
+
+    // $(controlUI).addClass('btn btn-light btn-sm p-1');
+    // $(controlUI).attr('type', 'button');
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior.
+    let controlText = document.createElement('div');
+    controlText.style.color = 'rgb(25,25,25)';
+    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlText.style.fontSize = '16px';
+    controlText.style.lineHeight = '14px';
+    controlText.style.padding = '5px';
+    controlText.innerHTML = /*html*/`<i class="material-icons">filter_center_focus</i>`;
+    controlUI.appendChild(controlText);
+
+    // Setup the click event listeners: simply set the map to Chicago.
+    controlUI.addEventListener('click', function () {
+        map.setCenter({ lat: DEFAULT_LATITUDE, lng: DEFAULT_LONGITUDE });
+    });
+
+}
+
 
 function controlOpenNav(controlDiv, map) {
 
     // ? Set CSS for the control border.
-    var controlUI = document.createElement('button');
+    let controlUI = document.createElement('button');
     $(controlUI).addClass('btn btn-light');
     $(controlUI).attr('type', 'button');
     controlDiv.appendChild(controlUI);
 
     // ? Set CSS for the control interior.
-    var controlText = document.createElement('div');
+    let controlText = document.createElement('div');
     controlText.innerHTML = /*html*/`<i class="fas fa-search"></i>&nbsp;Cari`;
     controlUI.appendChild(controlText);
 

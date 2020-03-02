@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/css/all.css">
 
 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="http://maps.google.com/maps/api/js?v=3&libraries=geometry&key={$smarty.const.GMAPS_API_KEY}" type="text/javascript"></script>
 
     <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/libs/jquery-ui/jquery-ui.min.css">
