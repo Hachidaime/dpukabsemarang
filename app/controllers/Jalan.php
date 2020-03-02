@@ -216,7 +216,7 @@ class Jalan extends Controller
                     foreach ($coord['final'] as $idx => $row) {
                         $row['row'] = $idx + 1;
                         if (!empty($row[6])) {
-                            FileHandler::MoveFromTemp("img/jalan/{$_POST['no_jalan']}/{$row['row']}", $row[6]);
+                            FileHandler::MoveFromTemp("img/jalan/{$_POST['no_jalan']}/{$row['row']}", $row[6], false, true);
                         }
                     }
                 }
