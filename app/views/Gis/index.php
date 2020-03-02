@@ -1,5 +1,5 @@
-<div class="row">
-    <div class="col-md-9 col-sm-8 order-sm-1 order-2 mb-3">
+<div class="d-flex flex-wrap w-100">
+    <div class="map-wrapper order-md-1 order-sm-2 order-2 mb-3">
         <!--Star Map Area-->
         <div class="map-bg border">
             <div class="kotakpeta">
@@ -8,10 +8,10 @@
         </div>
         <!--Form Map Area-->
     </div>
-    <div class="col-md-3 col-sm-4 order-sm-2 order-1 mb-3">
-        <div class="border bg-white">
+    <div class="map-control-wrapper order-md-2 order-sm-1 order-1 mb-3">
+        <div class="panel border bg-white">
             <!-- Nav tabs -->
-            <ul class="nav nav-tabs clr-2018-coconut-milk border-bottom">
+            <ul class="nav nav-tabs nav-fill clr-2018-coconut-milk border-bottom">
                 <li class="nav-item">
                     <a class="nav-link active" href="#legend">Legend</a>
                 </li>
@@ -84,9 +84,9 @@
                 </div>
             </div>
         </div>
+        <button class="map-control-viewer btn btn-sm btn-block btn-secondary"><i class="fas">&#xf078;</i></button>
     </div>
 </div>
-
 {literal}
 <script>
     window.onload = function() {

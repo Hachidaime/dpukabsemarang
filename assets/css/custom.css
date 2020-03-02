@@ -152,34 +152,6 @@ body {
 	background-color: #efeeec !important;
 }
 
-/* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) {
-  .gallery-item{
-    width: 50%;
-  }
-}
-
-/* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-  .gallery-item{
-    width: 50%;
-  }
-}
-
-/* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) {
-  .gallery-item{
-    width: 25%;
-  }
-}
-
-/* Extra large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-  .gallery-item{
-    width: 25%;
-  }
-}
-
 .login-wrapper {
   background: url('../img/main-bg.jpg');
   background-size: cover;
@@ -233,26 +205,114 @@ body {
   width: 90%!important;
 }
 
+.map-wrapper{
+  width: 100%;
+}
+
+.map-control-wrapper{
+  width: 100%;
+}
+
+.map-control-viewer {
+  cursor: pointer;
+  outline: none;
+  transition: 0.4s;
+}
+
+.panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+/* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
+    .gallery-item {
+        width: 50%;
+    }
+
     .sidenav-show {
         width: 75%!important;
     }
+
+    .map-wrapper{
+      width: 100%;
+    }
+
+    .map-control-wrapper{
+      width: 100%;
+    }
 }
+
+/* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
+    .gallery-item {
+        width: 50%;
+    }
+
     .sidenav-show {
         width: 50%!important;
     }
+
+    .map-wrapper{
+      width: 60%;
+    }
+
+    .map-control-wrapper{
+      width: 40%;
+    }
+
+    .map-control-viewer{
+      display: none;
+    }
+
+    .panel{
+      max-height: 100%;
+    }
 }
+
+/* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
+    .gallery-item {
+        width: 25%;
+    }
+
     .sidenav-show {
         width: 33%!important;
     }
+
+    .map-wrapper{
+      width: 67%;
+    }
+
+    .map-control-wrapper{
+      width: 33%;
+    }
+
+    .map-control-viewer{
+      display: none;
+    }
 }
+
+/* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
+    .gallery-item {
+        width: 25%;
+    }
+
     .sidenav-show {
         width: 25%!important;
     }
+
+    .map-wrapper{
+      width: 75%;
+    }
+
+    .map-control-wrapper{
+      width: 25%;
+    }
 }
+
 
 .card-2 {
   /* -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);

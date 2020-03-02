@@ -9,6 +9,29 @@ var center = null;
 var currentPopup;
 var bounds = new google.maps.LatLngBounds();
 
+let map_crtl = document.querySelector('.map-control-viewer');
+
+map_crtl.addEventListener("click", function () {
+    this.classList.toggle("active");
+
+    if (width() < 768) {
+        let icon = this.querySelector('i');
+        let panel = this.previousElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+            icon.innerHTML = '&#xf078;';
+        } else {
+            icon.innerHTML = '&#xf077;';
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+});
+
+if (width() >= 768) {
+    map_crtl.classList.toggle("active");
+    $(map_crtl).click();
+}
+
 /**
  * * Inisiasi Map (menampilkan map pada layar)
  * */
