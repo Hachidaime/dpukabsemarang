@@ -499,8 +499,8 @@ class Jalan extends Controller
             array_push($rows[$idx], $row['perkerasan']); // ? perkerasan
             array_push($rows[$idx], $row['kondisi']); // ? kondisi
             array_push($rows[$idx], ($row['segment'] > 0) ? $n++ : null); // ? segment
-            array_push($rows[$idx], $row['iri']); // ? iri
             array_push($rows[$idx], $row['foto']); // ? foto
+            array_push($rows[$idx], $row['iri']); // ? iri
 
             array_push($data, $rows[$idx]);
         }
