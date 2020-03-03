@@ -9,29 +9,6 @@ var center = null;
 var currentPopup;
 var bounds = new google.maps.LatLngBounds();
 
-let map_crtl = document.querySelector('.map-control-viewer');
-
-map_crtl.addEventListener("click", function () {
-    this.classList.toggle("active");
-
-    if (width() < 768) {
-        let icon = this.querySelector('i');
-        let panel = this.previousElementSibling;
-        if (panel.style.maxHeight) {
-            panel.style.maxHeight = null;
-            icon.innerHTML = '&#xf078;';
-        } else {
-            icon.innerHTML = '&#xf077;';
-            panel.style.maxHeight = panel.scrollHeight + "px";
-        }
-    }
-});
-
-if (width() >= 768) {
-    map_crtl.classList.toggle("active");
-    $(map_crtl).click();
-}
-
 /**
  * * Inisiasi Map (menampilkan map pada layar)
  * */
@@ -42,12 +19,13 @@ function initMap() {
     map = new google.maps.Map(document.getElementById("map_canvas"), {
         center: new google.maps.LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE),
         gestureHandling: 'greedy',
-        zoom: 14,
+        zoom: 11,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        mapTypeControl: false,
-        // mapTypeControlOptions: {
-        //     style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
-        // },
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+            position: google.maps.ControlPosition.TOP_RIGHT
+        },
         fullscreenControl: false,
         navigationControl: true,
         navigationControlOptions: {
@@ -64,18 +42,20 @@ function initMap() {
 
     // Create the DIV to hold the control and call the CenterControl()
     // constructor passing in this DIV.
-    let controlDiv = document.createElement('div');
-    let control = new centerControl(controlDiv, map);
+    let controlCentering = document.createElement('div');
+    let centering = new centerControl(controlCentering, map);
+    // controlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlCentering);
 
-    controlDiv.index = 1;
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+    let controlNav = document.createElement('div');
+    let myNav = new controlOpenNav(controlNav, map);
+    // controlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlNav);
 
     return map;
 }
 
-function centerControl(controlDiv, map) {
-
-    // Set CSS for the control border.
+function makeControl() {
     let controlUI = document.createElement('div');
     controlUI.style.backgroundColor = '#fff';
     controlUI.style.border = '2px solid #fff';
@@ -84,18 +64,22 @@ function centerControl(controlDiv, map) {
     controlUI.style.cursor = 'pointer';
     controlUI.style.margin = '10px';
     controlUI.style.textAlign = 'center';
-    controlUI.title = 'Click to recenter the map';
 
-    // $(controlUI).addClass('btn btn-light btn-sm p-1');
-    // $(controlUI).attr('type', 'button');
+    return controlUI;
+}
+
+function centerControl(controlDiv, map) {
+
+    // Set CSS for the control border.
+    let controlUI = makeControl();
+    controlUI.title = 'Click to recenter the map';
     controlDiv.appendChild(controlUI);
 
     // Set CSS for the control interior.
     let controlText = document.createElement('div');
     controlText.style.color = 'rgb(25,25,25)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
     controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '14px';
+    controlText.style.lineHeight = '12px';
     controlText.style.padding = '5px';
     controlText.innerHTML = /*html*/`<i class="material-icons">filter_center_focus</i>`;
     controlUI.appendChild(controlText);
@@ -104,21 +88,23 @@ function centerControl(controlDiv, map) {
     controlUI.addEventListener('click', function () {
         map.setCenter({ lat: DEFAULT_LATITUDE, lng: DEFAULT_LONGITUDE });
     });
-
 }
 
 
 function controlOpenNav(controlDiv, map) {
 
     // ? Set CSS for the control border.
-    let controlUI = document.createElement('button');
-    $(controlUI).addClass('btn btn-light');
-    $(controlUI).attr('type', 'button');
+    let controlUI = makeControl();
+    controlUI.title = 'Click to show navigation';
     controlDiv.appendChild(controlUI);
 
     // ? Set CSS for the control interior.
     let controlText = document.createElement('div');
-    controlText.innerHTML = /*html*/`<i class="fas fa-search"></i>&nbsp;Cari`;
+    controlText.style.color = 'rgb(25,25,25)';
+    controlText.style.fontSize = '16px';
+    controlText.style.lineHeight = '12px';
+    controlText.style.padding = '5px';
+    controlText.innerHTML = /*html*/`<i class="material-icons">more_vert</i>`;
     controlUI.appendChild(controlText);
 
     // ? Setup the click event listeners

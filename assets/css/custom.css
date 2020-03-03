@@ -181,28 +181,13 @@ body {
   height: 496px;
 }
 
-/* Sidenav */
-.sidenav {
-    width: 0;
-    position: absolute;
-    z-index: 1;
-    /* left: 0; */
-    overflow-x: hidden;
-    transition: 0.5s;
-    /* padding-top: 60px; */
-    overflow-y:hidden;
-}
-
-/* .sidenav .btn-sidebar-close {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-} */
-
-.sidenav-show {
-  width: 90%!important;
+ /* The sidepanel menu */
+.sidepanel {
+  display: block;
+  position: absolute; /* Stay in place */
+  z-index: 1; /* Stay on top */   
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
 }
 
 .map-wrapper{
@@ -219,24 +204,14 @@ body {
   transition: 0.4s;
 }
 
-.panel {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.2s ease-out;
-}
-
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
     .gallery-item {
         width: 50%;
     }
 
-    .sidenav-show {
+    .sidepanel {
         width: 75%!important;
-    }
-
-    .map-wrapper{
-      width: 100%;
     }
 
     .map-control-wrapper{
@@ -250,24 +225,12 @@ body {
         width: 50%;
     }
 
-    .sidenav-show {
+    .sidepanel {
         width: 50%!important;
-    }
-
-    .map-wrapper{
-      width: 60%;
     }
 
     .map-control-wrapper{
       width: 40%;
-    }
-
-    .map-control-viewer{
-      display: none;
-    }
-
-    .panel{
-      max-height: 100%;
     }
 }
 
@@ -277,20 +240,12 @@ body {
         width: 25%;
     }
 
-    .sidenav-show {
+    .sidepanel {
         width: 33%!important;
-    }
-
-    .map-wrapper{
-      width: 67%;
     }
 
     .map-control-wrapper{
       width: 33%;
-    }
-
-    .map-control-viewer{
-      display: none;
     }
 }
 
@@ -300,14 +255,9 @@ body {
         width: 25%;
     }
 
-    .sidenav-show {
+    .sidepanel {
         width: 25%!important;
     }
-
-    .map-wrapper{
-      width: 75%;
-    }
-
     .map-control-wrapper{
       width: 25%;
     }

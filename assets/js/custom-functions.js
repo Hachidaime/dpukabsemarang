@@ -201,10 +201,9 @@ let width = function () {
 }
 
 let openNav = function () {
-    $('#mySidenav').addClass('sidenav-show');
+    $('#mySidepanel').show();
 }
 
 let closeNav = function () {
-    $('#mySidenav').removeClass('sidenav-show');
-    document.getElementById("mySidenav").style.width = "0";
+    $('#mySidepanel').hide();
 }
