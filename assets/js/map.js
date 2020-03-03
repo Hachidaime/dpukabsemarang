@@ -54,10 +54,10 @@ function initMap() {
             style: google.maps.NavigationControlStyle.SMALL
         },
         zoomControlOptions: {
-            position: google.maps.ControlPosition.LEFT_CENTER
+            position: google.maps.ControlPosition.RIGHT_CENTER
         },
         streetViewControlOptions: {
-            position: google.maps.ControlPosition.TOP_LEFT
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
         }
     });
     center = bounds.getCenter();
