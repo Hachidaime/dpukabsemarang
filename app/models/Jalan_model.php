@@ -153,6 +153,14 @@ class Jalan_model extends Database
         return $this->singlearray();
     }
 
+    public function deleteJalan($id)
+    {
+        $query = "DELETE FROM {$this->my_tables['jalan']} WHERE id = ?";
+        $bindVar = [$id];
+        $this->execute($query, $bindVar);
+        return $this->affected_rows();
+    }
+
     /**
      * * Koordinat Jalan
      */
