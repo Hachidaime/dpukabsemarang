@@ -48,7 +48,7 @@
         {$header}
         <!-- </div> -->
 
-        <div class="content p-3">
+        <div class="content p-2">
             {$content}
         </div>
     </div>
