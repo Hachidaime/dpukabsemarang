@@ -43,7 +43,7 @@
 </head>
 
 <body>
-    <div class="main-container container p-0 min-vh-100 border bg-light">
+    <div class="main-container container-md p-0 min-vh-100 border bg-light">
         <!-- <div class="header sticky-top"> -->
         {$header}
         <!-- </div> -->
@@ -54,7 +54,7 @@
     </div>
 
     <div class="footer">
-        <nav class="container navbar justify-content-center bg-secondary text-white navbar-dark">
+        <nav class="container-md navbar justify-content-center bg-secondary text-white navbar-dark">
             <ul class="navbar-nav">
                 <li class="nav-item active">
                     <i class="far fa-copyright"></i>&nbsp;{$smarty.now|date_format:'%Y'}

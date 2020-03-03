@@ -3,7 +3,7 @@
 <img src="https://dummyimage.com/1200x200/696969/fff.png&text=Lorem+ipsum" class="img-fluid w-100">
 
 <nav class="navbar navbar-expand-lg bg-transparent navbar-dark sticky-top p-0">
-    <div class="container d-flex flex-column justify-content-beetween p-0">
+    <div class="container-md d-flex flex-column justify-content-beetween p-0">
         <div class="bg-primary w-100">
             <button class="navbar-toggler mr-2" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -70,7 +70,7 @@
                 </ul>
             </div>
         </div>
-        <div class="p-2 bg-light w-100 text-center border-bottom">
+        <div class="px-2 pb-2 pt-0 bg-light w-100 text-center border-bottom">
             <span class="title-wrapper h1">{$smarty.session.title}</span>
         </div>
     </div>
