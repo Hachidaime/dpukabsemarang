@@ -35,6 +35,7 @@ class User extends Controller
 
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
+        $data['data'] = Functions::defaultTableData();
         $data['thead'] = $this->my_model->getUserThead();
         $data['url'] = BASE_URL . "/User/LoadUser/search";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
@@ -185,6 +186,7 @@ class User extends Controller
 
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
+        $data['data'] = Functions::defaultTableData();
         $data['thead'] = $this->my_model->getUserGroupThead();
         $data['url'] = BASE_URL . "/User/LoadUserGroup/search";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
