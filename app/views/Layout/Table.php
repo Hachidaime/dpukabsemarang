@@ -1,4 +1,4 @@
-<table class="bootstrap-table" data-toolbar="#toolbar" data-search="{$data.search|default:'true'}" data-show-refresh="true" data-show-toggle="false" data-show-fullscreen="false" data-show-columns="false" data-show-columns-toggle-all="false" data-detail-view="false" data-show-export="true" data-click-to-select="false" data-detail-formatter="detailFormatter" data-minimum-count-columns="2" data-show-pagination-switch="false" data-pagination="true" data-id-field="id" data-page-list="[10, 25, 50, 100, all]" data-show-footer="false" data-side-pagination="server" data-url="{$data.url}" data-response-handler="responseHandler" data-title="{$smarty.session.title}" data-row-style="rowStyle">
+<table class="bootstrap-table" data-search="{$data.search|default:'true'}" data-title="{$smarty.session.title}" {$data.data}>
     <thead>
         {foreach from=$data.thead key=k item=v}
         <tr>

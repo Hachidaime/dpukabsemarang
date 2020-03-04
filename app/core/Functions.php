@@ -376,7 +376,7 @@ class Functions
      * @param string $from
      * @param string $to
      */
-    function getStringBetween(string $str, string $from, string $to)
+    public function getStringBetween(string $str, string $from, string $to)
     {
 
         $string = substr($str, strpos($str, $from) + strlen($from));
@@ -387,5 +387,28 @@ class Functions
         }
 
         return $string;
+    }
+
+    /**
+     * * Functions::makeTableData
+     * ? Setting data properties on DataTable
+     * @param array $data
+     */
+    public function makeTableData(array $data)
+    {
+        foreach ($data as $key => $value) {
+            $result[] = `data-{$key}="{$value}"`;
+        }
+
+        return implode(' ', $result);
+    }
+
+    /**
+     * * Functions::defaultTableData
+     * ? Get default data properties on DataTable
+     */
+    public function defaultTableData()
+    {
+        self::makeTableData(DEFAULT_TABLE_DATA);
     }
 }

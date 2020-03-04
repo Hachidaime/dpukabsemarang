@@ -19,3 +19,18 @@ define('BS_COLOR', ['primary', 'secondary', 'success', 'danger', 'warning', 'inf
 
 // ? Status
 DEFINE('DISPLAY_STATUS', [1 => "Shown", 2 => "Hidden"]);
+
+// ? Default data properties of DataTable
+define('DEFAULT_TABLE_DATA', [
+    'toolbar' => "#toolbar",
+    'show-refresh' => "true",
+    'show-export' => "true",
+    'detail-formatter' => "detailFormatter",
+    'minimum-count-columns' => "2",
+    'pagination' => "true",
+    'id-field' => "id",
+    'page-list' => "[10, 25, 50, 100, all]",
+    'side-pagination' => "server",
+    'response-handler' => "responseHandler",
+    'row-style' => "rowStyle"
+]);
