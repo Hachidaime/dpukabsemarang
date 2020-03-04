@@ -159,7 +159,7 @@ let logout = function () {
         if (Object.keys(data)[0] == 'success') {
             // TODO: Redirect ke halaman Log In
             setTimeout(function () {
-                window.location.href = base_url;
+                window.location.href = server_base;
             }, 3000);
         }
     }, "json");
