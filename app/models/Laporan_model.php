@@ -24,7 +24,7 @@ class Laporan_model extends Database
         Functions::setDataSession('thead', ['1', null, 'Aspal/<br>Penetrasi/<br>Macadam', 'data-halign="center" data-rowspan="2"']);
         Functions::setDataSession('thead', ['1', null, 'Pekerasan<br>Beton', 'data-halign="center" data-rowspan="2"']);
         Functions::setDataSession('thead', ['1', null, 'Telford/<br>Kerikil', 'data-halign="center" data-rowspan="2"']);
-        Functions::setDataSession('thead', ['1', null, 'Tanah/<br>Belum Tembus', 'data-halign="center" data-rowspan="2"']);
+        Functions::setDataSession('thead', ['1', null, 'Tanah/<br>Belum<br>Tembus', 'data-halign="center" data-rowspan="2"']);
         Functions::setDataSession('thead', ['1', null, 'Baik', 'data-halign="center" data-colspan="2"']);
         Functions::setDataSession('thead', ['1', null, 'Sedang', 'data-halign="center" data-colspan="2"']);
         Functions::setDataSession('thead', ['1', null, 'Rusak Ringan', 'data-halign="center" data-colspan="2"']);

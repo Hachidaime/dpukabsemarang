@@ -24,6 +24,8 @@ class Laporan extends Controller
 
         // TODO: Menampilkan Table
         $data['thead'] = $this->my_model->getDd1Thead();
+        $data['data'] = Functions::makeTableData(['show-export' => 'true']);
+        $data['search'] = false;
         $data['url'] = BASE_URL . "/Laporan/dd1/search";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
         $this->view('Layout/Default', $data);
