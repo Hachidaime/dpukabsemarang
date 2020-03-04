@@ -104,6 +104,7 @@ class Application extends Controller
 
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
+        $data['data'] = Functions::defaultTableData();
         switch ($this->type) {
             case 'system':
                 $data['thead'] = $this->my_model->getSystemThead();
