@@ -55,6 +55,7 @@ class Jalan extends Controller
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
         // TODO: Load table properties: column name, data-url
+        $data['data'] = Functions::defaultTableData();
         $data['thead'] = $this->my_model->getJalanThead();
         $data['url'] = BASE_URL . "/Jalan/index/search";
 
