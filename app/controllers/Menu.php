@@ -60,6 +60,7 @@ class Menu extends Controller
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
         // TODO: Menampilkan Table
+        $data['data'] = Functions::defaultTableData();
         $data['thead'] = $this->my_model->getMenuThead();
         $data['url'] = BASE_URL . "/Menu/index/search";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
