@@ -35,6 +35,7 @@ class Select extends Controller
 
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
+        $data['data'] = Functions::defaultTableData();
         $data['thead'] = $this->my_model->getSelectThead();
         $data['url'] = BASE_URL . "/Select/index/search";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
