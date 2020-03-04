@@ -301,6 +301,8 @@ function genSegment() {
         let roadLength = countLength(roadPath);
         let coordSegment = getSegment(roadPath, coord, segmentasi, roadLength);
 
+        $('#panjang').val(roadLength.toFixed(2));
+        $('#panjang_text').val(roadLength.toFixed(2));
         url = url.replace('searchori', 'setsession');
         let params = {};
         params['coordsegment'] = coordSegment;

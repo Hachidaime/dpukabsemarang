@@ -270,6 +270,7 @@ $(document).ready(function () {
         });
     });
 
+    $('#panjang_text').val($('#panjang').val());
 
     $('#koordinatModal').on('hidden.bs.modal', function () {
         let modal = $('#koordinatModal');

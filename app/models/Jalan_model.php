@@ -11,15 +11,17 @@ class Jalan_model extends Database
     public function getJalanForm()
     {
         Functions::setDataSession('form', ['hidden', 'id', 'id', '', []]);
+        Functions::setDataSession('form', ['hidden', 'panjang', 'panjang', '', []]);
         Functions::setDataSession('form', ['text', 'no_jalan', 'no_jalan', 'Nomor Ruas Jalan', [], true, true]);
         Functions::setDataSession('form', ['text', 'nama_jalan', 'nama_jalan', 'Nama Ruas Jalan', [], true, false]);
         Functions::setDataSession('form', ['select', 'kepemilikan', 'kepemilikan', 'Kepemilikan', $this->options('kepemilikan_opt'), true, false]);
+        Functions::setDataSession('form', ['plain-text', 'panjang_text', 'pajang_text', 'Panjang (m)']);
         Functions::setDataSession('form', ['number', 'lebar_rata', 'lebar_rata', 'Lebar Rata-Rata (m)', [], true, false]);
         Functions::setDataSession('form', ['video', 'video', 'video', 'Video', [], false, false]);
         Functions::setDataSession('form', ['date', 'video_date', 'video_date', 'Tanggal Video', [], false, false]);
         Functions::setDataSession('form', ['pdf', 'survei', 'survei', 'Dokumen Survei', [], false, false]);
         Functions::setDataSession('form', ['date', 'survei_date', 'survei_date', 'Tanggal Survei', [], false, false]);
-        Functions::setDataSession('form', ['kml', 'upload_koordinat', 'upload_koordinat', 'Upload Koordinat', [], false, false, 'Format file yang diperbolehkan KML atau XML.']);
+        Functions::setDataSession('form', ['kml', 'upload_koordinat', 'upload_koordinat', 'Upload Koordinat', [], false, false, 'Format file yang diperbolehkan KML.']);
         Functions::setDataSession('form', ['number', 'segmentasi', 'segmentasi', 'Segmentasi (m)', [], false, false]);
 
         return Functions::getDataSession('form');
