@@ -165,6 +165,7 @@ class Pengaduan extends Controller
         Functions::setTitle("Pengaduan");
 
         // TODO: Menampilkan Table
+        $data['data'] = Functions::defaultTableData();
         $data['thead'] = $this->my_model->getPengaduanThead();
         $data['url'] = BASE_URL . "/Pengaduan/index/search";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
