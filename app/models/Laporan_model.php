@@ -1,8 +1,6 @@
 <?php
 class Laporan_model extends Database
 {
-    private $my_tables = ['jalan' => 'tjalan'];
-
     public function getTable(string $tag = null)
     {
         return Functions::getTable($this->my_tables, $tag);
@@ -46,7 +44,7 @@ class Laporan_model extends Database
         Functions::setDataSession('thead', ['3', 'nama_jalan', '3', 'data-halign="center" data-align="left"']);
         Functions::setDataSession('thead', ['3', null, '4', 'data-halign="center" data-align="left"']);
         Functions::setDataSession('thead', ['3', 'panjang_km', '5', 'data-halign="center" data-align="right"']);
-        Functions::setDataSession('thead', ['3', 'lebar', '6', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'lebar_rata', '6', 'data-halign="center" data-align="right"']);
         Functions::setDataSession('thead', ['3', 'perkerasan_2', '7', 'data-halign="center" data-align="right"']);
         Functions::setDataSession('thead', ['3', 'perkerasan_1', '8', 'data-halign="center" data-align="right"']);
         Functions::setDataSession('thead', ['3', 'perkerasan_3', '9', 'data-halign="center" data-align="right"']);
@@ -64,5 +62,25 @@ class Laporan_model extends Database
         Functions::setDataSession('thead', ['3', null, '21', 'data-halign="center" data-align="left"']);
 
         return Functions::getDataSession('thead');
+    }
+
+    public function getJalan()
+    {
+
+        $query = "SELECT no_jalan, nama_jalan, kepemilikan, panjang, lebar_rata
+            FROM {$this->model('Jalan_model')->getTable('jalan')}
+            ORDER BY kepemilikan ASC, no_jalan ASC
+        ";
+
+        // echo $query;
+
+        $this->execute($query);
+        // var_dump($this->db);
+        return $this->multiarray();
+    }
+
+    public function totalJalan()
+    {
+        return $this->model('Jalan_model')->totalJalan();
     }
 }

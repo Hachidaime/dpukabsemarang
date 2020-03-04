@@ -31,5 +31,23 @@ class Laporan extends Controller
 
     private function Dd1Search()
     {
+        list($list, $count) = $this->my_model->getJalan();
+        $total = $this->my_model->totalJalan();
+
+        // TODO: Load Kepemilikan Options
+        $kepemilikan_opt = $this->options('kepemilikan_opt');
+
+        // TODO: Prepare data to load on template
+        $rows = [];
+        foreach ($list as $idx => $row) {
+            $row['kepemilikan'] = $kepemilikan_opt[$row['kepemilikan']];
+            $row['panjang_km'] = number_format($row['panjang'] / 1000, 2);
+            $row['row'] = Functions::getSearch()['offset'] + $idx + 1;
+            array_push($rows, $row);
+        }
+
+        // TODO: Echoing data as JSON
+        Functions::setDataTable($rows, $count, $total);
+        exit;
     }
 }

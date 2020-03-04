@@ -338,12 +338,12 @@ class Functions
      * @param string $type
      * ? Type
      */
-    public function getTable(array $tables, string $type)
+    public function getTable(array $tables, string $type = null)
     {
         if (!is_null($type)) {
             $table = $tables[$type];
         } else {
-            list($table) = $tables;
+            $table = $tables;
         }
         return $table;
     }

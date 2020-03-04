@@ -70,7 +70,7 @@ class Jalan_model extends Database
 
     public function getJalan(array $cond = [])
     {
-        $params = [];
+        // $params = [];
         $search = Functions::getSearch();
         $filter = [];
         if (!empty($search['search'])) $filter[] = "name_jalan LIKE '%{$search['search']}%'";
@@ -82,6 +82,7 @@ class Jalan_model extends Database
                 $filter[] = $value;
             }
         }
+
         $params['filter'] = implode(' AND ', $filter);
 
         $params['sort'] = "{$this->my_tables['jalan']}.no_jalan ASC";
