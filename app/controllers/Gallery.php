@@ -113,6 +113,7 @@ class Gallery extends Controller
         Functions::setTitle("Gallery");
 
         // TODO: Menampilkan Table
+        $data['data'] = Functions::defaultTableData();
         $data['thead'] = $this->my_model->getGalleryThead();
         $data['url'] = BASE_URL . "/Gallery/index/search";
 
