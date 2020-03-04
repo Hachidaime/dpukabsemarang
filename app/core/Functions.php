@@ -397,7 +397,7 @@ class Functions
     public function makeTableData(array $data)
     {
         foreach ($data as $key => $value) {
-            $result[] = `data-{$key}="{$value}"`;
+            $result[] = "data-{$key}=\"{$value}\"";
         }
 
         return implode(' ', $result);
@@ -409,6 +409,8 @@ class Functions
      */
     public function defaultTableData()
     {
-        self::makeTableData(DEFAULT_TABLE_DATA);
+        $data = DEFAULT_TABLE_DATA;
+        // var_dump($data);
+        return self::makeTableData($data);
     }
 }

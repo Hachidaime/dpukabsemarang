@@ -1,4 +1,4 @@
-<table class="bootstrap-table" data-search="{$data.search|default:'true'}" data-title="{$smarty.session.title}" {$data.data}>
+<table class="bootstrap-table" {$data.data} data-search="{$data.search|default:'true'}" data-title="{$smarty.session.title}" data-url=" {$data.url}">
     <thead>
         {foreach from=$data.thead key=k item=v}
         <tr>
