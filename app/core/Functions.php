@@ -359,7 +359,11 @@ class Functions
     public function setDataTable(array $rows, int $count,  int $total)
     {
         $result = [];
-        // $result['total'] = $count;
+        $search = self::getSearch();
+
+        if ($count >= $search['limit']) {
+            $result['total'] = $count;
+        }
         $result['totalNotFiltered'] = $total;
         $result['rows'] = $rows;
         echo json_encode($result);
