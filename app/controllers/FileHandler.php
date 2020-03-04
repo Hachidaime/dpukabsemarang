@@ -80,20 +80,20 @@ class FileHandler
      */
     public function MoveFromTemp(string $filedir, string $filename, bool $timestamp = false, bool $clear = false)
     {
-        // TODO: Parsing directory
-        $dir = [];
-        foreach (explode("/", $filedir) as $folder) {
-            $dir[] = $folder;
-            $new_dir = implode("/", $dir);
-            // echo $new_dir . "<br>";
-            // TODO: Membuat directory baru jika belum ada
-            self::createWritableFolder($new_dir);
-        }
-
-        $time = ($timestamp == true) ? date('ymdHis', time()) . "_" : '';
-
         // TODO: Cek file ada di temporary directory
         if (file_exists(TEMP_UPLOAD_DIR . $filename)) { // ? file ada
+            // TODO: Parsing directory
+            $dir = [];
+            foreach (explode("/", $filedir) as $folder) {
+                $dir[] = $folder;
+                $new_dir = implode("/", $dir);
+                // echo $new_dir . "<br>";
+                // TODO: Membuat directory baru jika belum ada
+                self::createWritableFolder($new_dir);
+            }
+
+            $time = ($timestamp == true) ? date('ymdHis', time()) . "_" : '';
+
             if ($clear) {
                 // var_dump($clear);
                 self::clearOldFile($filedir);
