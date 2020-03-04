@@ -33,6 +33,7 @@ class Setup extends Controller
 
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
+        $data['data'] = Functions::defaultTableData();
         $data['thead'] = $this->my_model->getSetupThead();
         $data['url'] = BASE_URL . "/Setup/index/search";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
