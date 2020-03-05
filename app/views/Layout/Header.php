@@ -1,6 +1,6 @@
 {assign var=active value='text-white'}
 
-<img src="https://dummyimage.com/1200x200/696969/fff.png&text=Lorem+ipsum" class="img-fluid w-100">
+<img src="https://dummyimage.com/1200x200/696969/fff.png&text=Lorem+ipsum" id="header-img" class="img-fluid w-100">
 
 <nav class="navbar navbar-expand-lg bg-transparent navbar-dark sticky-top p-0">
     <div class="container-md d-flex flex-column justify-content-beetween p-0">

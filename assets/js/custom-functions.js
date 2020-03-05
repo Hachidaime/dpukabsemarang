@@ -106,8 +106,8 @@ let loadGallery = function (page = 1) {
 
 let scrollFunction = function () {
     let title_wrapper = $('.title-wrapper');
-
-    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+    let header_height = $('#header-img').height();
+    if (document.body.scrollTop > header_height || document.documentElement.scrollTop > header_height) {
         title_wrapper.removeClass('h1').addClass('h3');
         title_wrapper.parent().addClass('bg-primary text-light').removeClass('bg-light');
     } else {
