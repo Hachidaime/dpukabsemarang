@@ -616,6 +616,8 @@ class Jalan extends Controller
      */
     public function generate(string $param1 = null, string $param2 = null)
     {
+        $this->my_model = $this->model('Data_model');
+
         switch ($param1) {
             case 'search':
                 $this->GenerateSearch();
@@ -628,10 +630,10 @@ class Jalan extends Controller
                 $this->GenerateEdit($param2);
                 break;
             case 'submit':
-
+                $this->GenerateSubmit();
                 break;
             case 'remove':
-
+                $this->GenerateRemove($_POST['id']);
                 break;
             default:
                 $this->GenerateDefault();
@@ -641,21 +643,187 @@ class Jalan extends Controller
 
     private function GenerateDefault()
     {
-        Functions::setTitle("Generate Jalan");
-        $data = [];
+        // TODO: Clear coordinates session
+        Functions::clearDataSession('coordinates');
+
+        // TODO: Set title
+        Functions::setTitle("Generate Data Jalan");
+
+        // TODO: Load toolbar: add button
+        $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
+
+        // TODO: Load table properties: column name, data-url
+        $data['data'] = Functions::defaultTableData();
+        $data['thead'] = $this->my_model->getDataThead();
+        $data['url'] = BASE_URL . "/Jalan/generate/search";
+
+        // TODO: Load table template
+        $table = $this->dofetch('Layout/Table', $data);
+
+        // TODO: Load template
+        $data['main'][] = $table;
         $this->view('Layout/Default', $data);
     }
 
     private function GenerateSearch()
     {
-        # code...
+        // TODO: Search Jalan on database: list & total
+        list($list, $count) = $this->my_model->getData();
+        $total = $this->my_model->totalData();
+
+        // TODO: Prepare data to load on template
+        $rows = [];
+        foreach ($list as $idx => $row) {
+            $row['row'] = Functions::getSearch()['offset'] + $idx + 1;
+            array_push($rows, $row);
+        }
+
+        // TODO: Echoing data as JSON
+        Functions::setDataTable($rows, $count, $total);
+        exit;
     }
 
     private function GenerateAdd()
     {
+        Functions::setTitle("Add Generate Data Jalan");
+
+        $detail['name'] = date('Ymdhis');
+        $detail['name_text'] = $detail['name'];
+        $data['detail'] = $detail;
+
+        $data['form'] = $this->my_model->getDataForm();
+        $this->form($data);
     }
 
-    private function GenerateEdit($param2)
+    private function GenerateEdit($id)
     {
+        // TODO: Get Data dari Database
+        list($detail, $count) = $this->GenerateDetail($id);
+        $detail['name_text'] = $detail['name'];
+
+        // TODO: Set detail Data
+        $data['detail'] = $detail;
+
+        // TODO: Cek Data exist
+        if ($count <= 0) Header("Location: " . BASE_URL . "/StaticPage/Error404");
+
+        $data['form'] = $this->my_model->getDataForm();
+        $this->form($data);
+    }
+
+    /**
+     * * Data::DataSubmit()
+     * ? Submit Form Data
+     */
+    private function GenerateSubmit()
+    {
+        // TODO: Get Validasi form Data
+        $error = $this->GenerateValidate();
+
+        // TODO: Cek error
+        if (!$error) { // ? No Error
+            echo json_encode($this->GenerateProcess());
+        } else { // ! Error
+            echo json_encode($error);
+        }
+        exit;
+    }
+
+    /**
+     * * Data::DataValidate()
+     * ? Validasi form Data
+     */
+    private function GenerateValidate()
+    {
+        // TODO: Get form Data
+        $form = $this->my_model->getDataForm();
+
+        foreach ($form as $row) {
+            // TODO: Validasi form Data
+            $this->validate($_POST, $row, 'Data_model', 'data');
+        }
+
+        // TODO: Mengembalikan hasil validasi
+        return Functions::getDataSession('alert');
+    }
+
+    /**
+     * * Data::DataProcess()
+     * ? Proses form input
+     */
+    private function GenerateProcess()
+    {
+        // TODO: Cek input id
+        if ($_POST['id'] > 0) { // ? Id Data exist
+            // TODO: Proses edit Data
+            $result = $this->my_model->updateData();
+            $tag = "Edit";
+        } else { // ! Id Data not exist
+            // $this->GenerateXML();
+            // exit;
+            // TODO: Proses add Data
+            $result = $this->my_model->createData();
+            $tag = "Add";
+        }
+
+        // TODO: Cek hasil proses
+        if ($result) { // ? Proses success
+            Functions::setDataSession('alert', ["{$tag} Generate Data Jalan success.", 'success']);
+        } else { // ! Proses gagal
+            Functions::setDataSession('alert', ["{$tag} Generate Data Jalan failed.", 'danger']);
+        }
+
+        // TODO: Mengembalikan hasil proses
+        return Functions::getDataSession('alert');
+    }
+
+    /**
+     * * Data::DataDetail($id)
+     * ? Get Data detail by id
+     * @param id
+     * ? Id Data
+     */
+    private function GenerateDetail($id)
+    {
+        return $this->my_model->getDataDetail($id);
+    }
+
+    /**
+     * * Data::DataRemove($id)
+     * ? Menghapus Data by id
+     * @param id
+     * ? Id Data
+     */
+    public function GenerateRemove($id)
+    {
+        // TODO: Proses hapus data
+        $result = $this->my_model->deleteData($id);
+        $tag = 'Remove';
+
+        // TODO: Cek hasil proses hapus
+        if ($result) { // ? Hapus Data success
+            Functions::setDataSession('alert', ["{$tag} Generate Data Jalan success.", 'success']);
+        } else { // ! Hapus Data gagal
+            Functions::setDataSession('alert', ["{$tag} Generate Data Jalan failed.", 'danger']);
+        }
+
+        // TODO: Mengembalikan hasil proses
+        return Functions::getDataSession('alert');
+    }
+
+    public function GenerateXML()
+    {
+        $n = 1;
+        $cond[] = "jenis = 1";
+        list($setup_jalan,) = $this->model('Setup_model')->getSetup($cond);
+
+        foreach ($setup_jalan as $idx => $row) {
+            $style[$n]['id'] = "linestyle{$idx}";
+            $style[$n]['type'] = 'LineStyle';
+            $style[$n]['color'] = $row['warna'] . dechex(round($row['opacity'] * 255 / 100));
+            $style[$n]['width'] = (!is_null($row['line_width'])) ? $row['line_width'] : 0;
+            $n++;
+        }
+        var_dump($style);
     }
 }

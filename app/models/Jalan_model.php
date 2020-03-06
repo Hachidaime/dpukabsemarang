@@ -68,6 +68,9 @@ class Jalan_model extends Database
         return Functions::getDataSession('form');
     }
 
+    /**
+     * * Jalan
+     */
     public function getJalan(array $cond = [])
     {
         // $params = [];
@@ -249,6 +252,9 @@ class Jalan_model extends Database
         return $this->affected_rows();
     }
 
+    /**
+     * * Detail Jalan
+     */
     public function getDetailJalan(string $no_jalan)
     {
         $params = [];
@@ -384,6 +390,9 @@ class Jalan_model extends Database
         return $this->affected_rows();
     }
 
+    /**
+     * * Foto Jalan
+     */
     public function createFoto(array $foto)
     {
         $field = ['row_id', 'no_jalan', 'latitude', 'longitude', 'foto', 'update_dt', 'login_id', 'remote_ip'];
