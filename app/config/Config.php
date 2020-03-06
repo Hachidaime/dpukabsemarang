@@ -42,3 +42,5 @@ define('DEFAULT_TABLE_DATA', [
     'response-handler' => "responseHandler",
     'row-style' => "rowStyle"
 ]);
+
+define('MAP_SHOWN_CONTROLLER', ['Gis', 'Jalan', 'DataJalan', 'Laporan']);

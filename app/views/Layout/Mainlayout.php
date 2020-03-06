@@ -22,7 +22,6 @@
 
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="http://maps.google.com/maps/api/js?v=3&libraries=geometry&key={$smarty.const.GMAPS_API_KEY}" type="text/javascript"></script>
 
     <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/libs/jquery-ui/jquery-ui.min.css">
     <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/libs/jquery-ui/jquery-ui.structure.min.css">
@@ -92,8 +91,12 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js"></script>
 
+    {assign var=map_shown_controller value=$smarty.const.MAP_SHOWN_CONTROLLER}
+    {if in_array($data.controller, $map_shown_controller)}
+    <script src="http://maps.google.com/maps/api/js?v=3&libraries=geometry&key={$smarty.const.GMAPS_API_KEY}" type="text/javascript"></script>
     <script type="text/javascript" src="{$smarty.const.SERVER_BASE}/assets/js/v3_epoly.js"></script>
     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    {/if}
 
     <!-- Custom JS -->
     <script>
@@ -106,7 +109,9 @@
     </script>
     <script src="{$smarty.const.SERVER_BASE}/assets/js/custom-functions.js?t={$smarty.now|time}"></script>
     <script src="{$smarty.const.SERVER_BASE}/assets/js/custom-bootstrap-table.js?t={$smarty.now|time}"></script>
+    {if in_array($data.controller, $map_shown_controller)}
     <script src="{$smarty.const.SERVER_BASE}/assets/js/map.js?t={$smarty.now|time}"></script>
+    {/if}
     <script src="{$smarty.const.SERVER_BASE}/assets/js/custom.js?t={$smarty.now|time}"></script>
 </body>
 
