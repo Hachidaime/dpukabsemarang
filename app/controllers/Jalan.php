@@ -759,8 +759,8 @@ class Jalan extends Controller
             $result = $this->my_model->updateData();
             $tag = "Edit";
         } else { // ! Id Data not exist
-            // $this->GenerateXML();
-            // exit;
+            $this->GenerateXML();
+            exit;
             // TODO: Proses add Data
             $result = $this->my_model->createData();
             $tag = "Add";
@@ -817,13 +817,30 @@ class Jalan extends Controller
         $cond[] = "jenis = 1";
         list($setup_jalan,) = $this->model('Setup_model')->getSetup($cond);
 
+        foreach (DEFAULT_LINESTYLE as $idx => $row) {
+            $id = "linestyle{$n}";
+            $style[$n] = [
+                'id' => $id,
+                'type' => $row['type'],
+                'color' => $row['color'],
+                'width' => $row['width']
+            ];
+            $getStyle[$idx][0][0] = "#{$id}";
+            $n += 1;
+        }
+
         foreach ($setup_jalan as $idx => $row) {
-            $style[$n]['id'] = "linestyle{$idx}";
-            $style[$n]['type'] = 'LineStyle';
-            $style[$n]['color'] = $row['warna'] . dechex(round($row['opacity'] * 255 / 100));
-            $style[$n]['width'] = (!is_null($row['line_width'])) ? $row['line_width'] : 0;
+            $id = "linestyle{$n}";
+            $style[$n] = [
+                'id' => $id,
+                'type' => 'LineStyle',
+                'color' => $row['warna'] . dechex(round($row['opacity'] * 255 / 100)),
+                'width' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
+            ];
+            $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']] = "#{$id}";
             $n++;
         }
-        var_dump($style);
+        // var_dump($style);
+        var_dump($getStyle);
     }
 }

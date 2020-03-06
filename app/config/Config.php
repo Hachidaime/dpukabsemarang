@@ -44,3 +44,21 @@ define('DEFAULT_TABLE_DATA', [
 ]);
 
 define('MAP_SHOWN_CONTROLLER', ['Gis', 'Jalan', 'DataJalan', 'Laporan']);
+
+define('DEFAULT_LINESTYLE', [
+    1 => [
+        'type' => 'LineStyle',
+        'color' => '000000FF',
+        'width' => '5'
+    ],
+    2 => [
+        'type' => 'LineStyle',
+        'color' => '000000FF',
+        'width' => '4'
+    ],
+    3 => [
+        'type' => 'LineStyle',
+        'color' => '000000FF',
+        'width' => '3'
+    ]
+]);
