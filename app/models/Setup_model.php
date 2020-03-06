@@ -44,13 +44,22 @@ class Setup_model extends Database
         return Functions::getDataSession('thead');
     }
 
-    public function getSetup()
+    public function getSetup(array $cond = [])
     {
         $params = [];
         $search = Functions::getSearch();
-        if (!empty($search['search'])) $params['filter'] = "tag LIKE '%{$search['search']}%'";
+        $filter = [];
+        if (!empty($search['search'])) $filter[] = "tag LIKE '%{$search['search']}%'";
         if (isset($search['limit'])) $params['limit'] = $search['limit'];
         if (isset($search['offset'])) $params['offset'] = $search['offset'];
+
+        if (!empty($cond)) {
+            foreach ($cond as $value) {
+                $filter[] = $value;
+            }
+        }
+
+        $params['filter'] = implode(' AND ', $filter);
 
         $params['sort'] = "{$this->my_tables['setup']}.jenis ASC, {$this->my_tables['setup']}.kepemilikan ASC, {$this->my_tables['setup']}.perkerasan ASC, {$this->my_tables['setup']}.kondisi ASC";
 
