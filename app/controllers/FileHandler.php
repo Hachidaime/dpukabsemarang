@@ -86,7 +86,7 @@ class FileHandler
             $dir = [];
             foreach (explode("/", $filedir) as $folder) {
                 $dir[] = $folder;
-                $new_dir = implode("/", $dir);
+                $new_dir = UPLOAD_DIR . implode("/", $dir);
                 // echo $new_dir . "<br>";
                 // TODO: Membuat directory baru jika belum ada
                 self::createWritableFolder($new_dir);
@@ -118,7 +118,7 @@ class FileHandler
 
     public function createWritableFolder(string $folder)
     {
-        $folder = UPLOAD_DIR . $folder;
+        // $folder = $folder;
         // if ($folder != '.' && $folder != '/') {
         //     self::createWritableFolder(dirname($folder));
         // }
