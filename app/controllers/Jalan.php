@@ -100,6 +100,7 @@ class Jalan extends Controller
         $data['toolbar'][] = $this->dofetch('Component/Button', Functions::makeButton('button', 'genCoord', '<i class="fas fa-route"></i>&nbsp;Generate Koordinat', 'warning', 'btn-gen-coord', 250));
         $data['main'][] = $this->dofetch('Layout/Form', $data);
 
+        $data['data'] = Functions::defaultTableData();
         $data['thead'] = $this->my_model->getKoordinatThead();
         $data['search'] = 'false';
 
@@ -580,7 +581,6 @@ class Jalan extends Controller
     /**
      * * Start Detail Jalan
      */
-
     private function DetailJalanSearch($no_jalan)
     {
         return $this->my_model->getDetailJalan($no_jalan);
@@ -606,5 +606,56 @@ class Jalan extends Controller
         if (!empty($this->old_detail)) {
             $this->my_model->clearDetail($this->old_detail);
         }
+    }
+    /**
+     * * End Detail Jalan
+     */
+
+    /**
+     * * Start Generate Jalan
+     */
+    public function generate(string $param1 = null, string $param2 = null)
+    {
+        switch ($param1) {
+            case 'search':
+                $this->GenerateSearch();
+                break;
+            case 'add':
+                $this->GenerateAdd();
+                break;
+            case 'edit':
+                if (!isset($param2)) Header("Location: " . BASE_URL . "/StaticPage/Error404");
+                $this->GenerateEdit($param2);
+                break;
+            case 'submit':
+
+                break;
+            case 'remove':
+
+                break;
+            default:
+                $this->GenerateDefault();
+                break;
+        }
+    }
+
+    private function GenerateDefault()
+    {
+        Functions::setTitle("Generate Jalan");
+        $data = [];
+        $this->view('Layout/Default', $data);
+    }
+
+    private function GenerateSearch()
+    {
+        # code...
+    }
+
+    private function GenerateAdd()
+    {
+    }
+
+    private function GenerateEdit($param2)
+    {
     }
 }

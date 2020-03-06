@@ -204,3 +204,10 @@ function initTable() {
         // console.log(name, args)
     })
 }
+
+function deployDD1() {
+    let data = $table.bootstrapTable('getData');
+    $(data).each(function (i, r) {
+        console.log(r);
+    });
+}

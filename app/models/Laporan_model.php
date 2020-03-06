@@ -66,16 +66,24 @@ class Laporan_model extends Database
 
     public function getJalan()
     {
+        $my_table = $this->model('Jalan_model')->getTable();
 
-        $query = "SELECT no_jalan, nama_jalan, kepemilikan, panjang, lebar_rata
-            FROM {$this->model('Jalan_model')->getTable('jalan')}
-            ORDER BY kepemilikan ASC, no_jalan ASC
+        $query = "SELECT 
+                {$my_table['jalan']}.no_jalan,
+                {$my_table['jalan']}.nama_jalan,
+                {$my_table['jalan']}.kepemilikan, 
+                {$my_table['jalan']}.panjang,
+                {$my_table['jalan']}.lebar_rata,
+                {$my_table['detail']}.perkerasan,
+                {$my_table['detail']}.no_detail,
+                {$my_table['detail']}.kondisi,
+                {$my_table['detail']}.koordinat
+            FROM {$my_table['jalan']}
+            RIGHT JOIN {$my_table['detail']} ON {$my_table['jalan']}.no_jalan = {$my_table['detail']}.no_jalan
+            ORDER BY {$my_table['jalan']}.kepemilikan ASC, {$my_table['jalan']}.no_jalan ASC
         ";
 
-        // echo $query;
-
         $this->execute($query);
-        // var_dump($this->db);
         return $this->multiarray();
     }
 

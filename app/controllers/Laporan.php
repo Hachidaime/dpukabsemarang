@@ -34,22 +34,47 @@ class Laporan extends Controller
     private function Dd1Search()
     {
         list($list, $count) = $this->my_model->getJalan();
-        $total = $this->my_model->totalJalan();
+        // $total = $this->my_model->totalJalan();
 
         // TODO: Load Kepemilikan Options
         $kepemilikan_opt = $this->options('kepemilikan_opt');
 
         // TODO: Prepare data to load on template
-        $rows = [];
+        $data = [];
         foreach ($list as $idx => $row) {
-            $row['kepemilikan'] = $kepemilikan_opt[$row['kepemilikan']];
+            $row['kepemilikan_text'] = $kepemilikan_opt[$row['kepemilikan']];
             $row['panjang_km'] = number_format($row['panjang'] / 1000, 2);
-            $row['row'] = Functions::getSearch()['offset'] + $idx + 1;
-            array_push($rows, $row);
+            $row['list'][] =  $row['koordinat'];
+            $rows['no_jalan'] = $row['no_jalan'];
+            $rows['nama_jalan'] = $row['nama_jalan'];
+            $rows['kepemilikan_text'] = $row['kepemilikan_text'];
+            $rows['panjang_km'] = $row['panjang_km'];
+            $rows['lebar_rata'] = $row['lebar_rata'];
+            if ($row['perkerasan'] > 0) {
+                $rows['perkerasan'][$row['perkerasan']][] = json_decode($row['koordinat'], true);
+            } else {
+                $rows['perkerasan'] = [];
+            }
+            if ($row['kondisi'] > 0) {
+                $rows['kondisi'][$row['kondisi']][] = json_decode($row['koordinat'], true);
+            } else {
+                $rows['kondisi'] = [];
+            }
+            $data[$row['no_jalan']] = $rows;
+            // var_dump($koordinat);
         }
 
+        $n = 0;
+        foreach ($data as $no_jalan => $row) {
+            $row['row'] = $n + 1;
+            $data[$n] = $row;
+            unset($data[$no_jalan]);
+            $n++;
+        }
+
+        $count = count($data);
         // TODO: Echoing data as JSON
-        Functions::setDataTable($rows, $count, $total);
+        Functions::setDataTable($data, $count, $count);
         exit;
     }
 }
