@@ -687,7 +687,7 @@ class Jalan extends Controller
     {
         Functions::setTitle("Add Generate Data Jalan");
 
-        $detail['name'] = date('Ymdhis');
+        $detail['name'] = date('YmdHis');
         $detail['name_text'] = $detail['name'];
         $data['detail'] = $detail;
 
