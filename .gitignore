@@ -5,6 +5,7 @@ app/libs/adodb5/
 data/
 upload/
 .vscode/
+graph
 *.sql
 *.rar
 *.zip
