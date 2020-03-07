@@ -48,17 +48,17 @@ define('MAP_SHOWN_CONTROLLER', ['Gis', 'Jalan', 'DataJalan', 'Laporan']);
 define('DEFAULT_LINESTYLE', [
     1 => [
         'type' => 'LineStyle',
-        'color' => '000000FF',
+        'color' => 'FF000000',
         'width' => '5'
     ],
     2 => [
         'type' => 'LineStyle',
-        'color' => '000000FF',
+        'color' => 'FF000000',
         'width' => '4'
     ],
     3 => [
         'type' => 'LineStyle',
-        'color' => '000000FF',
+        'color' => 'FF000000',
         'width' => '3'
     ]
 ]);
