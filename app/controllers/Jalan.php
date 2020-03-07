@@ -760,7 +760,7 @@ class Jalan extends Controller
             $tag = "Edit";
         } else { // ! Id Data not exist
             $this->GenerateXML();
-            // exit;
+            exit;
             // TODO: Proses add Data
             $result = $this->my_model->createData();
             $tag = "Add";
@@ -815,7 +815,9 @@ class Jalan extends Controller
     {
         $cond[] = "jenis = 1";
         list($setup_jalan,) = $this->model('Setup_model')->getSetup($cond);
+        $list = $this->my_model->getAllDataJalan();
 
+        // ? Style Default
         $n = 1;
         foreach (DEFAULT_LINESTYLE as $idx => $row) {
             $id = "linestyle{$n}";
@@ -831,8 +833,7 @@ class Jalan extends Controller
 
         $jln_plain['title'] = 'JlnPlain.xml';
         $jln_plain['style'] = $style;
-
-        $list = $this->my_model->getAllDataJalan();
+        $jalan = [];
         foreach ($list['jalan'] as $idx => $row) {
             $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
             unset($row['koordinat_final']);
@@ -844,16 +845,54 @@ class Jalan extends Controller
 
         Functions::saveXML($jln_plain);
 
+        // ? Style from Setup
         foreach ($setup_jalan as $idx => $row) {
             $id = "linestyle{$n}";
             $style[$n] = [
                 'id' => $id,
                 'type' => 'LineStyle',
-                'color' => dechex(round($row['opacity'] * 255 / 100)) . $row['warna'],
+                'color' => strtoupper(dechex(round($row['opacity'] * 255 / 100)) . str_replace('#', '', $row['warna'])),
                 'width' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
             ];
             $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']] = "#{$id}";
             $n++;
         }
+
+        // print "<pre>";
+        // print_r($list['detail']);
+        // print "</pre>";
+        $jln_complete['title'] = 'JlnComplete.xml';
+        $jln_complete['style'] = $style;
+
+        $jln_perkerasan['title'] = 'JlnPerkerasan.xml';
+        $jln_perkerasan['style'] = $style;
+
+        $jln_kondisi['title'] = 'JlnKondisi.xml';
+        $jln_kondisi['style'] = $style;
+
+        $complete = [];
+        foreach ($list['detail'] as $idx => $row) {
+            $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
+            unset($row['koordinat']);
+            $row['koordinat'] = $koordinat;
+
+            $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
+            $complete[$idx] = $row;
+
+            $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][0];
+            $perkerasan[$idx] = $row;
+
+            $row['style'] = $getStyle[$row['kepemilikan']][0][$row['kondisi']];
+            $kondisi[$idx] = $row;
+        }
+
+        $jln_complete['line'] = $complete;
+        Functions::saveXML($jln_complete);
+
+        $jln_perkerasan['line'] = $perkerasan;
+        Functions::saveXML($jln_perkerasan);
+
+        $jln_kondisi['line'] = $kondisi;
+        Functions::saveXML($jln_kondisi);
     }
 }
