@@ -162,9 +162,44 @@ class Data_model extends Database
 
     public function getAllDataJalan()
     {
+        $jalan_model = $this->model('Jalan_model');
+        $jalan_table = $jalan_model->getTable('jalan');
+        $koordinat_table = $jalan_model->getTable('koordinat');
+        $detail_table = $jalan_model->getTable('detail');
+
         $data = [];
 
-        $jalan_model = $this->model('Jalan_model');
+        $select = [
+            "{$jalan_table}.no_jalan",
+            "{$jalan_table}.nama_jalan",
+            "{$jalan_table}.kepemilikan",
+            "{$jalan_table}.panjang",
+            "{$jalan_table}.lebar_rata",
+            "{$koordinat_table}.koordinat_final AS koordinat"
+        ];
+        $params['select'] = implode(", ", $select);
+
+        $join = [
+            "LEFT JOIN {$koordinat_table} ON {$koordinat_table}.no_jalan = {$jalan_table}.no_jalan"
+        ];
+        $params['join'] = implode(" ", $join);
+
+        $sort = [
+            "{$jalan_table}.kepemilikan ASC",
+            "{$jalan_table}.no_jalan ASC"
+        ];
+        $params['sort'] = implode(", ", $sort);
+
+        $filter = [
+            "{$jalan_table}.nama_jalan NOT LIKE '%test%'"
+        ];
+        $params['filter'] = implode(' ', $filter);
+
+        $query = $this->getSelectQuery($jalan_table, $params);
+        $this->execute($query);
+        // var_dump($query);
+        // var_dump($this->db);
+        list($data['jalan'],) = $this->multiarray();
         return $data;
     }
 }

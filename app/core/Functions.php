@@ -413,4 +413,79 @@ class Functions
         // var_dump($data);
         return self::makeTableData($data);
     }
+
+    public function createKML($data, &$dom)
+    {
+        // Creates the root KML element and appends it to the root document.
+        $node = $dom->createElementNS('http://earth.google.com/kml/2.1', 'kml');
+        $parNode = $dom->appendChild($node);
+
+        // Creates a KML Document element and append it to the KML element.
+        $dnode = $dom->createElement('Document');
+        $docNode = $parNode->appendChild($dnode);
+
+        // Create style elements
+        if ($data['style']) {
+            foreach ($data['style'] as $idx => $row) {
+                $restStyleNode = $dom->createElement('Style');
+                $restStyleNode->setAttribute('id', $row['id']);
+                switch ($row['type']) {
+                    case 'LineStyle':
+                        $restLinestyleNode = $dom->createElement('LineStyle');
+                        $restColor = $dom->createElement('color', $row['color']);
+                        $restWidth = $dom->createElement('width', $row['width']);
+                        $restLinestyleNode->appendChild($restColor);
+                        $restLinestyleNode->appendChild($restWidth);
+                        $restStyleNode->appendChild($restLinestyleNode);
+                        break;
+                }
+                $docNode->appendChild($restStyleNode);
+            }
+        }
+
+        if ($data['line']) {
+            foreach ($data['line'] as $idx => $row) {
+                // Creates a Placemark and append it to the Document.
+                $node = $dom->createElement('Placemark');
+                $placeNode = $docNode->appendChild($node);
+                // Creates an id attribute and assign it the value of id column.
+                // $placeNode->setAttribute('id', 'placemark' . $row['id']);
+
+                // Create name, and description elements and assigns them the values of the name and address columns from the results.
+                $nameNode = $dom->createElement('name', htmlentities($row['nama_jalan']));
+                $placeNode->appendChild($nameNode);
+                $descNode = $dom->createElement('description', "testing");
+                $placeNode->appendChild($descNode);
+                $styleUrl = $dom->createElement('styleUrl', "{$row['style']}");
+                $placeNode->appendChild($styleUrl);
+
+                // Creates a LineString element.
+                $lineStringNode = $dom->createElement('LineString');
+                $placeNode->appendChild($lineStringNode);
+
+                // Creates a coordinates element and gives it the value of the lng and lat columns from the results.
+                $coorNode = $dom->createElement('coordinates', $row['koordinat']);
+                $lineStringNode->appendChild($coorNode);
+            }
+        }
+    }
+
+    public function saveXML($data)
+    {
+        // Creates the Document.
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        self::createKML($data, $dom);
+
+        $filedir = DOC_ROOT . "data/{$_POST['name']}";
+        FileHandler::createWritableFolder($filedir);
+        // $dom->saveXML();
+        $dom->save("{$filedir}/{$data['title']}");
+    }
+
+    public function makeMappoint(array $point)
+    {
+        $point = array_reverse($point);
+        array_push($point, 0);
+        return implode(",", $point);
+    }
 }

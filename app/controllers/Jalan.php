@@ -760,7 +760,7 @@ class Jalan extends Controller
             $tag = "Edit";
         } else { // ! Id Data not exist
             $this->GenerateXML();
-            exit;
+            // exit;
             // TODO: Proses add Data
             $result = $this->my_model->createData();
             $tag = "Add";
@@ -813,10 +813,10 @@ class Jalan extends Controller
 
     public function GenerateXML()
     {
-        $n = 1;
         $cond[] = "jenis = 1";
         list($setup_jalan,) = $this->model('Setup_model')->getSetup($cond);
 
+        $n = 1;
         foreach (DEFAULT_LINESTYLE as $idx => $row) {
             $id = "linestyle{$n}";
             $style[$n] = [
@@ -829,18 +829,31 @@ class Jalan extends Controller
             $n += 1;
         }
 
+        $jln_plain['title'] = 'JlnPlain.xml';
+        $jln_plain['style'] = $style;
+
+        $list = $this->my_model->getAllDataJalan();
+        foreach ($list['jalan'] as $idx => $row) {
+            $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
+            unset($row['koordinat_final']);
+            $row['koordinat'] = $koordinat;
+            $row['style'] = $getStyle[$row['kepemilikan']][0][0];
+            $jalan[$idx] = $row;
+        }
+        $jln_plain['line'] = $jalan;
+
+        Functions::saveXML($jln_plain);
+
         foreach ($setup_jalan as $idx => $row) {
             $id = "linestyle{$n}";
             $style[$n] = [
                 'id' => $id,
                 'type' => 'LineStyle',
-                'color' => $row['warna'] . dechex(round($row['opacity'] * 255 / 100)),
+                'color' => dechex(round($row['opacity'] * 255 / 100)) . $row['warna'],
                 'width' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
             ];
             $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']] = "#{$id}";
             $n++;
         }
-        // var_dump($style);
-        var_dump($getStyle);
     }
 }
