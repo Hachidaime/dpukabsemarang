@@ -482,7 +482,7 @@ class Functions
         $dom->save("{$filedir}/{$data['title']}");
     }
 
-    public function makeMappoint(array $point)
+    public function makeMapPoint(array $point)
     {
         $point = array_reverse($point);
         array_push($point, 0);
