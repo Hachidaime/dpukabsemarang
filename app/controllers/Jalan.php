@@ -839,7 +839,7 @@ class Jalan extends Controller
             unset($row['koordinat_final']);
             $row['koordinat'] = $koordinat;
             $row['style'] = $getStyle[$row['kepemilikan']][0][0];
-            $jalan[$idx] = $row;
+            $jalan[] = $row;
         }
         $jln_plain['line'] = $jalan;
 
@@ -876,23 +876,29 @@ class Jalan extends Controller
             unset($row['koordinat']);
             $row['koordinat'] = $koordinat;
 
-            $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
-            $complete[$idx] = $row;
+            if ($row['perkerasan'] > 0 || $row['kondisi'] > 0) {
+                $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
+                $complete[] = $row;
+            }
 
-            $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][0];
-            $perkerasan[$idx] = $row;
+            if ($row['perkerasan'] > 0) {
+                $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][0];
+                $perkerasan[] = $row;
+            }
 
-            $row['style'] = $getStyle[$row['kepemilikan']][0][$row['kondisi']];
-            $kondisi[$idx] = $row;
+            if ($row['kondisi'] > 0) {
+                $row['style'] = $getStyle[$row['kepemilikan']][0][$row['kondisi']];
+                $kondisi[] = $row;
+            }
         }
 
-        $jln_complete['line'] = $complete;
+        $jln_complete['line'] = array_merge($jalan, $complete);
         Functions::saveXML($jln_complete);
 
-        $jln_perkerasan['line'] = $perkerasan;
+        $jln_perkerasan['line'] = array_merge($jalan, $perkerasan);
         Functions::saveXML($jln_perkerasan);
 
-        $jln_kondisi['line'] = $kondisi;
+        $jln_kondisi['line'] = array_merge($jalan, $kondisi);
         Functions::saveXML($jln_kondisi);
     }
 }
