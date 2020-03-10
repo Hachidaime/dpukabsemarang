@@ -894,7 +894,7 @@ class Jalan extends Controller
 
             if ($row['segment'] != $list['detail'][$idx - 1]['segment']) {
                 $row['style'] = $iconStyle[1];
-                $row['koordinat'] = "{$latitude},{$longitude},0";
+                $row['koordinat'] = "{$longitude},{$latitude},0";
                 $segment[$i] = $row;
                 $i++;
             }

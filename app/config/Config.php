@@ -48,7 +48,7 @@ define('MAP_SHOWN_CONTROLLER', ['Gis', 'Jalan', 'DataJalan', 'Laporan']);
 define('DEFAULT_ICONSTYLE', [
     1 => [
         'type' => 'IconStyle',
-        'href' => 'http://maps.google.com/mapfiles/kml/pal2/mm_20_red.png'
+        'href' => 'http://maps.google.com/mapfiles/ms/micons/red.png'
     ]
 ]);
 

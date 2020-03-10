@@ -478,10 +478,31 @@ class Functions
             }
         }
 
-        // if ($data['segment']) {
-        //     foreach ($data['segment'] as $idx => $row) {
-        //     }
-        // }
+        if ($data['segment']) {
+            foreach ($data['segment'] as $idx => $row) {
+                // Creates a Placemark and append it to the Document.
+                $node = $dom->createElement('Placemark');
+                $placeNode = $docNode->appendChild($node);
+                // Creates an id attribute and assign it the value of id column.
+                // $placeNode->setAttribute('id', 'placemark' . $row['id']);
+
+                // Create name, and description elements and assigns them the values of the name and address columns from the results.
+                $nameNode = $dom->createElement('name', htmlentities($row['name_jalan']));
+                $placeNode->appendChild($nameNode);
+                $descNode = $dom->createElement('description', "testing");
+                $placeNode->appendChild($descNode);
+                $styleUrl = $dom->createElement('styleUrl', "{$row['style']}");
+                $placeNode->appendChild($styleUrl);
+
+                // Creates a Point element.
+                $pointNode = $dom->createElement('Point');
+                $placeNode->appendChild($pointNode);
+
+                // Creates a coordinates element and gives it the value of the lng and lat columns from the results.
+                $coorNode = $dom->createElement('coordinates', $row['koordinat']);
+                $pointNode->appendChild($coorNode);
+            }
+        }
     }
 
     public function saveXML($data)
