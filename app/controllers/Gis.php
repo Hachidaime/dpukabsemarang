@@ -35,7 +35,7 @@ class Gis extends Controller
         $data['form'] = $this->my_model->getGisForm();
         $data['mini'] = true;
         $data['searchform'] = $this->dofetch('Layout/Form', $data);
-        $data['searchbtn'][] = $this->dofetch('Component/Button', Functions::makeButton("button", "search-gis", "Cari", "success", "btn-search-gis"));
+        // $data['searchbtn'][] = $this->dofetch('Component/Button', Functions::makeButton("button", "search-gis", "Cari", "success", "btn-search-gis"));
 
         $this->view('Gis/index', $data);
     }
