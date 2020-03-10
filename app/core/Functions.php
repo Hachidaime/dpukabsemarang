@@ -429,6 +429,7 @@ class Functions
             foreach ($data['style'] as $idx => $row) {
                 $restStyleNode = $dom->createElement('Style');
                 $restStyleNode->setAttribute('id', $row['id']);
+
                 switch ($row['type']) {
                     case 'LineStyle':
                         $restLinestyleNode = $dom->createElement('LineStyle');
@@ -437,6 +438,14 @@ class Functions
                         $restLinestyleNode->appendChild($restColor);
                         $restLinestyleNode->appendChild($restWidth);
                         $restStyleNode->appendChild($restLinestyleNode);
+                        break;
+                    case 'IconStyle':
+                        $restIconstyleNode = $dom->createElement('IconStyle');
+                        $restIconNode = $dom->createElement('Icon');
+                        $restHref = $dom->createElement('href', $row['href']);
+                        $restIconNode->appendChild($restHref);
+                        $restIconstyleNode->appendChild($restIconNode);
+                        $restStyleNode->appendChild($restIconstyleNode);
                         break;
                 }
                 $docNode->appendChild($restStyleNode);
@@ -468,6 +477,11 @@ class Functions
                 $lineStringNode->appendChild($coorNode);
             }
         }
+
+        // if ($data['segment']) {
+        //     foreach ($data['segment'] as $idx => $row) {
+        //     }
+        // }
     }
 
     public function saveXML($data)

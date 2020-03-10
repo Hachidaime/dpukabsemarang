@@ -45,6 +45,13 @@ define('DEFAULT_TABLE_DATA', [
 
 define('MAP_SHOWN_CONTROLLER', ['Gis', 'Jalan', 'DataJalan', 'Laporan']);
 
+define('DEFAULT_ICONSTYLE', [
+    1 => [
+        'type' => 'IconStyle',
+        'href' => 'http://maps.google.com/mapfiles/kml/pal2/mm_20_red.png'
+    ]
+]);
+
 define('DEFAULT_LINESTYLE', [
     1 => [
         'type' => 'LineStyle',

@@ -818,10 +818,21 @@ class Jalan extends Controller
         $list = $this->my_model->getAllDataJalan();
 
         // ? Style Default
+        $m = 1;
+        foreach (DEFAULT_ICONSTYLE as $idx => $row) {
+            $id = "iconstyle{$m}";
+            $style[] = [
+                'id' => $id,
+                'type' => $row['type'],
+                'href' => $row['href']
+            ];
+            $iconStyle[$idx] = "#{$id}";
+        }
+
         $n = 1;
         foreach (DEFAULT_LINESTYLE as $idx => $row) {
             $id = "linestyle{$n}";
-            $style[$n] = [
+            $style[] = [
                 'id' => $id,
                 'type' => $row['type'],
                 'color' => $row['color'],
@@ -842,13 +853,10 @@ class Jalan extends Controller
             $jalan[] = $row;
         }
 
-        $jln_plain['line'] = $jalan;
-        Functions::saveXML($jln_plain);
-
         // ? Style from Setup
         foreach ($setup_jalan as $idx => $row) {
             $id = "linestyle{$n}";
-            $style[$n] = [
+            $style[] = [
                 'id' => $id,
                 'type' => 'LineStyle',
                 'color' => strtoupper(dechex(round($row['opacity'] * 255 / 100)) . str_replace('#', '', $row['warna'])),
@@ -885,6 +893,7 @@ class Jalan extends Controller
             unset($row['longitude']);
 
             if ($row['segment'] != $list['detail'][$idx - 1]['segment']) {
+                $row['style'] = $iconStyle[1];
                 $row['koordinat'] = "{$latitude},{$longitude},0";
                 $segment[$i] = $row;
                 $i++;
@@ -943,22 +952,21 @@ class Jalan extends Controller
             }
         }
 
-        var_dump($segment);
-
+        // var_dump($style);
         $jln_plain['line'] = $jalan;
         $jln_plain['segment'] = $segment;
-        // Functions::saveXML($jln_plain);
+        Functions::saveXML($jln_plain);
 
         $jln_complete['line'] = array_merge($jalan, $complete);
         $jln_complete['segment'] = $segment;
-        // Functions::saveXML($jln_complete);
+        Functions::saveXML($jln_complete);
 
         $jln_perkerasan['line'] = array_merge($jalan, $perkerasan);
         $jln_perkerasan['segment'] = $segment;
-        // Functions::saveXML($jln_perkerasan);
+        Functions::saveXML($jln_perkerasan);
 
         $jln_kondisi['line'] = array_merge($jalan, $kondisi);
         $jln_kondisi['segment'] = $segment;
-        // Functions::saveXML($jln_kondisi);
+        Functions::saveXML($jln_kondisi);
     }
 }
