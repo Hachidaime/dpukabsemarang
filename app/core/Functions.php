@@ -487,7 +487,7 @@ class Functions
                 // $placeNode->setAttribute('id', 'placemark' . $row['id']);
 
                 // Create name, and description elements and assigns them the values of the name and address columns from the results.
-                $nameNode = $dom->createElement('name', htmlentities($row['name_jalan']));
+                $nameNode = $dom->createElement('name', htmlentities($row['nama_jalan']));
                 $placeNode->appendChild($nameNode);
                 $descNode = $dom->createElement('description', "testing");
                 $placeNode->appendChild($descNode);
