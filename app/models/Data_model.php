@@ -166,6 +166,7 @@ class Data_model extends Database
         $jalan_table = $jalan_model->getTable('jalan');
         $koordinat_table = $jalan_model->getTable('koordinat');
         $detail_table = $jalan_model->getTable('detail');
+        $foto_table = $jalan_model->getTable('foto');
 
         $data = [];
 
@@ -212,11 +213,14 @@ class Data_model extends Database
             "{$detail_table}.kondisi",
             "{$detail_table}.segment",
             "{$detail_table}.koordinat",
+            "{$foto_table}.row_id as foto_row_id",
+            "{$foto_table}.foto"
         ];
         $params['select'] = implode(", ", $select);
 
         $join = [
-            "LEFT JOIN {$jalan_table} ON {$jalan_table}.no_jalan = {$detail_table}.no_jalan"
+            "LEFT JOIN {$jalan_table} ON {$jalan_table}.no_jalan = {$detail_table}.no_jalan",
+            "LEFT JOIN {$foto_table} ON ({$foto_table}.latitude = {$detail_table}.latitude AND {$foto_table}.longitude = {$detail_table}.longitude)"
         ];
         $params['join'] = implode(" ", $join);
 

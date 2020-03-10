@@ -841,8 +841,8 @@ class Jalan extends Controller
             $row['style'] = $getStyle[$row['kepemilikan']][0][0];
             $jalan[] = $row;
         }
-        $jln_plain['line'] = $jalan;
 
+        $jln_plain['line'] = $jalan;
         Functions::saveXML($jln_plain);
 
         // ? Style from Setup
@@ -858,9 +858,6 @@ class Jalan extends Controller
             $n++;
         }
 
-        // print "<pre>";
-        // print_r($list['detail']);
-        // print "</pre>";
         $jln_complete['title'] = 'JlnComplete.xml';
         $jln_complete['style'] = $style;
 
@@ -871,26 +868,67 @@ class Jalan extends Controller
         $jln_kondisi['style'] = $style;
 
         $complete = [];
+        $perkerasan = [];
+        $kondisi = [];
+        $j = 0;
+        $k = 0;
+        $l = 0;
         foreach ($list['detail'] as $idx => $row) {
             $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
             unset($row['koordinat']);
             $row['koordinat'] = $koordinat;
 
             if ($row['perkerasan'] > 0 || $row['kondisi'] > 0) {
-                $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
-                $complete[] = $row;
+                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $list['detail'][$idx - 1]['no_detail'])) {
+                    if (($row['perkerasan'] == $list['detail'][$idx - 1]['perkerasan']) && ($row['kondisi'] == $list['detail'][$idx - 1]['kondisi'])) {
+                        $complete[$j - 1]['koordinat'] .= $koordinat;
+                    } else {
+                        $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
+                        $complete[$j] = $row;
+                        $j++;
+                    }
+                } else {
+                    $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
+                    $complete[$j] = $row;
+                    $j++;
+                }
             }
 
             if ($row['perkerasan'] > 0) {
-                $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][0];
-                $perkerasan[] = $row;
+                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $list['detail'][$idx - 1]['no_detail'])) {
+                    if ($row['perkerasan'] == $list['detail'][$idx - 1]['perkerasan']) {
+                        $perkerasan[$k - 1]['koordinat'] .= $koordinat;
+                    } else {
+                        $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][0];
+                        $perkerasan[$k] = $row;
+                        $k++;
+                    }
+                } else {
+                    $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][0];
+                    $perkerasan[$k] = $row;
+                    $k++;
+                }
             }
 
             if ($row['kondisi'] > 0) {
-                $row['style'] = $getStyle[$row['kepemilikan']][0][$row['kondisi']];
-                $kondisi[] = $row;
+                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $list['detail'][$idx - 1]['no_detail'])) {
+                    if ($row['kondisi'] == $list['detail'][$idx - 1]['kondisi']) {
+                        $kondisi[$l - 1]['koordinat'] .= $koordinat;
+                    } else {
+                        $row['style'] = $getStyle[$row['kepemilikan']][0][$row['kondisi']];
+                        $kondisi[$l] = $row;
+                        $l++;
+                    }
+                } else {
+                    $row['style'] = $getStyle[$row['kepemilikan']][0][$row['kondisi']];
+                    $kondisi[$l] = $row;
+                    $l++;
+                }
             }
         }
+
+        $jln_plain['line'] = $jalan;
+        Functions::saveXML($jln_plain);
 
         $jln_complete['line'] = array_merge($jalan, $complete);
         Functions::saveXML($jln_complete);
