@@ -213,7 +213,7 @@ class Data_model extends Database
             "{$detail_table}.kondisi",
             "{$detail_table}.segment",
             "{$detail_table}.koordinat",
-            "{$foto_table}.row_id as foto_row_id",
+            "{$foto_table}.row_id",
             "{$foto_table}.foto"
         ];
         $params['select'] = implode(", ", $select);

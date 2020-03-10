@@ -867,15 +867,31 @@ class Jalan extends Controller
         $jln_kondisi['title'] = 'JlnKondisi.xml';
         $jln_kondisi['style'] = $style;
 
+        $segment = [];
         $complete = [];
         $perkerasan = [];
         $kondisi = [];
+        $i = 0;
         $j = 0;
         $k = 0;
         $l = 0;
         foreach ($list['detail'] as $idx => $row) {
             $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
+            $latitude = $row['latitude'];
+            $longitude = $row['longitude'];
+
             unset($row['koordinat']);
+            unset($row['latitude']);
+            unset($row['longitude']);
+
+            if ($row['segment'] != $list['detail'][$idx - 1]['segment']) {
+                $row['koordinat'] = "{$latitude},{$longitude},0";
+                $segment[$i] = $row;
+                $i++;
+            }
+            unset($row['row_id']);
+            unset($row['foto']);
+
             $row['koordinat'] = $koordinat;
 
             if ($row['perkerasan'] > 0 || $row['kondisi'] > 0) {
@@ -927,16 +943,22 @@ class Jalan extends Controller
             }
         }
 
+        var_dump($segment);
+
         $jln_plain['line'] = $jalan;
-        Functions::saveXML($jln_plain);
+        $jln_plain['segment'] = $segment;
+        // Functions::saveXML($jln_plain);
 
         $jln_complete['line'] = array_merge($jalan, $complete);
-        Functions::saveXML($jln_complete);
+        $jln_complete['segment'] = $segment;
+        // Functions::saveXML($jln_complete);
 
         $jln_perkerasan['line'] = array_merge($jalan, $perkerasan);
-        Functions::saveXML($jln_perkerasan);
+        $jln_perkerasan['segment'] = $segment;
+        // Functions::saveXML($jln_perkerasan);
 
         $jln_kondisi['line'] = array_merge($jalan, $kondisi);
-        Functions::saveXML($jln_kondisi);
+        $jln_kondisi['segment'] = $segment;
+        // Functions::saveXML($jln_kondisi);
     }
 }
