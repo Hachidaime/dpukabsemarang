@@ -1,6 +1,7 @@
 app/views_c/
 app/config/Local.php
 app/libs/smarty/
+app/libs/smartybu/
 app/libs/adodb5/
 data/
 upload/
