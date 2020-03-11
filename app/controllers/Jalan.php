@@ -954,19 +954,19 @@ class Jalan extends Controller
 
         // var_dump($style);
         $jln_plain['line'] = $jalan;
-        $jln_plain['segment'] = $segment;
         Functions::saveXML($jln_plain);
 
         $jln_complete['line'] = array_merge($jalan, $complete);
-        $jln_complete['segment'] = $segment;
         Functions::saveXML($jln_complete);
 
         $jln_perkerasan['line'] = array_merge($jalan, $perkerasan);
-        $jln_perkerasan['segment'] = $segment;
         Functions::saveXML($jln_perkerasan);
 
         $jln_kondisi['line'] = array_merge($jalan, $kondisi);
-        $jln_kondisi['segment'] = $segment;
         Functions::saveXML($jln_kondisi);
+
+        $jln_segment['title'] = "JlnSegment.json";
+        $jln_segment['content'] = $segment;
+        Functions::saveJSON($jln_segment);
     }
 }

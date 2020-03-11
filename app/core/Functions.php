@@ -523,4 +523,14 @@ class Functions
         array_push($point, 0);
         return implode(",", $point);
     }
+
+    public function saveJSON($data)
+    {
+        $filedir = DOC_ROOT . "data/{$_POST['name']}";
+        FileHandler::createWritableFolder($filedir);
+
+        $myfile = fopen("{$filedir}/{$data['title']}", "w") or die("Unable to open file!");
+        fwrite($myfile, json_encode($data['content']));
+        fclose($myfile);
+    }
 }
