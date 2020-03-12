@@ -27,7 +27,7 @@ class App
         // TODO: Check Admin & User Session
         if (isset($_SESSION['admin']) && !isset($_SESSION['USER'])) { // ! Admin & User Session NOT found
             // TODO: Redirect to Login Page
-            if ($url[0] != 'Login') Header("Location: " . SERVER_BASE . "/Login");
+            if ($url[0] != 'Login') Header("Location: " . SERVER_BASE . "/Home");
         }
 
         // TODO: Check Controller from URL
