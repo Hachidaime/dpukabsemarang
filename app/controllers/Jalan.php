@@ -844,14 +844,7 @@ class Jalan extends Controller
 
         $jln_plain['title'] = 'JlnPlain.xml';
         $jln_plain['style'] = $style;
-        $jalan = [];
-        foreach ($list['jalan'] as $idx => $row) {
-            $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
-            unset($row['koordinat_final']);
-            $row['koordinat'] = $koordinat;
-            $row['style'] = $getStyle[$row['kepemilikan']][0][0];
-            $jalan[] = $row;
-        }
+        $jalan = Functions::getLineFromJalan($list['jalan'], $getStyle);
 
         // ? Style from Setup
         foreach ($setup_jalan as $idx => $row) {
@@ -875,82 +868,7 @@ class Jalan extends Controller
         $jln_kondisi['title'] = 'JlnKondisi.xml';
         $jln_kondisi['style'] = $style;
 
-        $segment = [];
-        $complete = [];
-        $perkerasan = [];
-        $kondisi = [];
-        $i = 0;
-        $j = 0;
-        $k = 0;
-        $l = 0;
-        foreach ($list['detail'] as $idx => $row) {
-            $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
-            $latitude = $row['latitude'];
-            $longitude = $row['longitude'];
-
-            unset($row['koordinat']);
-            unset($row['latitude']);
-            unset($row['longitude']);
-
-            if ($row['segment'] != $list['detail'][$idx - 1]['segment']) {
-                $row['style'] = $iconStyle[1];
-                $row['koordinat'] = "{$longitude},{$latitude},0";
-                $segment[$i] = $row;
-                $i++;
-            }
-            unset($row['row_id']);
-            unset($row['foto']);
-
-            $row['koordinat'] = $koordinat;
-
-            if ($row['perkerasan'] > 0 || $row['kondisi'] > 0) {
-                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $list['detail'][$idx - 1]['no_detail'])) {
-                    if (($row['perkerasan'] == $list['detail'][$idx - 1]['perkerasan']) && ($row['kondisi'] == $list['detail'][$idx - 1]['kondisi'])) {
-                        $complete[$j - 1]['koordinat'] .= $koordinat;
-                    } else {
-                        $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
-                        $complete[$j] = $row;
-                        $j++;
-                    }
-                } else {
-                    $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
-                    $complete[$j] = $row;
-                    $j++;
-                }
-            }
-
-            if ($row['perkerasan'] > 0) {
-                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $list['detail'][$idx - 1]['no_detail'])) {
-                    if ($row['perkerasan'] == $list['detail'][$idx - 1]['perkerasan']) {
-                        $perkerasan[$k - 1]['koordinat'] .= $koordinat;
-                    } else {
-                        $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][0];
-                        $perkerasan[$k] = $row;
-                        $k++;
-                    }
-                } else {
-                    $row['style'] = $getStyle[$row['kepemilikan']][$row['perkerasan']][0];
-                    $perkerasan[$k] = $row;
-                    $k++;
-                }
-            }
-
-            if ($row['kondisi'] > 0) {
-                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $list['detail'][$idx - 1]['no_detail'])) {
-                    if ($row['kondisi'] == $list['detail'][$idx - 1]['kondisi']) {
-                        $kondisi[$l - 1]['koordinat'] .= $koordinat;
-                    } else {
-                        $row['style'] = $getStyle[$row['kepemilikan']][0][$row['kondisi']];
-                        $kondisi[$l] = $row;
-                        $l++;
-                    }
-                } else {
-                    $row['style'] = $getStyle[$row['kepemilikan']][0][$row['kondisi']];
-                    $kondisi[$l] = $row;
-                    $l++;
-                }
-            }
-        }
+        list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $getStyle, $iconStyle);
 
         // var_dump($style);
         $jln_plain['line'] = $jalan;

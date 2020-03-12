@@ -545,4 +545,107 @@ class Functions
         }
         return $params;
     }
+
+    public function getLineFromJalan(array $data, array $style, string $kepemilikan = null)
+    {
+        foreach ($data as $row) {
+            if (!is_null($kepemilikan)) {
+                if ($row['kepemilikan'] != $kepemilikan) continue;
+            }
+            $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
+            unset($row['koordinat_final']);
+            $row['koordinat'] = $koordinat;
+            $row['style'] = $style[$row['kepemilikan']][0][0];
+            $line[] = $row;
+        }
+
+        return $line;
+    }
+
+    public function getLineFromDetail(array $data, array $lineStyle, array $iconStyle, string $kepemilikan = null)
+    {
+        $segment = [];
+        $complete = [];
+        $perkerasan = [];
+        $kondisi = [];
+        $i = 0;
+        $j = 0;
+        $k = 0;
+        $l = 0;
+
+        foreach ($data as $idx => $row) {
+            if (!is_null($kepemilikan)) {
+                if ($row['kepemilikan'] != $kepemilikan) continue;
+            }
+
+            $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
+            $latitude = $row['latitude'];
+            $longitude = $row['longitude'];
+
+            unset($row['koordinat']);
+            unset($row['latitude']);
+            unset($row['longitude']);
+
+            if ($row['segment'] != $data[$idx - 1]['segment']) {
+                $row['style'] = $iconStyle[1];
+                $row['koordinat'] = "{$longitude},{$latitude},0";
+                $segment[$i] = $row;
+                $i++;
+            }
+            unset($row['row_id']);
+            unset($row['foto']);
+
+            $row['koordinat'] = $koordinat;
+
+            if ($row['perkerasan'] > 0 || $row['kondisi'] > 0) {
+                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
+                    if (($row['perkerasan'] == $data[$idx - 1]['perkerasan']) && ($row['kondisi'] == $data[$idx - 1]['kondisi'])) {
+                        $complete[$j - 1]['koordinat'] .= $koordinat;
+                    } else {
+                        $row['style'] = $lineStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
+                        $complete[$j] = $row;
+                        $j++;
+                    }
+                } else {
+                    $row['style'] = $lineStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
+                    $complete[$j] = $row;
+                    $j++;
+                }
+            }
+
+            if ($row['perkerasan'] > 0) {
+                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
+                    if ($row['perkerasan'] == $data[$idx - 1]['perkerasan']) {
+                        $perkerasan[$k - 1]['koordinat'] .= $koordinat;
+                    } else {
+                        $row['style'] = $lineStyle[$row['kepemilikan']][$row['perkerasan']][0];
+                        $perkerasan[$k] = $row;
+                        $k++;
+                    }
+                } else {
+                    $row['style'] = $lineStyle[$row['kepemilikan']][$row['perkerasan']][0];
+                    $perkerasan[$k] = $row;
+                    $k++;
+                }
+            }
+
+            if ($row['kondisi'] > 0) {
+                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
+                    if ($row['kondisi'] == $data[$idx - 1]['kondisi']) {
+                        $kondisi[$l - 1]['koordinat'] .= $koordinat;
+                    } else {
+                        $row['style'] = $lineStyle[$row['kepemilikan']][0][$row['kondisi']];
+                        $kondisi[$l] = $row;
+                        $l++;
+                    }
+                } else {
+                    $row['style'] = $lineStyle[$row['kepemilikan']][0][$row['kondisi']];
+                    $kondisi[$l] = $row;
+                    $l++;
+                }
+            }
+        }
+
+        return [$segment, $complete, $perkerasan, $kondisi];
+    }
 }
