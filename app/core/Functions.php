@@ -414,7 +414,7 @@ class Functions
         return self::makeTableData($data);
     }
 
-    public function createKML($data, &$dom)
+    public function createKML(&$dom, array $style = [], array $line = [], array $point = [])
     {
         // Creates the root KML element and appends it to the root document.
         $node = $dom->createElementNS('http://earth.google.com/kml/2.1', 'kml');
@@ -425,8 +425,8 @@ class Functions
         $docNode = $parNode->appendChild($dnode);
 
         // Create style elements
-        if ($data['style']) {
-            foreach ($data['style'] as $idx => $row) {
+        if ($style) {
+            foreach ($style as $idx => $row) {
                 $restStyleNode = $dom->createElement('Style');
                 $restStyleNode->setAttribute('id', $row['id']);
 
@@ -452,8 +452,8 @@ class Functions
             }
         }
 
-        if ($data['line']) {
-            foreach ($data['line'] as $idx => $row) {
+        if ($line) {
+            foreach ($line as $idx => $row) {
                 // Creates a Placemark and append it to the Document.
                 $node = $dom->createElement('Placemark');
                 $placeNode = $docNode->appendChild($node);
@@ -478,8 +478,8 @@ class Functions
             }
         }
 
-        if ($data['segment']) {
-            foreach ($data['segment'] as $idx => $row) {
+        if ($point) {
+            foreach ($point as $idx => $row) {
                 // Creates a Placemark and append it to the Document.
                 $node = $dom->createElement('Placemark');
                 $placeNode = $docNode->appendChild($node);
@@ -505,16 +505,16 @@ class Functions
         }
     }
 
-    public function saveXML($data)
+    public function saveXML(string $filename, array $style = [], array $line = [], array $point = [])
     {
         // Creates the Document.
         $dom = new DOMDocument('1.0', 'UTF-8');
-        self::createKML($data, $dom);
+        self::createKML($dom, $style, $line, $point);
 
         $filedir = DOC_ROOT . "data/{$_POST['name']}";
         FileHandler::createWritableFolder($filedir);
         // $dom->saveXML();
-        $dom->save("{$filedir}/{$data['title']}");
+        $dom->save("{$filedir}/{$filename}");
     }
 
     public function makeMapPoint(array $point)
@@ -524,13 +524,13 @@ class Functions
         return implode(",", $point);
     }
 
-    public function saveJSON($data)
+    public function saveJSON($filename, $content)
     {
         $filedir = DOC_ROOT . "data/{$_POST['name']}";
         FileHandler::createWritableFolder($filedir);
 
-        $myfile = fopen("{$filedir}/{$data['title']}", "w") or die("Unable to open file!");
-        fwrite($myfile, json_encode($data['content']));
+        $myfile = fopen("{$filedir}/{$filename}", "w") or die("Unable to open file!");
+        fwrite($myfile, json_encode($content));
         fclose($myfile);
     }
 
@@ -647,5 +647,49 @@ class Functions
         }
 
         return [$segment, $complete, $perkerasan, $kondisi];
+    }
+
+    public function getStyle(array $setup = [])
+    {
+        $m = 1;
+        foreach (DEFAULT_ICONSTYLE as $idx => $row) {
+            $id = "iconstyle{$m}";
+            $style[] = [
+                'id' => $id,
+                'type' => $row['type'],
+                'href' => $row['href']
+            ];
+            $iconStyle[$idx] = "#{$id}";
+        }
+
+        $n = 1;
+        foreach (DEFAULT_LINESTYLE as $idx => $row) {
+            $id = "linestyle{$n}";
+            $style[] = [
+                'id' => $id,
+                'type' => $row['type'],
+                'color' => $row['color'],
+                'width' => $row['width']
+            ];
+            $lineStyle[$idx][0][0] = "#{$id}";
+            $n += 1;
+        }
+
+        if (!is_null($setup)) {
+            // ? Style from Setup
+            foreach ($setup as $idx => $row) {
+                $id = "linestyle{$n}";
+                $style[] = [
+                    'id' => $id,
+                    'type' => 'LineStyle',
+                    'color' => strtoupper(dechex(round($row['opacity'] * 255 / 100)) . str_replace('#', '', $row['warna'])),
+                    'width' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
+                ];
+                $lineStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']] = "#{$id}";
+                $n++;
+            }
+        }
+
+        return [$style, $lineStyle, $iconStyle];
     }
 }

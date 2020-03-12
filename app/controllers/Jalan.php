@@ -817,74 +817,17 @@ class Jalan extends Controller
         list($setup_jalan,) = $this->model('Setup_model')->getSetup($cond);
         $list = $this->my_model->getAllDataJalan();
 
-        // ? Style Default
-        $m = 1;
-        foreach (DEFAULT_ICONSTYLE as $idx => $row) {
-            $id = "iconstyle{$m}";
-            $style[] = [
-                'id' => $id,
-                'type' => $row['type'],
-                'href' => $row['href']
-            ];
-            $iconStyle[$idx] = "#{$id}";
-        }
+        list($style, $lineStyle, $iconStyle) = Functions::getStyle();
+        $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle);
 
-        $n = 1;
-        foreach (DEFAULT_LINESTYLE as $idx => $row) {
-            $id = "linestyle{$n}";
-            $style[] = [
-                'id' => $id,
-                'type' => $row['type'],
-                'color' => $row['color'],
-                'width' => $row['width']
-            ];
-            $getStyle[$idx][0][0] = "#{$id}";
-            $n += 1;
-        }
+        Functions::saveXML('JlnPlain.xml', $style, $jalan);
 
-        $jln_plain['title'] = 'JlnPlain.xml';
-        $jln_plain['style'] = $style;
-        $jalan = Functions::getLineFromJalan($list['jalan'], $getStyle);
+        list($style, $lineStyle, $iconStyle) = Functions::getStyle($setup_jalan);
+        list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
 
-        // ? Style from Setup
-        foreach ($setup_jalan as $idx => $row) {
-            $id = "linestyle{$n}";
-            $style[] = [
-                'id' => $id,
-                'type' => 'LineStyle',
-                'color' => strtoupper(dechex(round($row['opacity'] * 255 / 100)) . str_replace('#', '', $row['warna'])),
-                'width' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
-            ];
-            $getStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']] = "#{$id}";
-            $n++;
-        }
-
-        $jln_complete['title'] = 'JlnComplete.xml';
-        $jln_complete['style'] = $style;
-
-        $jln_perkerasan['title'] = 'JlnPerkerasan.xml';
-        $jln_perkerasan['style'] = $style;
-
-        $jln_kondisi['title'] = 'JlnKondisi.xml';
-        $jln_kondisi['style'] = $style;
-
-        list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $getStyle, $iconStyle);
-
-        // var_dump($style);
-        $jln_plain['line'] = $jalan;
-        Functions::saveXML($jln_plain);
-
-        $jln_complete['line'] = array_merge($jalan, $complete);
-        Functions::saveXML($jln_complete);
-
-        $jln_perkerasan['line'] = array_merge($jalan, $perkerasan);
-        Functions::saveXML($jln_perkerasan);
-
-        $jln_kondisi['line'] = array_merge($jalan, $kondisi);
-        Functions::saveXML($jln_kondisi);
-
-        $jln_segment['title'] = "JlnSegment.json";
-        $jln_segment['content'] = $segment;
-        Functions::saveJSON($jln_segment);
+        Functions::saveXML('JlnComplete.xml', $style, array_merge($jalan, $complete));
+        Functions::saveXML('JlnPerkerasan.xml', $style, array_merge($jalan, $perkerasan));
+        Functions::saveXML('JlnKondisi.xml', $style, array_merge($jalan, $kondisi));
+        Functions::saveJSON('JlnSegment.json', $segment);
     }
 }
