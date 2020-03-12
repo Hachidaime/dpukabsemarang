@@ -533,4 +533,16 @@ class Functions
         fwrite($myfile, json_encode($data['content']));
         fclose($myfile);
     }
+
+    public function getParams(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (in_array($key, ['select', 'sort'])) {
+                $params[$key] = implode(", ", $value);
+            } else {
+                $params[$key] = implode(" ", $value);
+            }
+        }
+        return $params;
+    }
 }
