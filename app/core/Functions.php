@@ -551,7 +551,10 @@ class Functions
         foreach ($data as $row) {
             if (!is_null($kepemilikan)) {
                 if ($row['kepemilikan'] != $kepemilikan) continue;
+            } else {
+                if ($row['kepemilikan'] == 1) continue;
             }
+
             $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
             unset($row['koordinat_final']);
             $row['koordinat'] = $koordinat;
@@ -576,6 +579,8 @@ class Functions
         foreach ($data as $idx => $row) {
             if (!is_null($kepemilikan)) {
                 if ($row['kepemilikan'] != $kepemilikan) continue;
+            } else {
+                if ($row['kepemilikan'] == 1) continue;
             }
 
             $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
