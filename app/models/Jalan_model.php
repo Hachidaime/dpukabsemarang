@@ -225,8 +225,8 @@ class Jalan_model extends Database
             }
         }
 
-        $values = "no_jalan = ?, koordinat_awal = ?, koordinat_final = ?, update_dt = NOW(), login_id = ?, remote_ip = ?";
-        $bindVar = [$_POST['no_jalan'], json_encode($awal), json_encode($final), Auth::User('id'), $_SERVER['REMOTE_ADDR']];
+        $values = "no_jalan = ?, koordinat_awal = ?, koordinat_final = ?, jml_koordinat_awal = ?, jml_koordinat_final = ?, update_dt = NOW(), login_id = ?, remote_ip = ?";
+        $bindVar = [$_POST['no_jalan'], json_encode($awal), json_encode($final), count($awal), count($final), Auth::User('id'), $_SERVER['REMOTE_ADDR']];
 
         return [$bindVar, $values];
     }
@@ -247,8 +247,10 @@ class Jalan_model extends Database
         array_push($bindVar, $id);
 
         $query = "UPDATE {$this->my_tables['koordinat']} SET {$values} WHERE id = ?";
+        // echo $query;
 
         $this->execute($query, $bindVar);
+        // var_dump($this->db);
         return $this->affected_rows();
     }
 
