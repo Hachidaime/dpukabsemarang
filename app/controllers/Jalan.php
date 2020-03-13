@@ -818,16 +818,32 @@ class Jalan extends Controller
         $list = $this->my_model->getAllDataJalan();
 
         list($style, $lineStyle, $iconStyle) = Functions::getStyle();
-        $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle);
 
+        $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle);
         Functions::saveXML('JlnPlain.xml', $style, $jalan);
 
-        list($style, $lineStyle, $iconStyle) = Functions::getStyle($setup_jalan);
-        list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
+        $kepemilikan_opt = $this->options('kepemilikan_opt');
 
+        foreach ($kepemilikan_opt as $key => $value) {
+            $jln[$key] = Functions::getLineFromJalan($list['jalan'], $lineStyle, $key);
+            Functions::saveXML(preg_replace("/[^A-Za-z0-9]/", '', $value) . ".xml", $style, $jln[$key]);
+        }
+
+        list($style, $lineStyle, $iconStyle) = Functions::getStyle($setup_jalan);
+
+        list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
         Functions::saveXML('JlnComplete.xml', $style, array_merge($jalan, $complete));
         Functions::saveXML('JlnPerkerasan.xml', $style, array_merge($jalan, $perkerasan));
         Functions::saveXML('JlnKondisi.xml', $style, array_merge($jalan, $kondisi));
         Functions::saveJSON('JlnSegment.json', $segment);
+
+        foreach ($kepemilikan_opt as $key => $value) {
+            $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
+            list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle, $key);
+            Functions::saveXML("{$filename}Complete.xml", $style, array_merge($jln[$key], $complete));
+            Functions::saveXML("{$filename}Perkerasan.xml", $style, array_merge($jln[$key], $perkerasan));
+            Functions::saveXML("{$filename}Kondisi.xml", $style, array_merge($jln[$key], $kondisi));
+            Functions::saveJSON("{$filename}Segment.json", $segment);
+        }
     }
 }

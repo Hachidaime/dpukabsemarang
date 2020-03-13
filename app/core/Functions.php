@@ -414,7 +414,7 @@ class Functions
         return self::makeTableData($data);
     }
 
-    public function createKML(&$dom, array $style = [], array $line = [], array $point = [])
+    public function createKML(&$dom, array $style = [], $line = [], $point = [])
     {
         // Creates the root KML element and appends it to the root document.
         $node = $dom->createElementNS('http://earth.google.com/kml/2.1', 'kml');
@@ -505,7 +505,7 @@ class Functions
         }
     }
 
-    public function saveXML(string $filename, array $style = [], array $line = [], array $point = [])
+    public function saveXML(string $filename, array $style = [], $line = [], $point = [])
     {
         // Creates the Document.
         $dom = new DOMDocument('1.0', 'UTF-8');
