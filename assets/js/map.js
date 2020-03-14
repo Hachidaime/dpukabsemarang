@@ -395,6 +395,7 @@ let loadMap = () => {
         setTimeout(function () {
             if (gxml.polylines.length <= 0) {
                 map.setCenter({ lat: DEFAULT_LATITUDE, lng: DEFAULT_LONGITUDE });
+                makeAlert(JSON.parse('{"danger":["Data tidak ditemukan."]}'));
             }
             map.setZoom(10);
         }, 3000);
