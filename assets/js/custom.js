@@ -345,6 +345,10 @@ $(document).ready(function () {
         let params = searchGisForm.serialize();
     });
 
+    searchGisForm.find('input[type=checkbox]').change(function () {
+        loadMap();
+    });
+
 }).ajaxStart(function () {
     // TODO: Menampilkan loading spinner
     $('.loading').show();

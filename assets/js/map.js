@@ -353,34 +353,50 @@ let loadMap = () => {
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlNav);
 
     let kepemilikan = document.getElementById('kepemilikan').value;
-    // console.log(kepemilikan);
-    switch (kepemilikan) {
-        case '2':
-            kepemilikan = 'JalanKotaKabupaten';
-            break;
-        case '3':
-            kepemilikan = 'JalanPorosDesa';
-            break;
-        default:
-            kepemilikan = 'JalanSemua';
-            break;
-    }
-    // console.log(kepemilikan);
-    let map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.xml`;
-    // console.log(map_data);
-    gxml = new GeoXml("gxml", map, map_data, {
-        hilite: {
-            color: "#FFDD77",
-            opacity: 1,
-            textcolor: "#000000"
+    if (kepemilikan != 0) {
+        switch (kepemilikan) {
+            case '2':
+                kepemilikan = 'JalanKotaKabupaten';
+                break;
+            case '3':
+                kepemilikan = 'JalanPorosDesa';
+                break;
+            default:
+                kepemilikan = 'JalanSemua';
+                break;
         }
-    });
-    gxml.parse();
 
-    setTimeout(function () {
-        if (gxml.polylines.length <= 0) {
-            map.setCenter({ lat: DEFAULT_LATITUDE, lng: DEFAULT_LONGITUDE });
+        let map_type = '';
+        let perkerasan = document.getElementById('perkerasan').checked;
+        let kondisi = document.getElementById('kondisi').checked;
+
+        if (perkerasan && kondisi) {
+            map_type = 'Complete';
         }
-        map.setZoom(11);
-    }, 3000);
+        else {
+            if (perkerasan) {
+                map_type = 'Perkerasan';
+            }
+            else if (kondisi) {
+                map_type = 'Kondisi';
+            }
+        }
+
+        map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}${map_type}.xml`;
+        gxml = new GeoXml("gxml", map, map_data, {
+            hilite: {
+                color: "#FFDD77",
+                opacity: 1,
+                textcolor: "#000000"
+            }
+        });
+        gxml.parse();
+
+        setTimeout(function () {
+            if (gxml.polylines.length <= 0) {
+                map.setCenter({ lat: DEFAULT_LATITUDE, lng: DEFAULT_LONGITUDE });
+            }
+            map.setZoom(11);
+        }, 3000);
+    }
 }
