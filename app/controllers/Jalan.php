@@ -832,18 +832,19 @@ class Jalan extends Controller
         list($style, $lineStyle, $iconStyle) = Functions::getStyle($setup_jalan);
 
         list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
-        Functions::saveXML('JalanSemua_Complete.xml', $style, array_merge($jalan, $complete));
-        Functions::saveXML('JalanSemua_Perkerasan.xml', $style, array_merge($jalan, $perkerasan));
-        Functions::saveXML('JalanSemua_Kondisi.xml', $style, array_merge($jalan, $kondisi));
-        Functions::saveJSON('JalanSemua_Segment.json', $segment);
+        $filename = 'JalanSemua';
+        Functions::saveXML("{$filename}Complete.xml", $style, array_merge($jalan, $complete));
+        Functions::saveXML("{$filename}Perkerasan.xml", $style, array_merge($jalan, $perkerasan));
+        Functions::saveXML("{$filename}Kondisi.xml", $style, array_merge($jalan, $kondisi));
+        Functions::saveJSON("{$filename}Segment.json", $segment);
 
         foreach ($kepemilikan_opt as $key => $value) {
             $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
             list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle, $key);
-            Functions::saveXML("{$filename}_Complete.xml", $style, array_merge($jln[$key], $complete));
-            Functions::saveXML("{$filename}_Perkerasan.xml", $style, array_merge($jln[$key], $perkerasan));
-            Functions::saveXML("{$filename}_Kondisi.xml", $style, array_merge($jln[$key], $kondisi));
-            Functions::saveJSON("{$filename}_Segment.json", $segment);
+            Functions::saveXML("{$filename}Complete.xml", $style, array_merge($jln[$key], $complete));
+            Functions::saveXML("{$filename}Perkerasan.xml", $style, array_merge($jln[$key], $perkerasan));
+            Functions::saveXML("{$filename}Kondisi.xml", $style, array_merge($jln[$key], $kondisi));
+            Functions::saveJSON("{$filename}Segment.json", $segment);
         }
     }
 }
