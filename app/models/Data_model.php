@@ -235,7 +235,7 @@ class Data_model extends Database
         return $data;
     }
 
-    public function getUsedData()
+    public function getActiveData()
     {
         $query = "SELECT name FROM {$this->my_tables['data']} ORDER BY COALESCE(active, name) DESC LIMIT 1";
         $this->execute($query);

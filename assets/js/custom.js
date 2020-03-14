@@ -319,8 +319,8 @@ $(document).ready(function () {
         params['kepemilikan'] = kepemilikan;
 
         let jalan_opt = searchGisForm.find('select#no_jalan');
-        console.log(url);
-        console.log(params);
+        // console.log(url);
+        // console.log(params);
 
         $.post(url, $.param(params), function (data) {
             let html = [];
@@ -337,6 +337,8 @@ $(document).ready(function () {
             jalan_opt.selectpicker('refresh');
 
         }, 'json');
+
+        loadMap()
     });
 
     $('.btn-search-gis').click(function () {
