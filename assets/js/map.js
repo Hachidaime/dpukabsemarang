@@ -396,7 +396,7 @@ let loadMap = () => {
             if (gxml.polylines.length <= 0) {
                 map.setCenter({ lat: DEFAULT_LATITUDE, lng: DEFAULT_LONGITUDE });
             }
-            map.setZoom(11);
+            map.setZoom(10);
         }, 3000);
     }
 }
