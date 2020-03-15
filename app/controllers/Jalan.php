@@ -793,7 +793,7 @@ class Jalan extends Controller
      * @param id
      * ? Id Data
      */
-    public function GenerateRemove($id)
+    private function GenerateRemove($id)
     {
         // TODO: Proses hapus data
         $result = $this->my_model->deleteData($id);
@@ -810,7 +810,7 @@ class Jalan extends Controller
         return Functions::getDataSession('alert');
     }
 
-    public function GenerateXML()
+    private function GenerateXML()
     {
         $cond[] = "jenis = 1";
         list($setup_jalan,) = $this->model('Setup_model')->getSetup($cond);
@@ -819,6 +819,9 @@ class Jalan extends Controller
         list($style, $lineStyle, $iconStyle) = Functions::getStyle();
 
         $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle);
+        foreach ($jalan as $idx => $row) {
+            $jalan[$idx]['descriotion'] = $this->JalanDescription($row);
+        }
         Functions::saveXML('JalanSemua.xml', $style, $jalan);
 
         $kepemilikan_opt = $this->options('kepemilikan_opt');
@@ -826,25 +829,52 @@ class Jalan extends Controller
         foreach ($kepemilikan_opt as $key => $value) {
             $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
             $jln[$key] = Functions::getLineFromJalan($list['jalan'], $lineStyle, $key);
-            Functions::saveXML("{$filename}.xml", $style, $jln[$key]);
+
+            if ($key > 1) {
+                Functions::saveXML("{$filename}.xml", $style, $jln[$key]);
+            } else {
+                Functions::saveJSON("{$filename}.json", $jln[$key]);
+            }
         }
 
         list($style, $lineStyle, $iconStyle) = Functions::getStyle($setup_jalan);
 
         list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
+        foreach ($complete as $idx => $row) {
+            $complete[$idx]['description'] = $this->JalanDescription($row);
+        }
+
+        foreach ($perkerasan as $idx => $row) {
+            $perkerasan[$idx]['description'] = $this->JalanDescription($row);
+        }
+
+        foreach ($kondisi as $idx => $row) {
+            $kondisi[$idx]['description'] = $this->JalanDescription($row);
+        }
+
+        foreach ($segment as $idx => $row) {
+            $segment[$idx]['description'] = $this->JalanDescription($row);
+        }
+
         $filename = 'JalanSemua';
-        Functions::saveXML("{$filename}Complete.xml", $style, array_merge($jalan, $complete));
-        Functions::saveXML("{$filename}Perkerasan.xml", $style, array_merge($jalan, $perkerasan));
-        Functions::saveXML("{$filename}Kondisi.xml", $style, array_merge($jalan, $kondisi));
+        Functions::saveJSON("{$filename}Complete.json", array_merge($jalan, $complete));
+        Functions::saveJSON("{$filename}Perkerasan.json", array_merge($jalan, $perkerasan));
+        Functions::saveJSON("{$filename}Kondisi.json", array_merge($jalan, $kondisi));
         Functions::saveJSON("{$filename}Segment.json", $segment);
 
         foreach ($kepemilikan_opt as $key => $value) {
             $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
             list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle, $key);
-            Functions::saveXML("{$filename}Complete.xml", $style, array_merge($jln[$key], $complete));
-            Functions::saveXML("{$filename}Perkerasan.xml", $style, array_merge($jln[$key], $perkerasan));
-            Functions::saveXML("{$filename}Kondisi.xml", $style, array_merge($jln[$key], $kondisi));
+            Functions::saveJSON("{$filename}Complete.json", array_merge($jln[$key], $complete));
+            Functions::saveJSON("{$filename}Perkerasan.json", array_merge($jln[$key], $perkerasan));
+            Functions::saveJSON("{$filename}Kondisi.json", array_merge($jln[$key], $kondisi));
             Functions::saveJSON("{$filename}Segment.json", $segment);
         }
+    }
+
+    private function JalanDescription(array $data = [])
+    {
+        // var_dump($data);
+        return $this->dofetch('Jalan/Description', $data);
     }
 }

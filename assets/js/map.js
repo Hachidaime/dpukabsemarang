@@ -366,23 +366,7 @@ let loadMap = () => {
                 break;
         }
 
-        let map_type = '';
-        let perkerasan = document.getElementById('perkerasan').checked;
-        let kondisi = document.getElementById('kondisi').checked;
-
-        if (perkerasan && kondisi) {
-            map_type = 'Complete';
-        }
-        else {
-            if (perkerasan) {
-                map_type = 'Perkerasan';
-            }
-            else if (kondisi) {
-                map_type = 'Kondisi';
-            }
-        }
-
-        map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}${map_type}.xml`;
+        map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.xml`;
         gxml = new GeoXml("gxml", map, map_data, {
             hilite: {
                 color: "#FFDD77",

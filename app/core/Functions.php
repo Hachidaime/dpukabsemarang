@@ -463,9 +463,9 @@ class Functions
                 // Create name, and description elements and assigns them the values of the name and address columns from the results.
                 $nameNode = $dom->createElement('name', htmlentities($row['nama_jalan']));
                 $placeNode->appendChild($nameNode);
-                $descNode = $dom->createElement('description', "testing");
+                $descNode = $dom->createElement('description', $row['description']);
                 $placeNode->appendChild($descNode);
-                $styleUrl = $dom->createElement('styleUrl', "{$row['style']}");
+                $styleUrl = $dom->createElement('styleUrl', $row['style']);
                 $placeNode->appendChild($styleUrl);
 
                 // Creates a LineString element.
@@ -489,9 +489,9 @@ class Functions
                 // Create name, and description elements and assigns them the values of the name and address columns from the results.
                 $nameNode = $dom->createElement('name', htmlentities($row['nama_jalan']));
                 $placeNode->appendChild($nameNode);
-                $descNode = $dom->createElement('description', "testing");
+                $descNode = $dom->createElement('description', $row['description']);
                 $placeNode->appendChild($descNode);
-                $styleUrl = $dom->createElement('styleUrl', "{$row['style']}");
+                $styleUrl = $dom->createElement('styleUrl', $row['style']);
                 $placeNode->appendChild($styleUrl);
 
                 // Creates a Point element.
@@ -555,7 +555,7 @@ class Functions
                 if ($row['kepemilikan'] == 1) continue;
             }
 
-            $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
+            $koordinat = implode(' ', array_map("self::makeMapPoint", json_decode($row['koordinat'], true)));
             unset($row['koordinat_final']);
             $row['koordinat'] = $koordinat;
             $row['style'] = $style[$row['kepemilikan']][0][0];
@@ -583,7 +583,8 @@ class Functions
                 if ($row['kepemilikan'] == 1) continue;
             }
 
-            $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
+            // $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
+            $koordinat = $row['koordinat'];
             $latitude = $row['latitude'];
             $longitude = $row['longitude'];
 
