@@ -323,6 +323,14 @@ $(document).ready(function () {
         // console.log(params);
 
         $.post(url, $.param(params), function (data) {
+            if (Object.keys(data).length > 0) {
+                loadMap();
+            }
+            else {
+                makeAlert(JSON.parse('{"danger":["Data tidak ditemukan."]}'));
+                initMap();
+            }
+
             let html = [];
             html.push(/*html*/`<option value="0">&nbsp;</option>`);
 
@@ -338,7 +346,6 @@ $(document).ready(function () {
 
         }, 'json');
 
-        loadMap()
     });
 
     $('.btn-search-gis').click(function () {
