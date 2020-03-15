@@ -814,9 +814,10 @@ class Jalan extends Controller
     {
         $cond[] = "jenis = 1";
         list($setup_jalan,) = $this->model('Setup_model')->getSetup($cond);
+        list($style_json) = Functions::getStyleJSON($setup_jalan);
         $list = $this->my_model->getAllDataJalan();
 
-        list($style, $lineStyle, $iconStyle) = Functions::getStyle();
+        list($style, $lineStyle, $iconStyle) = Functions::getStyleKML();
 
         $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle);
         foreach ($jalan as $idx => $row) {
@@ -831,29 +832,33 @@ class Jalan extends Controller
             $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle, $key);
 
             if ($key > 1) {
+                foreach ($jalan as $idx => $row) {
+                    $jalan[$idx]['description'] = $this->JalanDescription($row);
+                }
                 Functions::saveXML("{$filename}.xml", $style, $jalan);
             } else {
-                Functions::saveJSON("{$filename}.json", $jalan);
+                Functions::saveJSON("{$filename}.json", $style_json, $jalan);
             }
         }
 
-        list($style, $lineStyle, $iconStyle) = Functions::getStyle($setup_jalan);
+        list($style, $lineStyle, $iconStyle) = Functions::getStyleKML($setup_jalan);
 
         list($segment, $complete, $perkerasan, $kondisi) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle);
+        // var_dump($style);
 
         $filename = 'JalanSemua';
-        Functions::saveJSON("{$filename}Complete.json", $complete);
-        Functions::saveJSON("{$filename}Perkerasan.json", $perkerasan);
-        Functions::saveJSON("{$filename}Kondisi.json", $kondisi);
-        Functions::saveJSON("{$filename}Segment.json", $segment);
+        Functions::saveJSON("{$filename}Complete.json", $style_json, $complete);
+        Functions::saveJSON("{$filename}Perkerasan.json", $style_json, $perkerasan);
+        Functions::saveJSON("{$filename}Kondisi.json", $style_json, $kondisi);
+        Functions::saveJSON("{$filename}Segment.json", $style_json, $segment);
 
         foreach ($kepemilikan_opt as $key => $value) {
             $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
             list($segment, $complete, $perkerasan, $kondisi) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle, $key);
-            Functions::saveJSON("{$filename}Complete.json", $complete);
-            Functions::saveJSON("{$filename}Perkerasan.json", $perkerasan);
-            Functions::saveJSON("{$filename}Kondisi.json", $kondisi);
-            Functions::saveJSON("{$filename}Segment.json", $segment);
+            Functions::saveJSON("{$filename}Complete.json", $style_json, $complete);
+            Functions::saveJSON("{$filename}Perkerasan.json", $style_json, $perkerasan);
+            Functions::saveJSON("{$filename}Kondisi.json", $style_json, $kondisi);
+            Functions::saveJSON("{$filename}Segment.json", $style_json, $segment);
         }
     }
 

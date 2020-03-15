@@ -524,8 +524,21 @@ class Functions
         return implode(",", $point);
     }
 
-    public function saveJSON($filename, $content)
+    public function createMapJSON(array $style = [], $content = [])
     {
+        foreach ($content as $idx => $row) {
+            $list[$idx] = [
+                'stlyle' => $style[$row['style']],
+                'description' => $row['description'],
+                'koordinat' => $row['koordinat']
+            ];
+        }
+        return $list;
+    }
+
+    public function saveJSON($filename, $style, $content)
+    {
+        $content = self::createMapJSON($style, $content);
         $filedir = DOC_ROOT . "data/{$_POST['name']}";
         FileHandler::createWritableFolder($filedir);
 
@@ -584,7 +597,7 @@ class Functions
             }
 
             // $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
-            $koordinat = $row['koordinat'];
+            $koordinat = json_decode($row['koordinat'], true);
             $latitude = $row['latitude'];
             $longitude = $row['longitude'];
 
@@ -606,7 +619,7 @@ class Functions
             if ($row['perkerasan'] > 0 || $row['kondisi'] > 0) {
                 if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
                     if (($row['perkerasan'] == $data[$idx - 1]['perkerasan']) && ($row['kondisi'] == $data[$idx - 1]['kondisi'])) {
-                        $complete[$j - 1]['koordinat'] .= $koordinat;
+                        $complete[$j - 1]['koordinat'] = array_merge($complete[$j - 1]['koordinat'], $koordinat);
                     } else {
                         $row['style'] = $lineStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
                         $complete[$j] = $row;
@@ -622,7 +635,7 @@ class Functions
             if ($row['perkerasan'] > 0) {
                 if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
                     if ($row['perkerasan'] == $data[$idx - 1]['perkerasan']) {
-                        $perkerasan[$k - 1]['koordinat'] .= $koordinat;
+                        $perkerasan[$j - 1]['koordinat'] = array_merge($perkerasan[$j - 1]['koordinat'], $koordinat);
                     } else {
                         $row['style'] = $lineStyle[$row['kepemilikan']][$row['perkerasan']][0];
                         $perkerasan[$k] = $row;
@@ -638,7 +651,7 @@ class Functions
             if ($row['kondisi'] > 0) {
                 if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
                     if ($row['kondisi'] == $data[$idx - 1]['kondisi']) {
-                        $kondisi[$l - 1]['koordinat'] .= $koordinat;
+                        $kondisi[$j - 1]['koordinat'] = array_merge($kondisi[$j - 1]['koordinat'], $koordinat);
                     } else {
                         $row['style'] = $lineStyle[$row['kepemilikan']][0][$row['kondisi']];
                         $kondisi[$l] = $row;
@@ -655,7 +668,7 @@ class Functions
         return [$segment, $complete, $perkerasan, $kondisi];
     }
 
-    public function getStyle(array $setup = [])
+    public function getStyleKML(array $setup = [])
     {
         $m = 1;
         foreach (DEFAULT_ICONSTYLE as $idx => $row) {
@@ -684,18 +697,38 @@ class Functions
         if (!is_null($setup)) {
             // ? Style from Setup
             foreach ($setup as $idx => $row) {
-                $id = "linestyle{$n}";
-                $style[] = [
-                    'id' => $id,
-                    'type' => 'LineStyle',
-                    'color' => strtoupper(dechex(round($row['opacity'] * 255 / 100)) . str_replace('#', '', $row['warna'])),
-                    'width' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
-                ];
-                $lineStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']] = "#{$id}";
-                $n++;
+                if ($row['simbol'] == 1) {
+                    $id = "linestyle{$n}";
+                    $style[] = [
+                        'id' => $id,
+                        'type' => 'LineStyle',
+                        'color' => strtoupper(dechex(round($row['opacity'] * 255 / 100)) . str_replace('#', '', $row['warna'])),
+                        'width' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
+                    ];
+                    $lineStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']] = "#{$id}";
+                    $n++;
+                }
             }
         }
 
         return [$style, $lineStyle, $iconStyle];
+    }
+
+    public function getStyleJSON(array $setup)
+    {
+        $n = 1;
+        foreach ($setup as $idx => $row) {
+            if ($row['simbol'] == 1) {
+                $id = "linestyle{$n}";
+                $style[$id] = [
+                    'color' => $row['warna'],
+                    'opacity' => number_format($row['opacity'] / 100, 2),
+                    'weight' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
+                ];
+                $n++;
+            }
+        }
+
+        return [$style];
     }
 }

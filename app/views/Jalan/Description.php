@@ -1,10 +1,10 @@
-<table>
+<table class="table table-sm">
     <tr>
         <td colspan="2"></td>
     </tr>
     <tr>
-        <td>No. Ruas Jalan</td>
-        <td>{$data.no_jalan}</td>
+        <td width="40%">No. Ruas Jalan</td>
+        <td width="*">{$data.no_jalan}</td>
     </tr>
     <tr>
         <td>Nama Ruas Jalan</td>
