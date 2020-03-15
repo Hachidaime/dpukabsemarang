@@ -828,18 +828,38 @@ class Jalan extends Controller
 
         foreach ($kepemilikan_opt as $key => $value) {
             $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
-            $jln[$key] = Functions::getLineFromJalan($list['jalan'], $lineStyle, $key);
+            $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle, $key);
 
             if ($key > 1) {
-                Functions::saveXML("{$filename}.xml", $style, $jln[$key]);
+                Functions::saveXML("{$filename}.xml", $style, $jalan);
             } else {
-                Functions::saveJSON("{$filename}.json", $jln[$key]);
+                Functions::saveJSON("{$filename}.json", $jalan);
             }
         }
 
         list($style, $lineStyle, $iconStyle) = Functions::getStyle($setup_jalan);
 
-        list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
+        list($segment, $complete, $perkerasan, $kondisi) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle);
+
+        $filename = 'JalanSemua';
+        Functions::saveJSON("{$filename}Complete.json", $complete);
+        Functions::saveJSON("{$filename}Perkerasan.json", $perkerasan);
+        Functions::saveJSON("{$filename}Kondisi.json", $kondisi);
+        Functions::saveJSON("{$filename}Segment.json", $segment);
+
+        foreach ($kepemilikan_opt as $key => $value) {
+            $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
+            list($segment, $complete, $perkerasan, $kondisi) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle, $key);
+            Functions::saveJSON("{$filename}Complete.json", $complete);
+            Functions::saveJSON("{$filename}Perkerasan.json", $perkerasan);
+            Functions::saveJSON("{$filename}Kondisi.json", $kondisi);
+            Functions::saveJSON("{$filename}Segment.json", $segment);
+        }
+    }
+
+    private function LineFromDetail(array $data, array $lineStyle, array $iconStyle, string $kepemilikan = null)
+    {
+        list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($data, $lineStyle, $iconStyle, $kepemilikan);
         foreach ($complete as $idx => $row) {
             $complete[$idx]['description'] = $this->JalanDescription($row);
         }
@@ -856,25 +876,11 @@ class Jalan extends Controller
             $segment[$idx]['description'] = $this->JalanDescription($row);
         }
 
-        $filename = 'JalanSemua';
-        Functions::saveJSON("{$filename}Complete.json", array_merge($jalan, $complete));
-        Functions::saveJSON("{$filename}Perkerasan.json", array_merge($jalan, $perkerasan));
-        Functions::saveJSON("{$filename}Kondisi.json", array_merge($jalan, $kondisi));
-        Functions::saveJSON("{$filename}Segment.json", $segment);
-
-        foreach ($kepemilikan_opt as $key => $value) {
-            $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
-            list($segment, $complete, $perkerasan, $kondisi) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle, $key);
-            Functions::saveJSON("{$filename}Complete.json", array_merge($jln[$key], $complete));
-            Functions::saveJSON("{$filename}Perkerasan.json", array_merge($jln[$key], $perkerasan));
-            Functions::saveJSON("{$filename}Kondisi.json", array_merge($jln[$key], $kondisi));
-            Functions::saveJSON("{$filename}Segment.json", $segment);
-        }
+        return [$segment, $complete, $perkerasan, $kondisi];
     }
 
     private function JalanDescription(array $data = [])
     {
-        // var_dump($data);
         return $this->dofetch('Jalan/Description', $data);
     }
 }
