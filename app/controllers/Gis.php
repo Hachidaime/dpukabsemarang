@@ -37,6 +37,7 @@ class Gis extends Controller
         $data['searchform'] = $this->dofetch('Layout/Form', $data);
         // $data['searchbtn'][] = $this->dofetch('Component/Button', Functions::makeButton("button", "search-gis", "Cari", "success", "btn-search-gis"));
         $data['active_data_dir'] = $this->model('Data_model')->getActiveData();
+
         $this->view('Gis/index', $data);
     }
 

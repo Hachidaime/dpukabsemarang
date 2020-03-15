@@ -820,7 +820,7 @@ class Jalan extends Controller
 
         $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle);
         foreach ($jalan as $idx => $row) {
-            $jalan[$idx]['descriotion'] = $this->JalanDescription($row);
+            $jalan[$idx]['description'] = $this->JalanDescription($row);
         }
         Functions::saveXML('JalanSemua.xml', $style, $jalan);
 

@@ -16,6 +16,6 @@
     </tr>
     <tr>
         <td>Lebar</td>
-        <td>{$data.lebar} m</td>
+        <td>{$data.lebar_rata} m</td>
     </tr>
 </table>
