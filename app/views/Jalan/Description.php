@@ -12,7 +12,7 @@
     </tr>
     <tr>
         <td>Panjang</td>
-        <td>{$data.panjang} km</td>
+        <td>{$data.panjang} m</td>
     </tr>
     <tr>
         <td>Lebar</td>

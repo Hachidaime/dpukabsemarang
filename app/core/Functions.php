@@ -414,137 +414,11 @@ class Functions
         return self::makeTableData($data);
     }
 
-    public function createKML(&$dom, array $style = [], $line = [], $point = [])
-    {
-        // Creates the root KML element and appends it to the root document.
-        $node = $dom->createElementNS('http://earth.google.com/kml/2.1', 'kml');
-        $parNode = $dom->appendChild($node);
-
-        // Creates a KML Document element and append it to the KML element.
-        $dnode = $dom->createElement('Document');
-        $docNode = $parNode->appendChild($dnode);
-
-        // Create style elements
-        if ($style) {
-            foreach ($style as $idx => $row) {
-                $restStyleNode = $dom->createElement('Style');
-                $restStyleNode->setAttribute('id', $row['id']);
-
-                switch ($row['type']) {
-                    case 'LineStyle':
-                        $restLinestyleNode = $dom->createElement('LineStyle');
-                        $restColor = $dom->createElement('color', $row['color']);
-                        $restWidth = $dom->createElement('width', $row['width']);
-                        $restLinestyleNode->appendChild($restColor);
-                        $restLinestyleNode->appendChild($restWidth);
-                        $restStyleNode->appendChild($restLinestyleNode);
-                        break;
-                    case 'IconStyle':
-                        $restIconstyleNode = $dom->createElement('IconStyle');
-                        $restIconNode = $dom->createElement('Icon');
-                        $restHref = $dom->createElement('href', $row['href']);
-                        $restIconNode->appendChild($restHref);
-                        $restIconstyleNode->appendChild($restIconNode);
-                        $restStyleNode->appendChild($restIconstyleNode);
-                        break;
-                }
-                $docNode->appendChild($restStyleNode);
-            }
-        }
-
-        if ($line) {
-            foreach ($line as $idx => $row) {
-                // Creates a Placemark and append it to the Document.
-                $node = $dom->createElement('Placemark');
-                $placeNode = $docNode->appendChild($node);
-                // Creates an id attribute and assign it the value of id column.
-                // $placeNode->setAttribute('id', 'placemark' . $row['id']);
-
-                // Create name, and description elements and assigns them the values of the name and address columns from the results.
-                $nameNode = $dom->createElement('name', htmlentities($row['nama_jalan']));
-                $placeNode->appendChild($nameNode);
-                $descNode = $dom->createElement('description', $row['description']);
-                $placeNode->appendChild($descNode);
-                $styleUrl = $dom->createElement('styleUrl', $row['style']);
-                $placeNode->appendChild($styleUrl);
-
-                // Creates a LineString element.
-                $lineStringNode = $dom->createElement('LineString');
-                $placeNode->appendChild($lineStringNode);
-
-                // Creates a coordinates element and gives it the value of the lng and lat columns from the results.
-                $coorNode = $dom->createElement('coordinates', $row['koordinat']);
-                $lineStringNode->appendChild($coorNode);
-            }
-        }
-
-        if ($point) {
-            foreach ($point as $idx => $row) {
-                // Creates a Placemark and append it to the Document.
-                $node = $dom->createElement('Placemark');
-                $placeNode = $docNode->appendChild($node);
-                // Creates an id attribute and assign it the value of id column.
-                // $placeNode->setAttribute('id', 'placemark' . $row['id']);
-
-                // Create name, and description elements and assigns them the values of the name and address columns from the results.
-                $nameNode = $dom->createElement('name', htmlentities($row['nama_jalan']));
-                $placeNode->appendChild($nameNode);
-                $descNode = $dom->createElement('description', $row['description']);
-                $placeNode->appendChild($descNode);
-                $styleUrl = $dom->createElement('styleUrl', $row['style']);
-                $placeNode->appendChild($styleUrl);
-
-                // Creates a Point element.
-                $pointNode = $dom->createElement('Point');
-                $placeNode->appendChild($pointNode);
-
-                // Creates a coordinates element and gives it the value of the lng and lat columns from the results.
-                $coorNode = $dom->createElement('coordinates', $row['koordinat']);
-                $pointNode->appendChild($coorNode);
-            }
-        }
-    }
-
-    public function saveXML(string $filename, array $style = [], $line = [], $point = [])
-    {
-        // Creates the Document.
-        $dom = new DOMDocument('1.0', 'UTF-8');
-        self::createKML($dom, $style, $line, $point);
-
-        $filedir = DOC_ROOT . "data/{$_POST['name']}";
-        FileHandler::createWritableFolder($filedir);
-        // $dom->saveXML();
-        $dom->save("{$filedir}/{$filename}");
-    }
-
     public function makeMapPoint(array $point)
     {
         $point = array_reverse($point);
         array_push($point, 0);
-        return implode(",", $point);
-    }
-
-    public function createMapJSON(array $style = [], $content = [])
-    {
-        foreach ($content as $idx => $row) {
-            $list[$idx] = [
-                'stlyle' => $style[$row['style']],
-                'description' => $row['description'],
-                'koordinat' => $row['koordinat']
-            ];
-        }
-        return $list;
-    }
-
-    public function saveJSON($filename, $style, $content)
-    {
-        $content = self::createMapJSON($style, $content);
-        $filedir = DOC_ROOT . "data/{$_POST['name']}";
-        FileHandler::createWritableFolder($filedir);
-
-        $myfile = fopen("{$filedir}/{$filename}", "w") or die("Unable to open file!");
-        fwrite($myfile, json_encode($content));
-        fclose($myfile);
+        return $point;
     }
 
     public function getParams(array $data)
@@ -568,7 +442,8 @@ class Functions
                 if ($row['kepemilikan'] == 1) continue;
             }
 
-            $koordinat = implode(' ', array_map("self::makeMapPoint", json_decode($row['koordinat'], true)));
+            // $koordinat = array_map("self::makeMapPoint", json_decode($row['koordinat'], true));
+            $koordinat = json_decode($row['koordinat'], true);
             unset($row['koordinat_final']);
             $row['koordinat'] = $koordinat;
             $row['style'] = $style[$row['kepemilikan']][0][0];
@@ -668,55 +543,31 @@ class Functions
         return [$segment, $complete, $perkerasan, $kondisi];
     }
 
-    public function getStyleKML(array $setup = [])
+    public function getStyle(array $setup)
     {
         $m = 1;
         foreach (DEFAULT_ICONSTYLE as $idx => $row) {
             $id = "iconstyle{$m}";
-            $style[] = [
-                'id' => $id,
+            $style[$id] = [
                 'type' => $row['type'],
                 'href' => $row['href']
             ];
             $iconStyle[$idx] = "#{$id}";
+            $m++;
         }
 
         $n = 1;
         foreach (DEFAULT_LINESTYLE as $idx => $row) {
             $id = "linestyle{$n}";
-            $style[] = [
-                'id' => $id,
-                'type' => $row['type'],
+            $style[$id] = [
                 'color' => $row['color'],
-                'width' => $row['width']
+                'opacity' => number_format($row['opacity'] / 100, 2),
+                'weight' => $row['width']
             ];
             $lineStyle[$idx][0][0] = "#{$id}";
-            $n += 1;
+            $n++;
         }
 
-        if (!is_null($setup)) {
-            // ? Style from Setup
-            foreach ($setup as $idx => $row) {
-                if ($row['simbol'] == 1) {
-                    $id = "linestyle{$n}";
-                    $style[] = [
-                        'id' => $id,
-                        'type' => 'LineStyle',
-                        'color' => strtoupper(dechex(round($row['opacity'] * 255 / 100)) . str_replace('#', '', $row['warna'])),
-                        'width' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
-                    ];
-                    $lineStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']] = "#{$id}";
-                    $n++;
-                }
-            }
-        }
-
-        return [$style, $lineStyle, $iconStyle];
-    }
-
-    public function getStyleJSON(array $setup)
-    {
-        $n = 1;
         foreach ($setup as $idx => $row) {
             if ($row['simbol'] == 1) {
                 $id = "linestyle{$n}";
@@ -725,10 +576,56 @@ class Functions
                     'opacity' => number_format($row['opacity'] / 100, 2),
                     'weight' => (!is_null($row['line_width'])) ? $row['line_width'] : 0
                 ];
+                $lineStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']] = "#{$id}";
                 $n++;
             }
         }
 
-        return [$style];
+        return [$style, $lineStyle, $iconStyle];
+    }
+
+    public function createGeoJSON($style, $content, $simbol)
+    {
+        $list['type'] = 'FeatureCollection';
+        $list['features'] = [];
+        foreach ($content as $idx => $row) {
+            switch ($simbol) {
+                case '1':
+                    $type = 'LineString';
+                    break;
+                case '2':
+                    $type = 'Point';
+                    break;
+            }
+
+            $mystyle = str_replace('#', '', $row['style']);
+            $list['features'][$idx] = [
+                'type' => 'Feature',
+                'geometry' => [
+                    'type' => $type,
+                    'coordinates' => $row['koordinat']
+                ],
+                'properties' => [
+                    'nama_jalan' => $row['nama_jalan'],
+                    'no_jalan' => $row['no_jalan'],
+                    'color' => $style[$mystyle]['color'],
+                    'weight' => $style[$mystyle]['weight'],
+                    'opacity' => $style[$mystyle]['opacity']
+                ]
+            ];
+        }
+
+        return $list;
+    }
+
+    public function saveGeoJSON(string $filename, $style, $content, $simbol)
+    {
+        $content = self::createGeoJSON($style, $content, $simbol);
+        $filedir = DOC_ROOT . "data/{$_POST['name']}";
+        FileHandler::createWritableFolder($filedir);
+
+        $myfile = fopen("{$filedir}/{$filename}", "w") or die("Unable to open file!");
+        fwrite($myfile, json_encode($content));
+        fclose($myfile);
     }
 }

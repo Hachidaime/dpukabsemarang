@@ -55,17 +55,20 @@ define('DEFAULT_ICONSTYLE', [
 define('DEFAULT_LINESTYLE', [
     1 => [
         'type' => 'LineStyle',
-        'color' => 'FF000000',
+        'color' => '000000',
+        'opacity' => '100',
         'width' => '5'
     ],
     2 => [
         'type' => 'LineStyle',
-        'color' => 'FF000000',
+        'color' => '000000',
+        'opacity' => '100',
         'width' => '4'
     ],
     3 => [
         'type' => 'LineStyle',
-        'color' => 'FF000000',
+        'color' => '000000',
+        'opacity' => '100',
         'width' => '3'
     ]
 ]);

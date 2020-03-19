@@ -175,7 +175,7 @@ class Data_model extends Database
                 "{$jalan_table}.no_jalan",
                 "{$jalan_table}.nama_jalan",
                 "{$jalan_table}.kepemilikan",
-                "FORMAT({$jalan_table}.panjang/1000, 2) as panjang",
+                "{$jalan_table}.panjang",
                 "{$jalan_table}.lebar_rata",
                 "{$koordinat_table}.koordinat_final AS koordinat"
             ],
