@@ -52,6 +52,20 @@ function initMap() {
     // controlDiv.index = 1;
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlNav);
 
+    1
+
+    var infowindow = new google.maps.InfoWindow()
+    map.data.addListener('click', function (event) {
+        console.log(event);
+        var myHTML = event.feature.getProperty("nama_jalan");
+        infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
+        // position the infowindow on the marker
+        infowindow.setPosition(event.latLng);
+        // anchor the infowindow on the marker
+        // infowindow.setOptions({ pixelOffset: new google.maps.Size(0, -30) });
+        infowindow.open(map);
+    });
+
     return map;
 }
 
@@ -336,6 +350,6 @@ let loadMap = () => {
     }
 }
 
-function loadGeoJsonString(map_data) {
+let loadGeoJsonString = map_data => {
     map.data.loadGeoJson(map_data);
 }
