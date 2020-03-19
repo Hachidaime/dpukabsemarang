@@ -760,7 +760,6 @@ class Jalan extends Controller
             $tag = "Edit";
         } else { // ! Id Data not exist
             $this->GenerateData();
-            exit;
             // TODO: Proses add Data
             $result = $this->my_model->createData();
             $tag = "Add";

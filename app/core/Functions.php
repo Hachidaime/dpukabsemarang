@@ -417,7 +417,10 @@ class Functions
     public function makeMapPoint(array $point)
     {
         $point = array_reverse($point);
-        array_push($point, 0);
+        foreach ($point as $key => $value) {
+            $point[$key] = (float) $value;
+        }
+        // array_push($point, 0);
         return $point;
     }
 
@@ -442,8 +445,8 @@ class Functions
                 if ($row['kepemilikan'] == 1) continue;
             }
 
-            // $koordinat = array_map("self::makeMapPoint", json_decode($row['koordinat'], true));
-            $koordinat = json_decode($row['koordinat'], true);
+            $koordinat = array_map("self::makeMapPoint", json_decode($row['koordinat'], true));
+            // $koordinat = array_map("array_reverse", json_decode($row['koordinat'], true));
             unset($row['koordinat_final']);
             $row['koordinat'] = $koordinat;
             $row['style'] = $style[$row['kepemilikan']][0][0];

@@ -315,42 +315,6 @@ function genSegment() {
 }
 
 let loadMap = () => {
-    /**
-     * * Map Options
-     */
-    map = new google.maps.Map(document.getElementById("map_canvas"), {
-        center: new google.maps.LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE),
-        gestureHandling: 'greedy',
-        zoom: 11,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-            position: google.maps.ControlPosition.TOP_RIGHT
-        },
-        fullscreenControl: false,
-        navigationControl: true,
-        navigationControlOptions: {
-            style: google.maps.NavigationControlStyle.SMALL
-        },
-        zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_CENTER
-        },
-        streetViewControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM
-        }
-    });
-    // center = bounds.getCenter();
-
-    // Create the DIV to hold the control and call the CenterControl()
-    // constructor passing in this DIV.
-    let controlCentering = document.createElement('div');
-    let centering = new centerControl(controlCentering, map);
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlCentering);
-
-    let controlNav = document.createElement('div');
-    let myNav = new controlOpenNav(controlNav, map);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlNav);
 
     let kepemilikan = document.getElementById('kepemilikan').value;
     if (kepemilikan != 0) {
@@ -366,21 +330,12 @@ let loadMap = () => {
                 break;
         }
 
-        map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.xml`;
-        gxml = new GeoXml("gxml", map, map_data, {
-            hilite: {
-                color: "#FFDD77",
-                opacity: 1,
-                textcolor: "#000000"
-            }
-        });
-        gxml.parse();
+        map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
+        loadGeoJsonString(map_data);
 
-        setTimeout(function () {
-            if (gxml.polylines.length <= 0) {
-                map.setCenter({ lat: DEFAULT_LATITUDE, lng: DEFAULT_LONGITUDE });
-            }
-            map.setZoom(10);
-        }, 3000);
     }
+}
+
+function loadGeoJsonString(map_data) {
+    map.data.loadGeoJson(map_data);
 }
