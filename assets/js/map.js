@@ -352,6 +352,15 @@ let loadLines = () => {
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
     $.getJSON(map_data, function (data) {
         features = map.data.addGeoJson(data);
+        map.data.setStyle(function (features) {
+            return /** @type {google.maps.Data.StyleOptions} */({
+                fillColor: features.getProperty('fillColor'),
+                fillOpacity: features.getProperty('fillOpacity'),
+                strokeColor: features.getProperty('strokeColor'),
+                strokeWeight: features.getProperty('strokeWeight'),
+                strokeOpacity: features.getProperty('strokeOpacity'),
+            });
+        });
     });
 }
 
@@ -378,6 +387,8 @@ let loadSwitch = () => {
     let kondisi = document.getElementById('kondisi').checked;
 
     if (perkerasan && kondisi) {
+        clearPerkerasan();
+        clearKondisi();
         loadComplete();
     }
     else {
@@ -404,6 +415,15 @@ let loadJalanProvinsi = () => {
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
     $.getJSON(map_data, function (data) {
         JalanProvinsiLines = map.data.addGeoJson(data);
+        map.data.setStyle(function (JalanProvinsiLines) {
+            return /** @type {google.maps.Data.StyleOptions} */({
+                fillColor: JalanProvinsiLines.getProperty('fillColor'),
+                fillOpacity: JalanProvinsiLines.getProperty('fillOpacity'),
+                strokeColor: JalanProvinsiLines.getProperty('strokeColor'),
+                strokeWeight: JalanProvinsiLines.getProperty('strokeWeight'),
+                strokeOpacity: JalanProvinsiLines.getProperty('strokeOpacity'),
+            });
+        });
     });
 }
 
@@ -412,6 +432,15 @@ let loadComplete = () => {
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Complete.json`;
     $.getJSON(map_data, function (data) {
         CompleteLines = map.data.addGeoJson(data);
+        map.data.setStyle(function (CompleteLines) {
+            return /** @type {google.maps.Data.StyleOptions} */({
+                fillColor: CompleteLines.getProperty('fillColor'),
+                fillOpacity: CompleteLines.getProperty('fillOpacity'),
+                strokeColor: CompleteLines.getProperty('strokeColor'),
+                strokeWeight: CompleteLines.getProperty('strokeWeight'),
+                strokeOpacity: CompleteLines.getProperty('strokeOpacity'),
+            });
+        });
     });
 }
 
@@ -420,6 +449,15 @@ let loadPerkerasan = () => {
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Perkerasan.json`;
     $.getJSON(map_data, function (data) {
         PerkerasanLines = map.data.addGeoJson(data);
+        map.data.setStyle(function (PerkerasanLines) {
+            return /** @type {google.maps.Data.StyleOptions} */({
+                fillColor: PerkerasanLines.getProperty('fillColor'),
+                fillOpacity: PerkerasanLines.getProperty('fillOpacity'),
+                strokeColor: PerkerasanLines.getProperty('strokeColor'),
+                strokeWeight: PerkerasanLines.getProperty('strokeWeight'),
+                strokeOpacity: PerkerasanLines.getProperty('strokeOpacity'),
+            });
+        });
     });
 }
 
@@ -428,6 +466,15 @@ let loadKondisi = () => {
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Kondisi.json`;
     $.getJSON(map_data, function (data) {
         KondisiLines = map.data.addGeoJson(data);
+        map.data.setStyle(function (KondisiLines) {
+            return /** @type {google.maps.Data.StyleOptions} */({
+                fillColor: KondisiLines.getProperty('fillColor'),
+                fillOpacity: KondisiLines.getProperty('fillOpacity'),
+                strokeColor: KondisiLines.getProperty('strokeColor'),
+                strokeWeight: KondisiLines.getProperty('strokeWeight'),
+                strokeOpacity: KondisiLines.getProperty('strokeOpacity'),
+            });
+        });
     });
 }
 

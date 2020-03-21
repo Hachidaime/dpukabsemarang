@@ -611,11 +611,11 @@ class Functions
                 'properties' => [
                     'nama_jalan' => $row['nama_jalan'],
                     'no_jalan' => $row['no_jalan'],
-                    'stroke' => "#{$style[$mystyle]['color']}",
-                    'stroke-weight' => $style[$mystyle]['weight'],
-                    'stroke-opacity' => $style[$mystyle]['opacity'],
-                    'fill' => "#{$style[$mystyle]['color']}",
-                    'fill-opacity' => $style[$mystyle]['opacity'],
+                    'strokeColor' => $style[$mystyle]['color'],
+                    'strokeWeight' => $style[$mystyle]['weight'],
+                    'strokeOpacity' => $style[$mystyle]['opacity'],
+                    'fillColor' => $style[$mystyle]['color'],
+                    'fillOpacity' => $style[$mystyle]['opacity'],
                 ]
             ];
         }
