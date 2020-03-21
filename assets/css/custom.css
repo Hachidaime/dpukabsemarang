@@ -188,6 +188,7 @@ body {
   z-index: 1; /* Stay on top */   
   overflow-x: hidden; /* Disable horizontal scroll */
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+  background-color: #F0EDE5BC;
 }
 
 .map-wrapper{
@@ -227,6 +228,7 @@ body {
 
     .sidepanel {
         width: 50%!important;
+        margin: 15px 0 0 15px;
     }
 
     .map-control-wrapper{
@@ -242,6 +244,7 @@ body {
 
     .sidepanel {
         width: 33%!important;
+        margin: 15px 0 0 15px;
     }
 
     .map-control-wrapper{
@@ -257,6 +260,7 @@ body {
 
     .sidepanel {
         width: 25%!important;
+        margin: 15px 0 0 15px;
     }
     .map-control-wrapper{
       width: 25%;

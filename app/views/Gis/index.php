@@ -1,5 +1,5 @@
 <div class="w-100">
-    <div id="mySidepanel" class="sidepanel border bg-white">
+    <div id="mySidepanel" class="sidepanel border">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs nav-fill clr-2018-coconut-milk border-bottom">
             <li class="nav-item order-2">
@@ -20,7 +20,7 @@
 
         <!-- Tab panes -->
         <div class="tab-content">
-            <div id="legend" class="tab-pane fade p-3">
+            <div id="legend" class="tab-pane fade pt-3 px-3">
                 <div class="d-flex flex-column">
                     {*
                     <div class="pr-3 py-1">
@@ -68,7 +68,7 @@
                     *}
                 </div>
             </div>
-            <div id="cari" class="tab-pane py-3 active">
+            <div id="cari" class="tab-pane pt-3 active">
                 {$data.searchform}
                 <div class=" search-btn d-flex justify-content-center mb-3">
                     {foreach from=$data.searchbtn key=k item=v}
@@ -76,7 +76,7 @@
                     {/foreach}
                 </div>
             </div>
-            <div id="info" class="tab-pane fade p-3">
+            <div id="info" class="tab-pane fade pt-3 px-3">
                 <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
             </div>
         </div>
