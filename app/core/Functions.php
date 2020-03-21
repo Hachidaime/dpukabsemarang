@@ -475,7 +475,7 @@ class Functions
             }
 
             // $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
-            $koordinat = json_decode($row['koordinat'], true);
+            $koordinat = array_map("self::makeMapPoint", json_decode($row['koordinat'], true));
             $latitude = $row['latitude'];
             $longitude = $row['longitude'];
 
@@ -611,9 +611,11 @@ class Functions
                 'properties' => [
                     'nama_jalan' => $row['nama_jalan'],
                     'no_jalan' => $row['no_jalan'],
-                    'color' => $style[$mystyle]['color'],
-                    'weight' => $style[$mystyle]['weight'],
-                    'opacity' => $style[$mystyle]['opacity']
+                    'stroke' => "#{$style[$mystyle]['color']}",
+                    'stroke-weight' => $style[$mystyle]['weight'],
+                    'stroke-opacity' => $style[$mystyle]['opacity'],
+                    'fill' => "#{$style[$mystyle]['color']}",
+                    'fill-opacity' => $style[$mystyle]['opacity'],
                 ]
             ];
         }

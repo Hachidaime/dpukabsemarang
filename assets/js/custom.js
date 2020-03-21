@@ -319,16 +319,15 @@ $(document).ready(function () {
         params['kepemilikan'] = kepemilikan;
 
         let jalan_opt = searchGisForm.find('select#no_jalan');
-        // console.log(url);
-        // console.log(params);
 
         $.post(url, $.param(params), function (data) {
+            clearLines();
             if (Object.keys(data).length > 0) {
-                loadMap();
+                loadLines();
             }
             else {
                 makeAlert(JSON.parse('{"danger":["Data tidak ditemukan."]}'));
-                initMap();
+                // initMap();
             }
 
             let html = [];
@@ -345,7 +344,10 @@ $(document).ready(function () {
             jalan_opt.selectpicker('refresh');
 
         }, 'json');
+    });
 
+    searchGisForm.find('input[type=checkbox]').change(function () {
+        loadSwitch();
     });
 
     $('.btn-search-gis').click(function () {

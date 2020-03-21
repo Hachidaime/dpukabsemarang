@@ -56,13 +56,10 @@ function initMap() {
 
     var infowindow = new google.maps.InfoWindow()
     map.data.addListener('click', function (event) {
-        console.log(event);
         var myHTML = event.feature.getProperty("nama_jalan");
         infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
-        // position the infowindow on the marker
+        // position the infowindow
         infowindow.setPosition(event.latLng);
-        // anchor the infowindow on the marker
-        // infowindow.setOptions({ pixelOffset: new google.maps.Size(0, -30) });
         infowindow.open(map);
     });
 
@@ -328,8 +325,7 @@ function genSegment() {
     }, "json");
 }
 
-let loadMap = () => {
-
+let getKepemilikan = () => {
     let kepemilikan = document.getElementById('kepemilikan').value;
     if (kepemilikan != 0) {
         switch (kepemilikan) {
@@ -343,13 +339,126 @@ let loadMap = () => {
                 kepemilikan = 'JalanSemua';
                 break;
         }
+    }
 
-        map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
-        loadGeoJsonString(map_data);
+    return kepemilikan;
+}
 
+let features;
+
+let loadLines = () => {
+    kepemilikan = getKepemilikan();
+
+    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
+    $.getJSON(map_data, function (data) {
+        features = map.data.addGeoJson(data);
+    });
+}
+
+let clearLines = () => {
+    if (features !== undefined) {
+        for (var i = 0; i < features.length; i++) {
+            map.data.remove(features[i]);
+        }
     }
 }
 
-let loadGeoJsonString = map_data => {
-    map.data.loadGeoJson(map_data);
+let JalanProvinsiLines;
+let CompleteLines;
+let PerkerasanLines;
+let KondisiLines;
+
+let loadSwitch = () => {
+    let jlnProvinsi = document.getElementById('jalan_provinsi').checked;
+    if (jlnProvinsi) {
+        loadJalanProvinsi();
+    }
+
+    let perkerasan = document.getElementById('perkerasan').checked;
+    let kondisi = document.getElementById('kondisi').checked;
+
+    if (perkerasan && kondisi) {
+        loadComplete();
+    }
+    else {
+        clearComplete();
+
+        if (perkerasan) {
+            loadPerkerasan()
+        }
+        else {
+            clearPerkerasan();
+        }
+
+        if (kondisi) {
+            loadKondisi();
+        }
+        else {
+            clearKondisi();
+        }
+    }
+}
+
+let loadJalanProvinsi = () => {
+    kepemilikan = "JalanProvinsi";
+    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
+    $.getJSON(map_data, function (data) {
+        JalanProvinsiLines = map.data.addGeoJson(data);
+    });
+}
+
+let loadComplete = () => {
+    kepemilikan = getKepemilikan();
+    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Complete.json`;
+    $.getJSON(map_data, function (data) {
+        CompleteLines = map.data.addGeoJson(data);
+    });
+}
+
+let loadPerkerasan = () => {
+    kepemilikan = getKepemilikan();
+    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Perkerasan.json`;
+    $.getJSON(map_data, function (data) {
+        PerkerasanLines = map.data.addGeoJson(data);
+    });
+}
+
+let loadKondisi = () => {
+    kepemilikan = getKepemilikan();
+    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Kondisi.json`;
+    $.getJSON(map_data, function (data) {
+        KondisiLines = map.data.addGeoJson(data);
+    });
+}
+
+let clearJalanProvinsi = () => {
+    if (JalanProvinsiLines !== undefined) {
+        for (var i = 0; i < JalanProvinsiLines.length; i++) {
+            map.data.remove(JalanProvinsiLines[i]);
+        }
+    }
+}
+
+let clearComplete = () => {
+    if (CompleteLines !== undefined) {
+        for (var i = 0; i < CompleteLines.length; i++) {
+            map.data.remove(CompleteLines[i]);
+        }
+    }
+}
+
+let clearPerkerasan = () => {
+    if (PerkerasanLines !== undefined) {
+        for (var i = 0; i < PerkerasanLines.length; i++) {
+            map.data.remove(PerkerasanLines[i]);
+        }
+    }
+}
+
+let clearKondisi = () => {
+    if (KondisiLines !== undefined) {
+        for (var i = 0; i < KondisiLines.length; i++) {
+            map.data.remove(KondisiLines[i]);
+        }
+    }
 }
