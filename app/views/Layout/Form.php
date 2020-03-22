@@ -4,7 +4,7 @@
         {if $v.type eq 'hidden'}
         <input type="{$v.type}" name="{$v.name}" id="{$v.id}" value="{$data.detail[$v.name]}">
         {elseif $v.type eq 'switch'}
-        <div class="form-group row">
+        <div class="form-group row mb-1">
             {if !$data.mini}
             <div class="col-lg-3 col-md-4">&nbsp;</div>
             {/if}
