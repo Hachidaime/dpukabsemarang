@@ -500,6 +500,12 @@ class Functions
                 $awal[$f] = $row;
                 $f++;
             }
+
+            if ($data[$idx + 1]['segment'] == 0 || is_null($data[$idx + 1])) {
+                $row['koordinat'] = end($koordinat);
+                $akhir[$g] = $row;
+                $g++;
+            }
             unset($row['row_id']);
             unset($row['foto']);
 
@@ -554,7 +560,7 @@ class Functions
             }
         }
 
-        return [$segment, $complete, $perkerasan, $kondisi, $awal];
+        return [$segment, $complete, $perkerasan, $kondisi, $awal, $akhir];
     }
 
     public function getStyle(array $setup)

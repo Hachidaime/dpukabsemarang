@@ -838,7 +838,7 @@ class Jalan extends Controller
         }
 
         // TODO: Get Segment & Jalan with kondisi
-        list($segment, $complete, $perkerasan, $kondisi, $awal) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle);
+        list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle);
 
         // TODO: Save Segment & Jalan with perkerasan kondisi as JSON
         $filename = 'JalanSemua';
@@ -847,16 +847,18 @@ class Jalan extends Controller
         Functions::saveGeoJSON("{$filename}Kondisi.json", $style, $kondisi, 1);
         Functions::saveGeoJSON("{$filename}Segment.json", $style, $segment, 2);
         Functions::saveGeoJSON("{$filename}Awal.json", $style, $awal, 2);
+        Functions::saveGeoJSON("{$filename}Akhir.json", $style, $akhir, 2);
 
         // TODO: Save Segment & Jalan with perkerasan kondisi by kepemilikan as JSON
         foreach ($kepemilikan_opt as $key => $value) {
             $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
-            list($segment, $complete, $perkerasan, $kondisi, $awal) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle, $key);
+            list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle, $key);
             Functions::saveGeoJSON("{$filename}Complete.json", $style, $complete, 1);
             Functions::saveGeoJSON("{$filename}Perkerasan.json", $style, $perkerasan, 1);
             Functions::saveGeoJSON("{$filename}Kondisi.json", $style, $kondisi, 1);
             Functions::saveGeoJSON("{$filename}Segment.json", $style, $segment, 2);
             Functions::saveGeoJSON("{$filename}Awal.json", $style, $awal, 2);
+            Functions::saveGeoJSON("{$filename}Akhir.json", $style, $akhir, 2);
         }
     }
 
@@ -868,8 +870,8 @@ class Jalan extends Controller
 
     private function LineFromDetail(array $data, array $lineStyle, array $iconStyle, string $kepemilikan = null)
     {
-        list($segment, $complete, $perkerasan, $kondisi, $awal) = Functions::getLineFromDetail($data, $lineStyle, $iconStyle, $kepemilikan);
-        return [$segment, $complete, $perkerasan, $kondisi, $awal];
+        list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($data, $lineStyle, $iconStyle, $kepemilikan);
+        return [$segment, $complete, $perkerasan, $kondisi, $awal, $akhir];
     }
 
     private function JalanDescription(array $data = [])
