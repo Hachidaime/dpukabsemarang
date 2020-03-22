@@ -3,7 +3,7 @@
  * @param {*} data
  * ? selector image
  */
-let showImage = function (param) {
+let showImage = param => {
     /**
      * * Mendefinisikan variable
      */
@@ -28,7 +28,7 @@ let showImage = function (param) {
  * @param {*} array message
  * ? Pesan Alert
  */
-let makeAlert = function (data) {
+let makeAlert = data => {
     let totalAlert = Object.keys(data).length;
 
     if (totalAlert > 1) {
@@ -74,7 +74,7 @@ let makeAlert = function (data) {
  * @param {*} param
  * ? Snackbar content
  */
-let snackbar = function (param = null) {
+let snackbar = (param = null) => {
     /**
      * * Mendefinisikan variable
      */
@@ -94,7 +94,7 @@ let snackbar = function (param = null) {
  * @param {*} {*} page 
  * ? page
  */
-let loadGallery = function (page = 1) {
+let loadGallery = (page = 1) => {
     let url = `${base_url}/Gallery/index/search`;
     let params = {};
     params['page'] = page;
@@ -104,7 +104,7 @@ let loadGallery = function (page = 1) {
     }, "json");
 }
 
-let scrollFunction = function () {
+let scrollFunction = () => {
     let title_wrapper = $('.title-wrapper');
     let header_height = $('#header-img').height();
     if (document.body.scrollTop > header_height || document.documentElement.scrollTop > header_height) {
@@ -119,7 +119,7 @@ let scrollFunction = function () {
 /**
  * * Submit Login Form
  */
-let login = function () {
+let login = () => {
     /**
      * * Mendefinisikan variable
      */
@@ -144,7 +144,7 @@ let login = function () {
 /**
  * * Log Out
  */
-let logout = function () {
+let logout = () => {
     /**
      * * Mendefinisikan variable
      */
@@ -170,7 +170,7 @@ let logout = function () {
  * @param {*} id
  * ? system_id
  */
-let setMenu = function (id) {
+let setMenu = id => {
     let params = 'id=' + id;
     let url = `${base_url}/Session/setMenu`;
     $.post(url, params, function (data) {
@@ -178,7 +178,7 @@ let setMenu = function (id) {
     }, "json");
 }
 
-let clearKoordinatModal = function () {
+let clearKoordinatModal = () => {
     let myForm = $('.koordinatForm');
     myForm[0].reset();
     myForm.find('.selectpicker').val(0);
@@ -196,14 +196,8 @@ let clearKoordinatModal = function () {
     file_action.find('img').attr('href', '');
 }
 
-let width = function () {
-    return $(window).width();
-}
+let width = () => $(window).width();
 
-let openNav = function () {
-    $('#mySidepanel').show();
-}
+let openNav = () => $('#mySidepanel').show();
 
-let closeNav = function () {
-    $('#mySidepanel').hide();
-}
+let closeNav = () => $('#mySidepanel').hide();
