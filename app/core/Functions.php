@@ -458,10 +458,14 @@ class Functions
 
     public function getLineFromDetail(array $data, array $lineStyle, array $iconStyle, string $kepemilikan = null)
     {
-        $segment = [];
-        $complete = [];
+        $awal       = [];
+        $akhir      = [];
+        $segment    = [];
+        $complete   = [];
         $perkerasan = [];
-        $kondisi = [];
+        $kondisi    = [];
+        $f = 0;
+        $g = 0;
         $i = 0;
         $j = 0;
         $k = 0;
@@ -483,11 +487,18 @@ class Functions
             unset($row['latitude']);
             unset($row['longitude']);
 
-            if ($row['segment'] != $data[$idx - 1]['segment']) {
-                $row['style'] = $iconStyle[1];
+            if ($row['segment'] != $data[$idx - 1]['segment'] && $row['segment'] > 0) {
+                // $row['style'] = $iconStyle[1];
                 $row['koordinat'] = [(float) $longitude, (float) $latitude];
                 $segment[$i] = $row;
                 $i++;
+            }
+
+            if ($row['segment'] == 0) {
+                // $row['style'] = $iconStyle[1];
+                $row['koordinat'] = [(float) $longitude, (float) $latitude];
+                $awal[$f] = $row;
+                $f++;
             }
             unset($row['row_id']);
             unset($row['foto']);
@@ -543,7 +554,7 @@ class Functions
             }
         }
 
-        return [$segment, $complete, $perkerasan, $kondisi];
+        return [$segment, $complete, $perkerasan, $kondisi, $awal];
     }
 
     public function getStyle(array $setup)
