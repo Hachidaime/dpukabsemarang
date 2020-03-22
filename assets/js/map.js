@@ -351,9 +351,9 @@ let setLineStyle = features => {
     });
 }
 
-let setPointStyle = (features, icon) => {
-    map.data.setStyle(function (features) {
-        return /** @type {google.maps.Data.StyleOptions} */({
+let setPointStyle = (points, icon) => {
+    points.setStyle(function () {
+        return ({
             icon: {
                 url: `${server_base}/assets/img/${icon}.png`,
                 scaledSize: new google.maps.Size(8, 8),
@@ -361,6 +361,16 @@ let setPointStyle = (features, icon) => {
             },
         });
     });
+    // SegmentasiPoints.setMap(map);
+    // map.data.setStyle(function (points) {
+    //     return /** @type {google.maps.Data.StyleOptions} */({
+    //         icon: {
+    //             url: `${server_base}/assets/img/${icon}.png`,
+    //             scaledSize: new google.maps.Size(8, 8),
+    //             anchor: new google.maps.Point(4, 4),
+    //         },
+    //     });
+    // });
 }
 
 let Lines;
@@ -421,22 +431,6 @@ let loadSwitch = () => {
             clearKondisi();
         }
     }
-
-    let segmentasi = document.getElementById('segmentasi').checked;
-    if (segmentasi) {
-        loadSegmentasi();
-    }
-    else {
-        clearSegmentasi();
-    }
-
-    let awal = document.getElementById('awal').checked;
-    if (awal) {
-        loadAwal();
-    }
-    else {
-        clearAwal();
-    }
 }
 
 let loadJalanProvinsi = () => {
@@ -478,19 +472,40 @@ let loadKondisi = () => {
 let loadSegmentasi = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Segment.json`;
-    $.getJSON(map_data, function (data) {
-        SegmentasiPoints = map.data.addGeoJson(data);
-        setPointStyle(SegmentasiPoints, 'circle');
+    // $.getJSON(map_data, function (data) {
+    SegmentasiPoints = new google.maps.Data();
+    SegmentasiPoints.loadGeoJson(map_data);
+    SegmentasiPoints.setStyle(function () {
+        return ({
+            icon: {
+                url: `${server_base}/assets/img/circle.png`,
+                scaledSize: new google.maps.Size(8, 8),
+                anchor: new google.maps.Point(4, 4),
+            },
+        });
     });
+    SegmentasiPoints.setMap(map);
+    // });
 }
 
 let loadAwal = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Awal.json`;
-    $.getJSON(map_data, function (data) {
-        AwalPoints = map.data.addGeoJson(data);
-        setPointStyle(AwalPoints, 'triangle');
+    // $.getJSON(map_data, function (data) {
+    AwalPoints = new google.maps.Data();
+    AwalPoints.loadGeoJson(map_data);
+    AwalPoints.setStyle(function () {
+        return ({
+            icon: {
+                url: `${server_base}/assets/img/triangle.png`,
+                scaledSize: new google.maps.Size(8, 8),
+                anchor: new google.maps.Point(4, 4),
+            },
+        });
     });
+    AwalPoints.setMap(map);
+    // setPointStyle(AwalPoints, 'triangle');
+    // });
 }
 
 let clearJalanProvinsi = () => {
@@ -527,8 +542,18 @@ let clearKondisi = () => {
 
 let clearSegmentasi = () => {
     if (SegmentasiPoints !== undefined) {
-        for (var i = 0; i < SegmentasiPoints.length; i++) {
+        SegmentasiPoints.setMap(null);
+        /* for (var i = 0; i < SegmentasiPoints.length; i++) {
             map.data.remove(SegmentasiPoints[i]);
-        }
+        } */
+    }
+}
+
+let clearAwal = () => {
+    if (AwalPoints !== undefined) {
+        AwalPoints.setMap(null);
+        /* for (var i = 0; i < AwalPoints.length; i++) {
+            map.data.remove(AwalPoints[i]);
+        } */
     }
 }

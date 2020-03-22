@@ -346,8 +346,26 @@ $(document).ready(function () {
         }, 'json');
     });
 
-    searchGisForm.find('input[type=checkbox]').change(function () {
+    $('input[type=checkbox]#jalan_provinsi').change(function () {
         loadSwitch();
+    });
+
+    $('input[type=checkbox]#perkerasan').change(function () {
+        loadSwitch();
+    });
+
+    $('input[type=checkbox]#kondisi').change(function () {
+        loadSwitch();
+    });
+
+    $('input[type=checkbox]#segmentasi').change(function () {
+        if (this.checked) loadSegmentasi();
+        else clearSegmentasi();
+    });
+
+    $('input[type=checkbox]#awal').change(function () {
+        if (this.checked) loadAwal();
+        else clearAwal();
     });
 
     $('.btn-search-gis').click(function () {
