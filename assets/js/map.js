@@ -101,7 +101,6 @@ function centerControl(controlDiv, map) {
     });
 }
 
-
 function controlOpenNav(controlDiv, map) {
 
     // ? Set CSS for the control border.
@@ -124,123 +123,6 @@ function controlOpenNav(controlDiv, map) {
         openNav();
     });
 
-}
-
-/**
- * * Inisiasi Marker
- * @param {*} coordinate 
- * ? koordinat marker
- * @param {*} color 
- * ? warana marker
- * @param {*} info
- * ? Info marker 
- * @param {*} markertype 
- * ? Tipe marker
- * @param {*} icon 
- * ? Icon marker
- */
-let initMarker = (coordinate, color, info, markertype, icon) => {
-    /**
-     * * Mendefinisikan variable
-     */
-    var point = new google.maps.LatLng(lat, lng);
-    bounds.extend(point);
-
-    var markersymbol;
-    var scale;
-    var strokeWeight;
-
-    // ? Tipe Bukan Jembatan
-    if (markertype < 3) {
-        switch (markertype) {
-            case 0: // ? Segment
-                markersymbol = google.maps.SymbolPath.CIRCLE;
-                break;
-            case 1: // ? Awal Ruas Jalan
-                markersymbol = 'M -1.5,1 1.5,1 0,-1.5 z';
-                break;
-            case 2: // ? Akhir Ruas Jalan
-                markersymbol = 'M -1.5,0 0,-1.5 1.5,0 0,1.5 z';
-                break;
-        }
-        scale = 5;
-        strokeWeight = 2
-    }
-    else {
-        // ? Jembatan
-        markersymbol = MAP_PIN;
-        scale = 0.5;
-        strokeWeight = 0;
-    }
-
-    var myIcon = (icon != null) ? /*html*/`<i class="fas fa-${icon}"></i>` : '';
-
-    /**
-     * * Marker Options
-     */
-    var marker = new Marker({
-        map: map,
-        position: pt,
-        icon: {
-            path: markersymbol,
-            scale: scale,
-            fillColor: color.fill,
-            fillOpacity: 1,
-            strokeColor: color.stroke,
-            strokeWeight: strokeWeight
-        },
-        map_icon_label: myIcon
-    });
-
-    /**
-     * * Popup saat klik marker Marker
-     */
-    var popup = new google.maps.InfoWindow({
-        content: info
-    });
-
-    google.maps.event.addListener(marker, "click", function () {
-        if (currentPopup != null) {
-            currentPopup.close();
-            currentPopup = null;
-        }
-        popup.open(map, marker);
-        currentPopup = popup;
-    });
-
-    google.maps.event.addListener(popup, "closeclick", function () {
-        currentPopup = null;
-    });
-}
-
-/**
- * * Membuat Line pada Map
- * @param {*} koordinat 
- * ? korrdinat jalan
- * @param {*} width 
- * ? lebat line
- * @param {*} color 
- * ? warna line
- */
-let DrawLine = (koordinat, width, color = '#000') => {
-    var road = [];
-
-    $.each(koordinat, function (i, r) {
-        var point = r.split(",");
-        road.push(new google.maps.LatLng(point[0], point[1]));
-    });
-
-    /**
-     * * Line Options
-     */
-    var roadPrimer = new google.maps.Polyline({
-        path: road,
-        strokeColor: color,
-        //        strokeOpacity : item.opacity,
-        strokeWeight: width
-    });
-
-    roadPrimer.setMap(map);
 }
 
 let makeCoordinateArray = koordinat => {
@@ -351,28 +233,6 @@ let setLineStyle = features => {
     });
 }
 
-let setPointStyle = (points, icon) => {
-    points.setStyle(function () {
-        return ({
-            icon: {
-                url: `${server_base}/assets/img/${icon}.png`,
-                scaledSize: new google.maps.Size(8, 8),
-                anchor: new google.maps.Point(4, 4),
-            },
-        });
-    });
-    // SegmentasiPoints.setMap(map);
-    // map.data.setStyle(function (points) {
-    //     return /** @type {google.maps.Data.StyleOptions} */({
-    //         icon: {
-    //             url: `${server_base}/assets/img/${icon}.png`,
-    //             scaledSize: new google.maps.Size(8, 8),
-    //             anchor: new google.maps.Point(4, 4),
-    //         },
-    //     });
-    // });
-}
-
 let Lines;
 
 let loadLines = () => {
@@ -399,6 +259,7 @@ let PerkerasanLines;
 let KondisiLines;
 let SegmentasiPoints;
 let AwalPoints;
+let AkhirPoints;
 
 let loadSwitch = () => {
     let jlnProvinsi = document.getElementById('jalan_provinsi').checked;
@@ -472,7 +333,6 @@ let loadKondisi = () => {
 let loadSegmentasi = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Segment.json`;
-    // $.getJSON(map_data, function (data) {
     SegmentasiPoints = new google.maps.Data();
     SegmentasiPoints.loadGeoJson(map_data);
     SegmentasiPoints.setStyle(function () {
@@ -485,13 +345,11 @@ let loadSegmentasi = () => {
         });
     });
     SegmentasiPoints.setMap(map);
-    // });
 }
 
 let loadAwal = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Awal.json`;
-    // $.getJSON(map_data, function (data) {
     AwalPoints = new google.maps.Data();
     AwalPoints.loadGeoJson(map_data);
     AwalPoints.setStyle(function () {
@@ -504,8 +362,23 @@ let loadAwal = () => {
         });
     });
     AwalPoints.setMap(map);
-    // setPointStyle(AwalPoints, 'triangle');
-    // });
+}
+
+let loadAkhir = () => {
+    kepemilikan = getKepemilikan();
+    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Akhir.json`;
+    AkhirPoints = new google.maps.Data();
+    AkhirPoints.loadGeoJson(map_data);
+    AkhirPoints.setStyle(function () {
+        return ({
+            icon: {
+                url: `${server_base}/assets/img/rhombus.png`,
+                scaledSize: new google.maps.Size(8, 8),
+                anchor: new google.maps.Point(4, 4),
+            },
+        });
+    });
+    AkhirPoints.setMap(map);
 }
 
 let clearJalanProvinsi = () => {
@@ -543,17 +416,17 @@ let clearKondisi = () => {
 let clearSegmentasi = () => {
     if (SegmentasiPoints !== undefined) {
         SegmentasiPoints.setMap(null);
-        /* for (var i = 0; i < SegmentasiPoints.length; i++) {
-            map.data.remove(SegmentasiPoints[i]);
-        } */
     }
 }
 
 let clearAwal = () => {
     if (AwalPoints !== undefined) {
         AwalPoints.setMap(null);
-        /* for (var i = 0; i < AwalPoints.length; i++) {
-            map.data.remove(AwalPoints[i]);
-        } */
+    }
+}
+
+let clearAkhir = () => {
+    if (AkhirPoints !== undefined) {
+        AkhirPoints.setMap(null);
     }
 }

@@ -320,8 +320,13 @@ $(document).ready(function () {
 
         let jalan_opt = searchGisForm.find('select#no_jalan');
 
+        clearLines();
+        let html = [];
+        html.push(/*html*/`<option value="0">&nbsp;</option>`);
+        jalan_opt.html(html.join(''));
+        jalan_opt.selectpicker('refresh');
+
         $.post(url, $.param(params), function (data) {
-            clearLines();
             if (Object.keys(data).length > 0) {
                 loadLines();
             }
@@ -330,8 +335,6 @@ $(document).ready(function () {
                 // initMap();
             }
 
-            let html = [];
-            html.push(/*html*/`<option value="0">&nbsp;</option>`);
 
             if (Object.keys(data).length != 0) {
                 html.push(/*html*/`<option value="all">Semua</option>`);
@@ -366,6 +369,11 @@ $(document).ready(function () {
     $('input[type=checkbox]#awal').change(function () {
         if (this.checked) loadAwal();
         else clearAwal();
+    });
+
+    $('input[type=checkbox]#akhir').change(function () {
+        if (this.checked) loadAkhir();
+        else clearAkhir();
     });
 
     $('.btn-search-gis').click(function () {

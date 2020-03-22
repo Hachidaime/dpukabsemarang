@@ -10,6 +10,7 @@ class Gis_model extends Database
         Functions::setDataSession('form', ['switch', 'kondisi', 'kondisi', 'Kondisi']);
         Functions::setDataSession('form', ['switch', 'segmentasi', 'segmentasi', 'Segmentasi']);
         Functions::setDataSession('form', ['switch', 'awal', 'awal', 'Awal Ruas Jalan']);
+        Functions::setDataSession('form', ['switch', 'akhir', 'akhir', 'Akhir Ruas Jalan']);
         Functions::setDataSession('form', ['switch', 'jembatan', 'jembatan', 'Jembatan']);
 
         return Functions::getDataSession('form');
