@@ -485,7 +485,7 @@ class Functions
 
             if ($row['segment'] != $data[$idx - 1]['segment']) {
                 $row['style'] = $iconStyle[1];
-                $row['koordinat'] = "{$longitude},{$latitude},0";
+                $row['koordinat'] = [(float) $longitude, (float) $latitude];
                 $segment[$i] = $row;
                 $i++;
             }

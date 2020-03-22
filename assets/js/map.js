@@ -12,7 +12,7 @@ var bounds = new google.maps.LatLngBounds();
 /**
  * * Inisiasi Map (menampilkan map pada layar)
  * */
-function initMap() {
+let initMap = () => {
     /**
      * * Map Options
      */
@@ -66,7 +66,7 @@ function initMap() {
     return map;
 }
 
-function makeControl() {
+let makeControl = () => {
     let controlUI = document.createElement('div');
     controlUI.style.backgroundColor = '#fff';
     controlUI.style.border = '2px solid #fff';
@@ -126,7 +126,6 @@ function controlOpenNav(controlDiv, map) {
 
 }
 
-
 /**
  * * Inisiasi Marker
  * @param {*} coordinate 
@@ -140,7 +139,7 @@ function controlOpenNav(controlDiv, map) {
  * @param {*} icon 
  * ? Icon marker
  */
-function initMarker(coordinate, color, info, markertype, icon) {
+let initMarker = (coordinate, color, info, markertype, icon) => {
     /**
      * * Mendefinisikan variable
      */
@@ -223,7 +222,7 @@ function initMarker(coordinate, color, info, markertype, icon) {
  * @param {*} color 
  * ? warna line
  */
-function DrawLine(koordinat, width, color = '#000') {
+let DrawLine = (koordinat, width, color = '#000') => {
     var road = [];
 
     $.each(koordinat, function (i, r) {
@@ -244,7 +243,7 @@ function DrawLine(koordinat, width, color = '#000') {
     roadPrimer.setMap(map);
 }
 
-function makeCoordinateArray(koordinat) {
+let makeCoordinateArray = koordinat => {
     let coord = []
     $(koordinat).each(function (k, i) {
         coord.push([i.latitude, i.longitude]);
@@ -252,7 +251,7 @@ function makeCoordinateArray(koordinat) {
     return coord;
 }
 
-function makeCoordinatArrayObject(koordinat) {
+let makeCoordinatArrayObject = koordinat => {
     let coordinates = [];
     $(koordinat).each(function (k, i) {
         coordinates.push(new google.maps.LatLng(i.latitude, i.longitude));
@@ -260,19 +259,15 @@ function makeCoordinatArrayObject(koordinat) {
     return coordinates;
 }
 
-function makePath(coordinates) {
-    let path = new google.maps.Polyline({
+let makePath = coordinates => {
+    return new google.maps.Polyline({
         path: coordinates
     });
-
-    return path;
 }
 
-function countLength(path) {
-    return google.maps.geometry.spherical.computeLength(path.getPath());
-}
+let countLength = path => google.maps.geometry.spherical.computeLength(path.getPath());
 
-function getSegment(path, coord, segmentasi, remainingDist) {
+let getSegment = (path, coord, segmentasi, remainingDist) => {
     var coordSegment = [];
     if (segmentasi > 0) {
         var i = 1;
@@ -297,7 +292,7 @@ function getSegment(path, coord, segmentasi, remainingDist) {
     return coordSegment;
 }
 
-function genSegment() {
+let genSegment = () => {
     let url = $table.bootstrapTable('getOptions').url;
     url = url.replace('search', 'searchori');
     let segmentasi = $('#segmentasi').val();
@@ -356,6 +351,23 @@ let setLineStyle = features => {
     });
 }
 
+let setPointStyle = features => {
+    map.data.setStyle(function (features) {
+        return /** @type {google.maps.Data.StyleOptions} */({
+            icon: {
+                url: `${server_base}/assets/img/moon.png`,
+                scaledSize: new google.maps.Size(8, 8),
+                anchor: new google.maps.Point(4, 4),
+            },
+            // fillColor: features.getProperty('fillColor'),
+            // fillOpacity: features.getProperty('fillOpacity'),
+            // strokeColor: features.getProperty('strokeColor'),
+            // strokeWeight: features.getProperty('strokeWeight'),
+            // strokeOpacity: features.getProperty('strokeOpacity'),
+        });
+    });
+}
+
 let Lines;
 
 let loadLines = () => {
@@ -380,6 +392,7 @@ let JalanProvinsiLines;
 let CompleteLines;
 let PerkerasanLines;
 let KondisiLines;
+let SegmentasiPoints;
 
 let loadSwitch = () => {
     let jlnProvinsi = document.getElementById('jalan_provinsi').checked;
@@ -411,6 +424,14 @@ let loadSwitch = () => {
         else {
             clearKondisi();
         }
+    }
+
+    let segmentasi = document.getElementById('segmentasi').checked;
+    if (segmentasi) {
+        loadSegmentasi();
+    }
+    else {
+        clearSegmentasi();
     }
 }
 
@@ -450,6 +471,15 @@ let loadKondisi = () => {
     });
 }
 
+let loadSegmentasi = () => {
+    kepemilikan = getKepemilikan();
+    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Segment.json`;
+    $.getJSON(map_data, function (data) {
+        SegmentasiPoints = map.data.addGeoJson(data);
+        setPointStyle(SegmentasiPoints);
+    });
+}
+
 let clearJalanProvinsi = () => {
     if (JalanProvinsiLines !== undefined) {
         for (var i = 0; i < JalanProvinsiLines.length; i++) {
@@ -478,6 +508,14 @@ let clearKondisi = () => {
     if (KondisiLines !== undefined) {
         for (var i = 0; i < KondisiLines.length; i++) {
             map.data.remove(KondisiLines[i]);
+        }
+    }
+}
+
+let clearSegmentasi = () => {
+    if (SegmentasiPoints !== undefined) {
+        for (var i = 0; i < SegmentasiPoints.length; i++) {
+            map.data.remove(SegmentasiPoints[i]);
         }
     }
 }
