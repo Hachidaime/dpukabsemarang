@@ -8,6 +8,7 @@
 var center = null;
 var currentPopup;
 var bounds = new google.maps.LatLngBounds();
+var infowindow = new google.maps.InfoWindow()
 
 /**
  * * Inisiasi Map (menampilkan map pada layar)
@@ -52,9 +53,6 @@ let initMap = () => {
     // controlDiv.index = 1;
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlNav);
 
-    1
-
-    var infowindow = new google.maps.InfoWindow()
     map.data.addListener('click', function (event) {
         var myHTML = event.feature.getProperty("nama_jalan");
         infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
@@ -221,35 +219,32 @@ let getKepemilikan = () => {
     return kepemilikan;
 }
 
-let setLineStyle = features => {
-    map.data.setStyle(function (features) {
-        return /** @type {google.maps.Data.StyleOptions} */({
-            fillColor: features.getProperty('fillColor'),
-            fillOpacity: features.getProperty('fillOpacity'),
-            strokeColor: features.getProperty('strokeColor'),
-            strokeWeight: features.getProperty('strokeWeight'),
-            strokeOpacity: features.getProperty('strokeOpacity'),
-        });
-    });
-}
-
 let Lines;
 
 let loadLines = () => {
     kepemilikan = getKepemilikan();
 
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
+
     $.getJSON(map_data, function (data) {
-        Lines = map.data.addGeoJson(data);
-        setLineStyle(Lines);
+        Lines = new google.maps.Data();
+        Lines.addGeoJson(data);
+        Lines.setStyle(function (features) {
+            return /** @type {google.maps.Data.StyleOptions} */({
+                fillColor: features.getProperty('fillColor'),
+                fillOpacity: features.getProperty('fillOpacity'),
+                strokeColor: features.getProperty('strokeColor'),
+                strokeWeight: features.getProperty('strokeWeight'),
+                strokeOpacity: features.getProperty('strokeOpacity'),
+            });
+        });
+        Lines.setMap(map);
     });
 }
 
 let clearLines = () => {
     if (Lines !== undefined) {
-        for (var i = 0; i < Lines.length; i++) {
-            map.data.remove(Lines[i]);
-        }
+        Lines.setMap(null);
     }
 }
 
@@ -298,8 +293,18 @@ let loadJalanProvinsi = () => {
     kepemilikan = "JalanProvinsi";
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
     $.getJSON(map_data, function (data) {
-        JalanProvinsiLines = map.data.addGeoJson(data);
-        setLineStyle(JalanProvinsiLines);
+        JalanProvinsiLines = new google.maps.Data();
+        JalanProvinsiLines.addGeoJson(data);
+        JalanProvinsiLines.setStyle(function (features) {
+            return /** @type {google.maps.Data.StyleOptions} */({
+                fillColor: features.getProperty('fillColor'),
+                fillOpacity: features.getProperty('fillOpacity'),
+                strokeColor: features.getProperty('strokeColor'),
+                strokeWeight: features.getProperty('strokeWeight'),
+                strokeOpacity: features.getProperty('strokeOpacity'),
+            });
+        });
+        JalanProvinsiLines.setMap(map);
     });
 }
 
@@ -335,12 +340,19 @@ let loadSegmentasi = () => {
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Segment.json`;
     SegmentasiPoints = new google.maps.Data();
     SegmentasiPoints.loadGeoJson(map_data);
+    SegmentasiPoints.addListener('click', function (event) {
+        var myHTML = event.feature.getProperty("nama_jalan");
+        infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
+        // position the infowindow
+        infowindow.setPosition(event.latLng);
+        infowindow.open(map);
+    });
     SegmentasiPoints.setStyle(function () {
         return ({
             icon: {
                 url: `${server_base}/assets/img/circle.png`,
-                scaledSize: new google.maps.Size(8, 8),
-                anchor: new google.maps.Point(4, 4),
+                scaledSize: new google.maps.Size(10, 10),
+                anchor: new google.maps.Point(5, 5),
             },
         });
     });
@@ -352,12 +364,19 @@ let loadAwal = () => {
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Awal.json`;
     AwalPoints = new google.maps.Data();
     AwalPoints.loadGeoJson(map_data);
+    AwalPoints.addListener('click', function (event) {
+        var myHTML = event.feature.getProperty("nama_jalan");
+        infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
+        // position the infowindow
+        infowindow.setPosition(event.latLng);
+        infowindow.open(map);
+    });
     AwalPoints.setStyle(function () {
         return ({
             icon: {
                 url: `${server_base}/assets/img/triangle.png`,
-                scaledSize: new google.maps.Size(8, 8),
-                anchor: new google.maps.Point(4, 4),
+                scaledSize: new google.maps.Size(12, 12),
+                anchor: new google.maps.Point(6, 6),
             },
         });
     });
@@ -369,12 +388,19 @@ let loadAkhir = () => {
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Akhir.json`;
     AkhirPoints = new google.maps.Data();
     AkhirPoints.loadGeoJson(map_data);
+    AkhirPoints.addListener('click', function (event) {
+        var myHTML = event.feature.getProperty("nama_jalan");
+        infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
+        // position the infowindow
+        infowindow.setPosition(event.latLng);
+        infowindow.open(map);
+    });
     AkhirPoints.setStyle(function () {
         return ({
             icon: {
                 url: `${server_base}/assets/img/rhombus.png`,
-                scaledSize: new google.maps.Size(8, 8),
-                anchor: new google.maps.Point(4, 4),
+                scaledSize: new google.maps.Size(12, 12),
+                anchor: new google.maps.Point(6, 6),
             },
         });
     });
@@ -383,9 +409,7 @@ let loadAkhir = () => {
 
 let clearJalanProvinsi = () => {
     if (JalanProvinsiLines !== undefined) {
-        for (var i = 0; i < JalanProvinsiLines.length; i++) {
-            map.data.remove(JalanProvinsiLines[i]);
-        }
+        Lines.setMap(null);
     }
 }
 
