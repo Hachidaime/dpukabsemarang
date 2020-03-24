@@ -210,32 +210,49 @@ let getKepemilikan = () => {
     return kepemilikan;
 }
 
+let loadData = (map_data, type, simbol = null) => {
+    features = new google.maps.Data();
+    features.loadGeoJson(map_data);
+    features.addListener('click', function (event) {
+        var myHTML = event.feature.getProperty("nama_jalan");
+        infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
+        // position the infowindow
+        infowindow.setPosition(event.latLng);
+        infowindow.open(map);
+    });
+    features.setStyle(function (features) {
+        switch (type) {
+            case 'points':
+                return ({
+                    icon: {
+                        url: `${server_base}/assets/img/${simbol}.png`,
+                        scaledSize: new google.maps.Size(10, 10),
+                        anchor: new google.maps.Point(5, 5),
+                    },
+                });
+                break;
+            case 'lines':
+                return ({
+                    fillColor: features.getProperty('fillColor'),
+                    fillOpacity: features.getProperty('fillOpacity'),
+                    strokeColor: features.getProperty('strokeColor'),
+                    strokeWeight: features.getProperty('strokeWeight'),
+                    strokeOpacity: features.getProperty('strokeOpacity'),
+                });
+                break;
+        }
+    });
+    features.setMap(map);
+
+    return features;
+}
+
 let Lines;
 
 let loadLines = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
-    $.getJSON(map_data, function (data) {
-        Lines = new google.maps.Data();
-        Lines.addGeoJson(data);
-        Lines.addListener('click', function (event) {
-            var myHTML = event.feature.getProperty("nama_jalan");
-            infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
-            // position the infowindow
-            infowindow.setPosition(event.latLng);
-            infowindow.open(map);
-        });
-        Lines.setStyle(function (features) {
-            return ({
-                fillColor: features.getProperty('fillColor'),
-                fillOpacity: features.getProperty('fillOpacity'),
-                strokeColor: features.getProperty('strokeColor'),
-                strokeWeight: features.getProperty('strokeWeight'),
-                strokeOpacity: features.getProperty('strokeOpacity'),
-            });
-        });
-        Lines.setMap(map);
-    });
+    Lines = loadData(map_data, 'lines');
 }
 
 let clearLines = () => {
@@ -286,129 +303,45 @@ let loadSwitch = () => {
 }
 
 let loadJalanProvinsi = () => {
-    kepemilikan = "JalanProvinsi";
-    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
-    $.getJSON(map_data, function (data) {
-        JalanProvinsiLines = new google.maps.Data();
-        JalanProvinsiLines.addGeoJson(data);
-        JalanProvinsiLines.addListener('click', function (event) {
-            var myHTML = event.feature.getProperty("nama_jalan");
-            infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
-            // position the infowindow
-            infowindow.setPosition(event.latLng);
-            infowindow.open(map);
-        });
-        JalanProvinsiLines.setStyle(function (features) {
-            return ({
-                fillColor: features.getProperty('fillColor'),
-                fillOpacity: features.getProperty('fillOpacity'),
-                strokeColor: features.getProperty('strokeColor'),
-                strokeWeight: features.getProperty('strokeWeight'),
-                strokeOpacity: features.getProperty('strokeOpacity'),
-            });
-        });
-        JalanProvinsiLines.setMap(map);
-    });
+    // kepemilikan = "JalanProvinsi";
+    map_data = `${server_base}/data/${active_data_dir}/JalanProvinsi.json`;
+    JalanProvinsiLines = loadData(map_data, 'lines');
 }
 
 let loadComplete = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Complete.json`;
-    $.getJSON(map_data, function (data) {
-        CompleteLines = map.data.addGeoJson(data);
-        setLineStyle(CompleteLines);
-    });
+    CompleteLines = loadData(map_data, 'lines');
 }
 
 let loadPerkerasan = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Perkerasan.json`;
-    $.getJSON(map_data, function (data) {
-        PerkerasanLines = map.data.addGeoJson(data);
-        setLineStyle(PerkerasanLines);
-    });
+    PerkerasanLines = loadData(map_data, 'lines');
 }
 
 let loadKondisi = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Kondisi.json`;
-    $.getJSON(map_data, function (data) {
-        KondisiLines = map.data.addGeoJson(data);
-        setLineStyle(KondisiLines);
-    });
+    KondisiLines = loadData(map_data, 'lines');
 }
 
 let loadSegmentasi = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Segment.json`;
-
-    SegmentasiPoints = new google.maps.Data();
-    SegmentasiPoints.loadGeoJson(map_data);
-    SegmentasiPoints.addListener('click', function (event) {
-        var myHTML = event.feature.getProperty("nama_jalan");
-        infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
-        // position the infowindow
-        infowindow.setPosition(event.latLng);
-        infowindow.open(map);
-    });
-    SegmentasiPoints.setStyle(function () {
-        return ({
-            icon: {
-                url: `${server_base}/assets/img/circle.png`,
-                scaledSize: new google.maps.Size(10, 10),
-                anchor: new google.maps.Point(5, 5),
-            },
-        });
-    });
-    SegmentasiPoints.setMap(map);
+    SegmentasiPoints = loadData(map_data, 'points', 'circle');
 }
 
 let loadAwal = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Awal.json`;
-    AwalPoints = new google.maps.Data();
-    AwalPoints.loadGeoJson(map_data);
-    AwalPoints.addListener('click', function (event) {
-        var myHTML = event.feature.getProperty("nama_jalan");
-        infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
-        // position the infowindow
-        infowindow.setPosition(event.latLng);
-        infowindow.open(map);
-    });
-    AwalPoints.setStyle(function () {
-        return ({
-            icon: {
-                url: `${server_base}/assets/img/triangle.png`,
-                scaledSize: new google.maps.Size(12, 12),
-                anchor: new google.maps.Point(6, 6),
-            },
-        });
-    });
-    AwalPoints.setMap(map);
+    AwalPoints = loadData(map_data, 'points', 'triangle');
 }
 
 let loadAkhir = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Akhir.json`;
-    AkhirPoints = new google.maps.Data();
-    AkhirPoints.loadGeoJson(map_data);
-    AkhirPoints.addListener('click', function (event) {
-        var myHTML = event.feature.getProperty("nama_jalan");
-        infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
-        // position the infowindow
-        infowindow.setPosition(event.latLng);
-        infowindow.open(map);
-    });
-    AkhirPoints.setStyle(function () {
-        return ({
-            icon: {
-                url: `${server_base}/assets/img/rhombus.png`,
-                scaledSize: new google.maps.Size(12, 12),
-                anchor: new google.maps.Point(6, 6),
-            },
-        });
-    });
-    AkhirPoints.setMap(map);
+    AkhirPoints = loadData(map_data, 'points', 'rhombus');
 }
 
 let clearJalanProvinsi = () => {
@@ -419,25 +352,19 @@ let clearJalanProvinsi = () => {
 
 let clearComplete = () => {
     if (CompleteLines !== undefined) {
-        for (var i = 0; i < CompleteLines.length; i++) {
-            map.data.remove(CompleteLines[i]);
-        }
+        CompleteLines.setMap(null);
     }
 }
 
 let clearPerkerasan = () => {
     if (PerkerasanLines !== undefined) {
-        for (var i = 0; i < PerkerasanLines.length; i++) {
-            map.data.remove(PerkerasanLines[i]);
-        }
+        PerkerasanLines.setMap(null);
     }
 }
 
 let clearKondisi = () => {
     if (KondisiLines !== undefined) {
-        for (var i = 0; i < KondisiLines.length; i++) {
-            map.data.remove(KondisiLines[i]);
-        }
+        KondisiLines.setMap(null);
     }
 }
 
