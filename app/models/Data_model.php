@@ -63,7 +63,7 @@ class Data_model extends Database
         if (isset($search['limit'])) $params['limit'] = $search['limit'];
         if (isset($search['offset'])) $params['offset'] = $search['offset'];
 
-        $params['sort'] = "{$this->my_tables['data']}.name ASC";
+        $params['sort'] = "{$this->my_tables['data']}.name DESC";
 
         $query = $this->getSelectQuery($this->my_tables['data'], $params);
 

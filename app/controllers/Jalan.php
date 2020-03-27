@@ -669,7 +669,7 @@ class Jalan extends Controller
     {
         // TODO: Search Jalan on database: list & total
         list($list, $count) = $this->my_model->getData();
-        $total = $this->my_model->totalData();
+        $total = $this->my_model->totalData(d);
 
         // TODO: Prepare data to load on template
         $rows = [];
@@ -872,10 +872,5 @@ class Jalan extends Controller
     {
         list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($data, $lineStyle, $iconStyle, $kepemilikan);
         return [$segment, $complete, $perkerasan, $kondisi, $awal, $akhir];
-    }
-
-    private function JalanDescription(array $data = [])
-    {
-        return $this->dofetch('Jalan/Description', $data);
     }
 }
