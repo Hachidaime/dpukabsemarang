@@ -210,12 +210,15 @@ let getKepemilikan = () => {
     return kepemilikan;
 }
 
-let loadData = (map_data, type, simbol = null) => {
+let loadData = (map_data, type, jenis, simbol = null) => {
     features = new google.maps.Data();
     features.loadGeoJson(map_data);
     features.addListener('click', function (event) {
-        var myHTML = event.feature.getProperty("nama_jalan");
-        infowindow.setContent("<div style='width:150px;'>" + myHTML + "</div>");
+        // var myHTML = event.feature.getProperty("nama_jalan");
+        // infowindow.setContent("<div style='width:300px;'>" + myHTML + "</div>");
+        let myHTML = getFeatureInfo(event, jenis);
+        infowindow.setContent(myHTML);
+
         // position the infowindow
         infowindow.setPosition(event.latLng);
         infowindow.open(map);
@@ -247,12 +250,91 @@ let loadData = (map_data, type, simbol = null) => {
     return features;
 }
 
+let getFeatureInfo = (param, jenis) => {
+    let type;
+    let nomor;
+    let nama;
+    let segment;
+
+    let html = [
+        /*html*/`<div style="width:450px;">`,
+        /*html*/`<table class="table table-bordered table-striped table-sm">`
+    ];
+
+    switch (jenis) {
+        case 'jalan':
+            type = "Ruas Jalan";
+            nomor = param.feature.getProperty('no_jalan');
+            nama = param.feature.getProperty('nama_jalan');
+            break;
+        case 'segment':
+            type = "Ruas Jalan";
+            nomor = param.feature.getProperty('no_jalan');
+            nama = param.feature.getProperty('nama_jalan');
+            segment = param.feature.getProperty('segment');
+            break;
+        case 'awal':
+            type = "Ruas Jalan";
+            nomor = param.feature.getProperty('no_jalan');
+            nama = param.feature.getProperty('nama_jalan');
+            break;
+        case 'akhir':
+            type = "Ruas Jalan";
+            nomor = param.feature.getProperty('no_jalan');
+            nama = param.feature.getProperty('nama_jalan');
+            break;
+        case 'jembatan':
+            type = "Jembatan";
+            break;
+        case 'saluran':
+            type = "Saluran Air";
+            break;
+        case 'gorong':
+            type = "Gorong-gorong";
+            break;
+    }
+
+    html.push(
+        /*html*/`
+        <tr>
+            <td width="130px">No ${type}</td>
+            <td width="*">${nomor}</td>
+        </tr>
+        `
+    );
+
+    html.push(
+        /*html*/`
+        <tr>
+            <td>Nama ${type}</td>
+            <td>${nama}</td>
+        </tr>
+        `
+    );
+
+    if (jenis == 'segment') {
+        html.push(
+            /*html*/`
+            <tr>
+                <td>Segment</td>
+                <td>${segment}</td>
+            </tr>
+            `
+        );
+    }
+
+    html.push(/*html*/`</table>`);
+    html.push(/*html*/`</div>`);
+    // console.log(html);
+    return (html.join(''));
+}
+
 let Lines;
 
 let loadLines = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
-    Lines = loadData(map_data, 'lines');
+    Lines = loadData(map_data, 'lines', 'jalan');
 }
 
 let clearLines = () => {
@@ -305,43 +387,43 @@ let loadSwitch = () => {
 let loadJalanProvinsi = () => {
     // kepemilikan = "JalanProvinsi";
     map_data = `${server_base}/data/${active_data_dir}/JalanProvinsi.json`;
-    JalanProvinsiLines = loadData(map_data, 'lines');
+    JalanProvinsiLines = loadData(map_data, 'lines', 'jalan');
 }
 
 let loadComplete = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Complete.json`;
-    CompleteLines = loadData(map_data, 'lines');
+    CompleteLines = loadData(map_data, 'lines', 'jalan');
 }
 
 let loadPerkerasan = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Perkerasan.json`;
-    PerkerasanLines = loadData(map_data, 'lines');
+    PerkerasanLines = loadData(map_data, 'lines', 'jalan');
 }
 
 let loadKondisi = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Kondisi.json`;
-    KondisiLines = loadData(map_data, 'lines');
+    KondisiLines = loadData(map_data, 'lines', 'jalan');
 }
 
 let loadSegmentasi = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Segment.json`;
-    SegmentasiPoints = loadData(map_data, 'points', 'circle');
+    SegmentasiPoints = loadData(map_data, 'points', 'segment', 'circle');
 }
 
 let loadAwal = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Awal.json`;
-    AwalPoints = loadData(map_data, 'points', 'triangle');
+    AwalPoints = loadData(map_data, 'points', 'awal', 'triangle');
 }
 
 let loadAkhir = () => {
     kepemilikan = getKepemilikan();
     map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Akhir.json`;
-    AkhirPoints = loadData(map_data, 'points', 'rhombus');
+    AkhirPoints = loadData(map_data, 'points', 'akhir', 'rhombus');
 }
 
 let clearJalanProvinsi = () => {

@@ -628,6 +628,7 @@ class Functions
                 'properties' => [
                     'nama_jalan' => $row['nama_jalan'],
                     'no_jalan' => $row['no_jalan'],
+                    'segment' => $row['segment'],
                     'strokeColor' => $style[$mystyle]['color'],
                     'strokeWeight' => $style[$mystyle]['weight'],
                     'strokeOpacity' => $style[$mystyle]['opacity'],
