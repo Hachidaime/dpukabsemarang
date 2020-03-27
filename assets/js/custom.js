@@ -318,13 +318,13 @@ $(document).ready(function () {
         let params = {};
         params['kepemilikan'] = kepemilikan;
 
-        let jalan_opt = searchGisForm.find('select#no_jalan');
+        // let jalan_opt = searchGisForm.find('select#no_jalan');
 
         clearLines();
-        let html = [];
-        html.push(/*html*/`<option value="0">&nbsp;</option>`);
-        jalan_opt.html(html.join(''));
-        jalan_opt.selectpicker('refresh');
+        // let html = [];
+        // html.push(/*html*/`<option value="0">&nbsp;</option>`);
+        // jalan_opt.html(html.join(''));
+        // jalan_opt.selectpicker('refresh');
 
         $.post(url, $.param(params), function (data) {
             if (Object.keys(data).length > 0) {
@@ -336,15 +336,15 @@ $(document).ready(function () {
             }
 
 
-            if (Object.keys(data).length != 0) {
-                html.push(/*html*/`<option value="all">Semua</option>`);
-                $.each(data, function (k, v) {
-                    html.push(/*html*/`<option value="${k}">${k} -> ${v}</option>`);
-                });
-            }
+            // if (Object.keys(data).length != 0) {
+            //     html.push(/*html*/`<option value="all">Semua</option>`);
+            //     $.each(data, function (k, v) {
+            //         html.push(/*html*/`<option value="${k}">${k} -> ${v}</option>`);
+            //     });
+            // }
 
-            jalan_opt.html(html.join(''));
-            jalan_opt.selectpicker('refresh');
+            // jalan_opt.html(html.join(''));
+            // jalan_opt.selectpicker('refresh');
 
         }, 'json');
     });
