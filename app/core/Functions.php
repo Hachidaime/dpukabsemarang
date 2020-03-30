@@ -530,7 +530,7 @@ class Functions
             if ($row['perkerasan'] > 0) {
                 if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
                     if ($row['perkerasan'] == $data[$idx - 1]['perkerasan']) {
-                        $perkerasan[$j - 1]['koordinat'] = array_merge($perkerasan[$j - 1]['koordinat'], $koordinat);
+                        $perkerasan[$k - 1]['koordinat'] = array_merge($perkerasan[$k - 1]['koordinat'], $koordinat);
                     } else {
                         $row['style'] = $lineStyle[$row['kepemilikan']][$row['perkerasan']][0];
                         $perkerasan[$k] = $row;
@@ -546,7 +546,7 @@ class Functions
             if ($row['kondisi'] > 0) {
                 if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
                     if ($row['kondisi'] == $data[$idx - 1]['kondisi']) {
-                        $kondisi[$j - 1]['koordinat'] = array_merge($kondisi[$j - 1]['koordinat'], $koordinat);
+                        $kondisi[$l - 1]['koordinat'] = array_merge($kondisi[$l - 1]['koordinat'], $koordinat);
                     } else {
                         $row['style'] = $lineStyle[$row['kepemilikan']][0][$row['kondisi']];
                         $kondisi[$l] = $row;
@@ -644,6 +644,11 @@ class Functions
     public function saveGeoJSON(string $filename, $style, $content, $simbol)
     {
         $content = self::createGeoJSON($style, $content, $simbol);
+        self::saveJSON($filename, $content);
+    }
+
+    public function saveJSON(string $filename, $content)
+    {
         $filedir = DOC_ROOT . "data/{$_POST['name']}";
         FileHandler::createWritableFolder($filedir);
 
