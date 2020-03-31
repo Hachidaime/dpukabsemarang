@@ -656,4 +656,12 @@ class Functions
         fwrite($myfile, json_encode($content));
         fclose($myfile);
     }
+
+    public function readJSON(string $filepath)
+    {
+        $strJsonFileContents = file_get_contents($filepath);
+        $array = json_decode($strJsonFileContents, true);
+
+        return $array;
+    }
 }
