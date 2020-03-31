@@ -64,31 +64,12 @@ class Laporan_model extends Database
         return Functions::getDataSession('thead');
     }
 
-    public function getJalan()
+    public function getLaporan()
     {
-        $my_table = $this->model('Jalan_model')->getTable();
+        $active_data_dir = $this->model('Data_model')->getActiveData();
+        $filepath = DOC_ROOT . "data/{$active_data_dir}/Laporan.json";
+        $data = Functions::readJSON($filepath);
 
-        $query = "SELECT 
-                {$my_table['jalan']}.no_jalan,
-                {$my_table['jalan']}.nama_jalan,
-                {$my_table['jalan']}.kepemilikan, 
-                {$my_table['jalan']}.panjang,
-                {$my_table['jalan']}.lebar_rata,
-                {$my_table['detail']}.perkerasan,
-                {$my_table['detail']}.no_detail,
-                {$my_table['detail']}.kondisi,
-                {$my_table['detail']}.koordinat
-            FROM {$my_table['jalan']}
-            RIGHT JOIN {$my_table['detail']} ON {$my_table['jalan']}.no_jalan = {$my_table['detail']}.no_jalan
-            ORDER BY {$my_table['jalan']}.kepemilikan ASC, {$my_table['jalan']}.no_jalan ASC
-        ";
-
-        $this->execute($query);
-        return $this->multiarray();
-    }
-
-    public function totalJalan()
-    {
-        return $this->model('Jalan_model')->totalJalan();
+        return $data;
     }
 }

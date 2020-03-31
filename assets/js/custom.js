@@ -335,7 +335,6 @@ $(document).ready(function () {
                 // initMap();
             }
 
-
             // if (Object.keys(data).length != 0) {
             //     html.push(/*html*/`<option value="all">Semua</option>`);
             //     $.each(data, function (k, v) {
