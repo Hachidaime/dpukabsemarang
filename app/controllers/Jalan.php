@@ -825,23 +825,28 @@ class Jalan extends Controller
         $list = $this->my_model->getAllDataJalan();
 
         $jalan = $this->LineFromJalan($list['jalan'], $lineStyle);
-
-        Functions::saveGeoJSON('JalanSemua.json', $style, $jalan, 1); // TODO: Save Jalan without attribute as GeoJSON
-
-        // TODO: Get Segment & Jalan with kondisi
         list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle);
+        $filename = "JalanSemua";
 
-        // TODO: Save Segment & Jalan with perkerasan kondisi as JSON
-        $filename = 'JalanSemua';
-        Functions::saveGeoJSON("{$filename}Complete.json", $style, $complete, 1);
-        Functions::saveGeoJSON("{$filename}Perkerasan.json", $style, $perkerasan, 1);
-        Functions::saveGeoJSON("{$filename}Kondisi.json", $style, $kondisi, 1);
-        Functions::saveGeoJSON("{$filename}Segment.json", $style, $segment, 2);
-        Functions::saveGeoJSON("{$filename}Awal.json", $style, $awal, 2);
-        Functions::saveGeoJSON("{$filename}Akhir.json", $style, $akhir, 2);
+        $laporan = $this->GenerateDataLaporan($jalan, $perkerasan, $kondisi);
 
+        $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir, $laporan);
+
+        // TODO: Save Segment & Jalan with perkerasan kondisi by kepemilikan as JSON
+        $kepemilikan_opt = $this->options('kepemilikan_opt'); // TODO: Get Kepemilikan Options
+        foreach ($kepemilikan_opt as $kepemilikan => $value) {
+            $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
+
+            $jalan = $this->LineFromJalan($list['jalan'], $lineStyle, $kepemilikan);
+            list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle, $kepemilikan);
+            $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir);
+        }
+    }
+
+    public function GenerateDataLaporan($jalan, $perkerasan, $kondisi)
+    {
         $laporan = [];
-        $laporan_data = ['no_jalan', 'nama_jalan', 'panjang', 'lebar_rata'];
+        $laporan_data = ['kepemilikan', 'no_jalan', 'nama_jalan', 'panjang', 'lebar_rata'];
         foreach ($jalan as $row) {
             $no_jalan = $row['no_jalan'];
             foreach ($row as $key => $value) {
@@ -860,25 +865,20 @@ class Jalan extends Controller
             $laporan[$row['no_jalan']]['kondisi'][$row['kondisi']] = $row['koordinat'];
         }
 
-        Functions::saveJSON('Laporan.json', $laporan);
+        return $laporan;
+    }
 
-        $kepemilikan_opt = $this->options('kepemilikan_opt'); // TODO: Get Kepemilikan Options
-
-        // TODO: Save Segment & Jalan with perkerasan kondisi by kepemilikan as JSON
-        foreach ($kepemilikan_opt as $kepemilikan => $value) {
-            $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
-
-            $jalan = $this->LineFromJalan($list['jalan'], $lineStyle, $kepemilikan);
-            Functions::saveGeoJSON("{$filename}.json", $style, $jalan, 1); // TODO: Save Jalan as JSON
-
-            list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle, $kepemilikan);
-            Functions::saveGeoJSON("{$filename}Complete.json", $style, $complete, 1);
-            Functions::saveGeoJSON("{$filename}Perkerasan.json", $style, $perkerasan, 1);
-            Functions::saveGeoJSON("{$filename}Kondisi.json", $style, $kondisi, 1);
-            Functions::saveGeoJSON("{$filename}Segment.json", $style, $segment, 2);
-            Functions::saveGeoJSON("{$filename}Awal.json", $style, $awal, 2);
-            Functions::saveGeoJSON("{$filename}Akhir.json", $style, $akhir, 2);
-        }
+    public function GenerateDataSave(string $filename, $style, $jalan = [], $segment = [], $complete = [], $perkerasan = [], $kondisi = [], $awal = [], $akhir = [], $laporan = [])
+    {
+        // TODO: Save Segment & Jalan with perkerasan kondisi as JSON
+        if (!empty($jalan)) Functions::saveGeoJSON("{$filename}.json", $style, $jalan, 1); // TODO: Save Jalan without attribute as GeoJSON
+        if (!empty($complete)) Functions::saveGeoJSON("{$filename}Complete.json", $style, $complete, 1);
+        if (!empty($perkerasan)) Functions::saveGeoJSON("{$filename}Perkerasan.json", $style, $perkerasan, 1);
+        if (!empty($kondisi)) Functions::saveGeoJSON("{$filename}Kondisi.json", $style, $kondisi, 1);
+        if (!empty($segment)) Functions::saveGeoJSON("{$filename}Segment.json", $style, $segment, 2);
+        if (!empty($awal)) Functions::saveGeoJSON("{$filename}Awal.json", $style, $awal, 2);
+        if (!empty($akhir)) Functions::saveGeoJSON("{$filename}Akhir.json", $style, $akhir, 2);
+        if (!empty($laporan)) Functions::saveJSON('Laporan.json', $laporan);
     }
 
     public function LineFromJalan(array $data, array $lineStyle, string $kepemilikan = null)
