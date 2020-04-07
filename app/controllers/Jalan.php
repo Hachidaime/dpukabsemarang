@@ -34,6 +34,9 @@ class Jalan extends Controller
             case 'remove':
                 $this->JalanRemove();
                 break;
+            case 'generate':
+                $this->GenerateData();
+                break;
             default:
                 $this->JalanDefault();
         }
@@ -223,6 +226,8 @@ class Jalan extends Controller
                     }
                 }
             }
+
+            $this->GenerateData();
         } else {
             Functions::setDataSession('alert', ["{$tag} Jalan failed.", 'danger']);
         }
@@ -612,205 +617,8 @@ class Jalan extends Controller
      */
 
     /**
-     * * Start Generate Jalan
+     * * Start Generate Data Jalan
      */
-    public function generate(string $param1 = null, string $param2 = null)
-    {
-        $this->my_model = $this->model('Data_model');
-
-        switch ($param1) {
-            case 'search':
-                $this->GenerateSearch();
-                break;
-            case 'add':
-                $this->GenerateAdd();
-                break;
-            case 'edit':
-                if (!isset($param2)) Header("Location: " . BASE_URL . "/StaticPage/Error404");
-                $this->GenerateEdit($param2);
-                break;
-            case 'submit':
-                $this->GenerateSubmit();
-                break;
-            case 'remove':
-                $this->GenerateRemove($_POST['id']);
-                break;
-            default:
-                $this->GenerateDefault();
-                break;
-        }
-    }
-
-    private function GenerateDefault()
-    {
-        // TODO: Clear coordinates session
-        Functions::clearDataSession('coordinates');
-
-        // TODO: Set title
-        Functions::setTitle("Generate Data Jalan");
-
-        // TODO: Load toolbar: add button
-        $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
-
-        // TODO: Load table properties: column name, data-url
-        $data['data'] = Functions::defaultTableData();
-        $data['thead'] = $this->my_model->getDataThead();
-        $data['url'] = BASE_URL . "/Jalan/generate/search";
-
-        // TODO: Load table template
-        $table = $this->dofetch('Layout/Table', $data);
-
-        // TODO: Load template
-        $data['main'][] = $table;
-        $this->view('Layout/Default', $data);
-    }
-
-    private function GenerateSearch()
-    {
-        // TODO: Search Jalan on database: list & total
-        list($list, $count) = $this->my_model->getData();
-        $total = $this->my_model->totalData();
-
-        // TODO: Prepare data to load on template
-        $rows = [];
-        foreach ($list as $idx => $row) {
-            $row['row'] = Functions::getSearch()['offset'] + $idx + 1;
-            array_push($rows, $row);
-        }
-
-        // TODO: Echoing data as JSON
-        Functions::setDataTable($rows, $count, $total);
-        exit;
-    }
-
-    private function GenerateAdd()
-    {
-        Functions::setTitle("Add Generate Data Jalan");
-
-        $detail['name'] = date('YmdHis');
-        $detail['name_text'] = $detail['name'];
-        $data['detail'] = $detail;
-
-        $data['form'] = $this->my_model->getDataForm();
-        $this->form($data);
-    }
-
-    private function GenerateEdit($id)
-    {
-        // TODO: Get Data dari Database
-        list($detail, $count) = $this->GenerateDetail($id);
-        $detail['name_text'] = $detail['name'];
-
-        // TODO: Set detail Data
-        $data['detail'] = $detail;
-
-        // TODO: Cek Data exist
-        if ($count <= 0) Header("Location: " . BASE_URL . "/StaticPage/Error404");
-
-        $data['form'] = $this->my_model->getDataForm();
-        $this->form($data);
-    }
-
-    /**
-     * * Data::DataSubmit()
-     * ? Submit Form Data
-     */
-    private function GenerateSubmit()
-    {
-        // TODO: Get Validasi form Data
-        $error = $this->GenerateValidate();
-
-        // TODO: Cek error
-        if (!$error) { // ? No Error
-            echo json_encode($this->GenerateProcess());
-        } else { // ! Error
-            echo json_encode($error);
-        }
-        exit;
-    }
-
-    /**
-     * * Data::DataValidate()
-     * ? Validasi form Data
-     */
-    private function GenerateValidate()
-    {
-        // TODO: Get form Data
-        $form = $this->my_model->getDataForm();
-
-        foreach ($form as $row) {
-            // TODO: Validasi form Data
-            $this->validate($_POST, $row, 'Data_model', 'data');
-        }
-
-        // TODO: Mengembalikan hasil validasi
-        return Functions::getDataSession('alert');
-    }
-
-    /**
-     * * Data::DataProcess()
-     * ? Proses form input
-     */
-    private function GenerateProcess()
-    {
-        // TODO: Cek input id
-        if ($_POST['id'] > 0) { // ? Id Data exist
-            // TODO: Proses edit Data
-            $result = $this->my_model->updateData();
-            $tag = "Edit";
-        } else { // ! Id Data not exist
-            $this->GenerateData();
-            // exit;
-            // TODO: Proses add Data
-            $result = $this->my_model->createData();
-            $tag = "Add";
-        }
-
-        // TODO: Cek hasil proses
-        if ($result) { // ? Proses success
-            Functions::setDataSession('alert', ["{$tag} Generate Data Jalan success.", 'success']);
-        } else { // ! Proses gagal
-            Functions::setDataSession('alert', ["{$tag} Generate Data Jalan failed.", 'danger']);
-        }
-
-        // TODO: Mengembalikan hasil proses
-        return Functions::getDataSession('alert');
-    }
-
-    /**
-     * * Data::DataDetail($id)
-     * ? Get Data detail by id
-     * @param id
-     * ? Id Data
-     */
-    private function GenerateDetail($id)
-    {
-        return $this->my_model->getDataDetail($id);
-    }
-
-    /**
-     * * Data::DataRemove($id)
-     * ? Menghapus Data by id
-     * @param id
-     * ? Id Data
-     */
-    private function GenerateRemove($id)
-    {
-        // TODO: Proses hapus data
-        $result = $this->my_model->deleteData($id);
-        $tag = 'Remove';
-
-        // TODO: Cek hasil proses hapus
-        if ($result) { // ? Hapus Data success
-            Functions::setDataSession('alert', ["{$tag} Generate Data Jalan success.", 'success']);
-        } else { // ! Hapus Data gagal
-            Functions::setDataSession('alert', ["{$tag} Generate Data Jalan failed.", 'danger']);
-        }
-
-        // TODO: Mengembalikan hasil proses
-        return Functions::getDataSession('alert');
-    }
-
     private function GenerateData()
     {
         // * Setup from database
@@ -822,7 +630,7 @@ class Jalan extends Controller
         list($style, $lineStyle, $iconStyle) = Functions::getStyle($setup_jalan);
 
         // TODO: Get All Jalan Data
-        $list = $this->my_model->getAllDataJalan();
+        $list = $this->model('Data_model')->getAllDataJalan();
 
         $jalan = $this->LineFromJalan($list['jalan'], $lineStyle);
         list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = $this->LineFromDetail($list['detail'], $lineStyle, $iconStyle);

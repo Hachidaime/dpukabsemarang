@@ -333,7 +333,7 @@ let Lines;
 
 let loadLines = () => {
     kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}.json`;
+    map_data = `${server_base}/data/${kepemilikan}.json`;
     Lines = loadData(map_data, 'lines', 'jalan');
 }
 
@@ -386,43 +386,43 @@ let loadSwitch = () => {
 
 let loadJalanProvinsi = () => {
     // kepemilikan = "JalanProvinsi";
-    map_data = `${server_base}/data/${active_data_dir}/JalanProvinsi.json`;
+    map_data = `${server_base}/data/JalanProvinsi.json`;
     JalanProvinsiLines = loadData(map_data, 'lines', 'jalan');
 }
 
 let loadComplete = () => {
     kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Complete.json`;
+    map_data = `${server_base}/data/${kepemilikan}Complete.json`;
     CompleteLines = loadData(map_data, 'lines', 'jalan');
 }
 
 let loadPerkerasan = () => {
     kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Perkerasan.json`;
+    map_data = `${server_base}/data/${kepemilikan}Perkerasan.json`;
     PerkerasanLines = loadData(map_data, 'lines', 'jalan');
 }
 
 let loadKondisi = () => {
     kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Kondisi.json`;
+    map_data = `${server_base}/data/${kepemilikan}Kondisi.json`;
     KondisiLines = loadData(map_data, 'lines', 'jalan');
 }
 
 let loadSegmentasi = () => {
     kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Segment.json`;
+    map_data = `${server_base}/data/${kepemilikan}Segment.json`;
     SegmentasiPoints = loadData(map_data, 'points', 'segment', 'circle');
 }
 
 let loadAwal = () => {
     kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Awal.json`;
+    map_data = `${server_base}/data/${kepemilikan}Awal.json`;
     AwalPoints = loadData(map_data, 'points', 'awal', 'triangle');
 }
 
 let loadAkhir = () => {
     kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${active_data_dir}/${kepemilikan}Akhir.json`;
+    map_data = `${server_base}/data/${kepemilikan}Akhir.json`;
     AkhirPoints = loadData(map_data, 'points', 'akhir', 'rhombus');
 }
 

@@ -649,7 +649,7 @@ class Functions
 
     public function saveJSON(string $filename, $content)
     {
-        $filedir = DOC_ROOT . "data/{$_POST['name']}";
+        $filedir = DOC_ROOT . "data";
         FileHandler::createWritableFolder($filedir);
 
         $myfile = fopen("{$filedir}/{$filename}", "w") or die("Unable to open file!");
