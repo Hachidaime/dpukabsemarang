@@ -93,9 +93,6 @@
     </div>
 </div>
 
-<script>
-    let active_data_dir = '{$data.active_data_dir}';
-</script>
 {literal}
 <script>
     window.onload = function() {
