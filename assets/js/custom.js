@@ -311,8 +311,11 @@ $(document).ready(function () {
     });
 
     const searchGisForm = $('.searchGisForm');
+    let searchCheckbox = searchGisForm.find('input[type=checkbox]');
 
     searchGisForm.find('select#kepemilikan').change(function () {
+        searchCheckbox.attr("disabled", true);
+
         let kepemilikan = this.value;
         let url = `${base_url}/Gis/index/jalan`;
         let params = {};
@@ -329,6 +332,7 @@ $(document).ready(function () {
         $.post(url, $.param(params), function (data) {
             if (Object.keys(data).length > 0) {
                 loadLines();
+                searchCheckbox.removeAttr("disabled");
             }
             else {
                 makeAlert(JSON.parse('{"danger":["Data tidak ditemukan."]}'));
@@ -347,6 +351,8 @@ $(document).ready(function () {
 
         }, 'json');
     });
+
+    searchCheckbox.attr("disabled", true);
 
     $('input[type=checkbox]#jalan_provinsi').change(function () {
         loadSwitch();
