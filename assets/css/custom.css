@@ -32,6 +32,10 @@ body {
   background: url('../img/bg-img.png') repeat !important;
 }
 
+.header-banner{
+  margin-top: 36px;
+}
+
 .footer {
   position: relative;
   bottom: 0;
