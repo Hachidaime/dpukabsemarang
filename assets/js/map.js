@@ -213,16 +213,18 @@ let getKepemilikan = () => {
 let loadData = (map_data, type, jenis, simbol = null) => {
     features = new google.maps.Data();
     features.loadGeoJson(map_data);
-    features.addListener('click', function (event) {
-        // var myHTML = event.feature.getProperty("nama_jalan");
-        // infowindow.setContent("<div style='width:300px;'>" + myHTML + "</div>");
-        let myHTML = getFeatureInfo(event, jenis);
-        infowindow.setContent(myHTML);
+    if (jenis != 'batas') {
+        features.addListener('click', function (event) {
+            // var myHTML = event.feature.getProperty("nama_jalan");
+            // infowindow.setContent("<div style='width:300px;'>" + myHTML + "</div>");
+            let myHTML = getFeatureInfo(event, jenis);
+            infowindow.setContent(myHTML);
 
-        // position the infowindow
-        infowindow.setPosition(event.latLng);
-        infowindow.open(map);
-    });
+            // position the infowindow
+            infowindow.setPosition(event.latLng);
+            infowindow.open(map);
+        });
+    }
     features.setStyle(function (features) {
         switch (type) {
             case 'points':
@@ -241,6 +243,15 @@ let loadData = (map_data, type, jenis, simbol = null) => {
                     strokeColor: features.getProperty('strokeColor'),
                     strokeWeight: features.getProperty('strokeWeight'),
                     strokeOpacity: features.getProperty('strokeOpacity'),
+                });
+                break;
+            case 'border':
+                let batasColors = { "Batas Kabupaten": "#0d0d0d", "Batas Kecamatan": "#808080", "Batas Desa": "#997300" };
+                let batasWeight = { "Batas Kabupaten": "3", "Batas Kecamatan": "2", "Batas Desa": "1" };
+                return ({
+                    fillColor: batasColors[features.getProperty('fillColor')],
+                    strokeColor: batasColors[features.getProperty('strokeColor')],
+                    strokeWeight: batasWeight[features.getProperty('strokeWeight')],
                 });
                 break;
         }
@@ -466,4 +477,10 @@ let clearAkhir = () => {
     if (AkhirPoints !== undefined) {
         AkhirPoints.setMap(null);
     }
+}
+
+let BatasLines;
+let loadBatas = () => {
+    map_data = `${server_base}/data/Batas.json`;
+    BatasLines = loadData(map_data, 'border', 'batas');
 }
