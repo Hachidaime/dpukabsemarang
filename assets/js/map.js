@@ -163,7 +163,7 @@ let getSegment = (path, coord, segmentasi, remainingDist) => {
     return coordSegment;
 }
 
-let genSegment = () => {
+let genSegmentOld = () => {
     let url = $table.bootstrapTable('getOptions').url;
     url = url.replace('search', 'searchori');
     let segmentasi = $('#segmentasi').val();
@@ -189,6 +189,57 @@ let genSegment = () => {
             $table.bootstrapTable('refresh')
         });
     }, "json");
+}
+
+let genSegment = () => {
+    let coordinates = [];
+    let importFilename = document.getElementById('upload_koordinat').value;
+    let koordinat;
+    if (importFilename != '') {
+        importFilename = /*html*/`${server_base}/upload/temp/${importFilename}`;
+        coordinates = getKML(importFilename);
+    }
+    else {
+        let url = $table.bootstrapTable('getOptions').url;
+        url = url.replace('search', 'searchori');
+        koordinat = getAJAX(url);
+        coordinates = JSON.parse(koordinat);
+    }
+    console.log(coordinates);
+}
+
+let getKML = importFilename => {
+    // import the file --- se related function below
+    let content;
+    content = getAJAX(importFilename).toString();
+    content = content.replace(/gx:/g, "");
+
+    // build an xmlObj for parsing
+    xmlDocObj = $($.parseXML(content));
+
+    let coord;
+    let coordinates = [];
+    if (xmlDocObj.find('coordinates').length > 0) {
+        coord = xmlDocObj.find('coordinates').html().trim().split(' ');
+        coord.forEach(function (el) {
+            let geo = [];
+            el.split(',').forEach(function (row) {
+                geo.push(parseFloat(row));
+            })
+            coordinates.push(geo);
+        });
+    }
+    else {
+        coord = xmlDocObj.find('coord');
+        coord.each(function (i, el) {
+            let geo = [];
+            el.textContent.split(' ').forEach(function (row) {
+                geo.push(parseFloat(row));
+            });
+            coordinates.push(geo);
+        });
+    }
+    return coordinates;
 }
 
 let getKepemilikan = () => {

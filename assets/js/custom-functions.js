@@ -201,3 +201,10 @@ let width = () => $(window).width();
 let openNav = () => $('#mySidepanel').show();
 
 let closeNav = () => $('#mySidepanel').hide();
+
+let getAJAX = url => {
+    var request = new XMLHttpRequest();
+    request.open("GET", url, false);
+    request.send(null);
+    return request.responseText;
+};
