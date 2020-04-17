@@ -6,6 +6,7 @@
 class Jalan extends Controller
 {
     private $old_detail;
+    private $no_jalan;
     /**
      * * Start Jalan 
      */
@@ -265,13 +266,14 @@ class Jalan extends Controller
     public function Koordinat(string $param1 = null, string $param2 = null)
     {
         $this->my_model = $this->model('Jalan_model');
+        $this->no_jalan = $param2;
 
         switch ($param1) {
             case 'search':
-                $this->KoordinatSearch($param2);
+                $this->KoordinatSearch();
                 break;
             case 'searchori':
-                $this->KoordinatAwal($param2);
+                $this->KoordinatOri();
                 break;
             case 'setsession':
                 $this->KoordinatSetSesion();
@@ -285,235 +287,117 @@ class Jalan extends Controller
         }
     }
 
-    private function KoordinatSearch($no_jalan = null)
+    private function KoordinatSearch()
     {
+        $this->KoordinatSetSesion();
+        $coord = Functions::getDataSession('coordinates', false);
+        list($awal, $final, $ori, $segmented) = $coord;
+
         $perkerasan_opt = $this->options('perkerasan_opt');
         $kondisi_opt = $this->options('kondisi_opt');
 
         $search = Functions::getSearch();
         $list_koordinat = [];
+        foreach ($final as $idx => $row) {
+            $row['row'] = $idx + 1;
+            $row['perkerasan_text'] = $perkerasan_opt[$row['perkerasan']];
+            $row['kondisi_text'] = $kondisi_opt[$row['kondisi']];
 
-        $coord = Functions::getDataSession('coordinates', false);
-
-
-        // var_dump($koordinat_jalan);
-        $used_coord = "";
-        if (!empty($coord['final'])) {
-            $koordinat = $coord['final'];
-            $used_coord = "final1";
-        } elseif (!empty($coord['awal'])) {
-            $koordinat = $coord['awal'];
-            $used_coord = "awal1";
-        } else {
-            list($koordinat_jalan, $koordinat_count) = $this->KoordinatJalanSearch($no_jalan);
-            list($detail_jalan, $detail_count) = $this->DetailJalanSearch($no_jalan);
-
-            if ($detail_count) {
-                foreach ($detail_jalan as $idx => $row) {
-                    foreach (json_decode($row['koordinat_final'], true) as $value) {
-                        $koordinat[] = $value;
-                    }
-                }
-                $used_coord = 'final2';
-            } else {
-                if ($koordinat_count) {
-                    if (!empty($koordinat_jalan['koordinat_final'])) {
-                        $koordinat = $koordinat_jalan['koordinat_final'];
-                        $used_coord = "final2";
-                    } else {
-                        if (!empty($koordinat_jalan['koordinat_awal'])) {
-                            $koordinat = $koordinat_jalan['koordinat_awal'];
-                            $used_coord = "awal2";
-                        }
-                    }
-                    $koordinat = json_decode($koordinat, true); // * row = STRING
-                }
-            }
-        }
-        // var_dump($koordinat);
-        // exit;
-
-        $coordinates = [];
-        foreach ($koordinat as $idx => $row) {
-            $row = $this->my_model->populateKoordinatDetail($row);
-            $rows = $this->my_model->makeKoordinatDetail($row);
-            $rows['perkerasan_text'] = $perkerasan_opt[$rows['perkerasan']];
-            $rows['kondisi_text'] = $kondisi_opt[$rows['kondisi']];
-
-            $rows['row'] = $idx + 1;
-
-            // var_dump($rows);
-            $file = "img/jalan/{$no_jalan}/{$rows['row']}/{$rows['foto']}";
-            // var_dump($file);
-
-            $rows['foto_file'] = '';
-
-            if (!empty($rows['foto'])) {
+            $file = "img/jalan/{$this->no_jalan}/{$row['row']}/{$row['foto']}";
+            $row['foto_file'] = '';
+            if (!empty($row['foto'])) {
                 list($fileurl) = FileHandler::checkFileExist($file);
-                $filedir = Functions::getStringBetween($fileurl, UPLOAD_URL, $rows['foto']);
+                $filedir = Functions::getStringBetween($fileurl, UPLOAD_URL, $row['foto']);
 
-                $rows['foto_file'] = Functions::getPopupLink($filedir, $rows['foto'], null, null, 'fas fa-image');
+                $row['foto_file'] = Functions::getPopupLink($filedir, $row['foto'], null, null, 'fas fa-image');
             }
 
             if ($idx >= $search['offset'] && $idx <= ($search['offset'] + $search['limit'] - 1)) {
-                array_push($list_koordinat, $rows); // * row = ARRAY
+                $list_koordinat[] = $row;
             } elseif (empty($search['offset']) && empty($search['limit'])) {
-                array_push($list_koordinat, $rows); // * row = ARRAY
+                $list_koordinat[] = $row;
             }
-
-            array_push($coordinates, $row); // * row = STRING
         }
+        Functions::setDataTable($list_koordinat, count($final), count($final));
+        exit;
+    }
 
-        // var_dump($list_koordinat);
-        // var_dump($coordinates);        
-        // echo $used_coord;
+    private function KoordinatOri()
+    {
+        list($list) = $this->KoordinatJalanSearch($this->no_jalan);
+        echo $list['ori'];
+        exit;
+    }
 
-        if (in_array($used_coord, ['awal1', 'final1'])) {
-            $koordinat_awal = $coord['awal'];
-        } else {
-            if ($used_coord == 'awal2') {
-                $koordinat_awal = $coordinates;
+    private function KoordinatJalanSearch()
+    {
+        return $this->my_model->getKoordinatJalan($this->no_jalan);
+    }
+
+    private function KoordinatBuild(array $coordinates, bool $raw = true)
+    {
+        $awal       = [];
+        $final      = [];
+        $ori        = [];
+        $segmented  = [];
+        foreach ($coordinates as $row) {
+            if ($raw) {
+                $latitude = number_format($row[1], 8);
+                $longitude = number_format($row[0], 8);
+                $segment = $row[3];
+                $rows = $this->my_model->populateKoordinatDetail($row);
+                $rows[0] = $latitude;
+                $rows[1] = $longitude;
+                $rows[5] = $segment;
+                $rows[3] = '';
             } else {
-                $koordinat_awal = [];
-                // var_dump($koordinat_jalan['koordinat_awal']);
-
-                foreach (json_decode($koordinat_jalan['koordinat_awal'], true) as $idx => $row) {
-                    $row = $this->my_model->populateKoordinatDetail($row);
-                    array_push($koordinat_awal, $row); // * row = STRING
-                }
+                $rows = $row;
             }
-        }
+            $rows = $this->my_model->makeKoordinatDetail($rows);
 
-        $coord['awal'] = $koordinat_awal;
-        $coord['final'] = $coordinates;
-
-        // var_dump($coord['awal']);
-        // var_dump($coord['final']);
-
-        Functions::setDataSession('coordinates', $coord);
-
-        Functions::setDataTable($list_koordinat, count($koordinat), count($koordinat));
-        exit;
-    }
-
-    private function KoordinatAwal(string $no_jalan = null)
-    {
-        // var_dump($_POST);
-
-        if (!empty($_POST['file'])) {
-            if (file_exists(TEMP_UPLOAD_DIR . "/{$_POST['file']}")) {
-                echo $this->KoordinatFile();
-                exit;
+            if ($rows['segment'] <= 0) {
+                $awal[] = $rows;
+                $ori[] = $row;
             }
+            $final[] = $rows;
+            $segmented[] = $row;
         }
 
-        list($list) = $this->KoordinatJalanSearch($no_jalan);
-        // var_dump($list);
-        $n = 0;
-        foreach (json_decode($list['koordinat_awal'], true) as $idx => $row) {
-            $list_koordinat[$n]['row'] = $idx + 1;
-            $list_koordinat[$n]['latitude'] = (float) $row[0];
-            $list_koordinat[$n]['longitude'] = (float) $row[1];
-            $n++;
-        }
-
-        echo json_encode($list_koordinat);
-        exit;
-    }
-
-    private function KoordinatFile()
-    {
-        $filedir = TEMP_UPLOAD_DIR . "/";
-        $filename = $_POST['file'];
-        $filepath = $filedir . $filename;
-
-        // $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
-
-        $data = [];
-
-        $xmlfile = file_get_contents($filepath);
-        $xmlfile = str_replace("gx:", "", $xmlfile);
-        // $ob= simplexml_load_string($xmlfile);
-
-        $coord_list = trim(Functions::getStringBetween($xmlfile, '<coordinates>', '</coordinates>'));
-        if (!empty($coord_list)) {
-            $coord = explode(' ', $coord_list);
-        }
-
-        foreach ($coord as $key => $value) {
-            if (empty(trim($value))) continue;
-            // var_dump($value);
-            list($longitude, $latitude) = explode(",", $value);
-            $data[$key]['latitude'] = trim($latitude);
-            $data[$key]['longitude'] = trim($longitude);
-            $data[$key]['row'] = $key + 1;
-        }
-        return json_encode($data);
-    }
-
-    private function KoordinatJalanSearch($no_jalan = null)
-    {
-        return $this->my_model->getKoordinatJalan($no_jalan);
+        return [$awal, $final, $ori, $segmented];
     }
 
     private function KoordinatSetSesion()
     {
-        $coordsegment = $_POST['coordsegment'];
-
-        $coord = Functions::getDataSession('coordinates', false);
-
-        // var_dump($coord['final']);
-        // exit;
-        if (is_null($coord) || empty($coord) || gettype($coord) === 'NULL') {
-            // echo "Test";
-            $coord['awal'] = $_POST['coord'];
+        if (!empty($_REQUEST['coordinates'])) {
+            list($awal, $final, $ori, $segmented) = $this->KoordinatBuild($_REQUEST['coordinates']);
         } else {
-            if (!is_null($coord['final']) || !empty($coord['final']) || gettype($coord['final']) !== 'NULL') {
-                unset($coord['awal']);
-                foreach ($coord['final'] as $idx => $row) {
-                    if ($row[5] > 0) continue;
-                    $coord['awal'][] = $row;
+            $coord = Functions::getDataSession('coordinates', false);
+            if (!empty($coord)) {
+                list($awal, $final, $ori, $segmented) = $coord;
+            } else {
+                list($detail, $detail_count) = $this->DetailJalanSearch($this->no_jalan);
+                if ($detail_count > 0) {
+                    $coordinates = [];
+                    foreach ($detail as $row) {
+                        if (!empty($row['data'])) {
+                            foreach (json_decode($row['data']) as $value) {
+                                $coordinates[] = $value;
+                            }
+                        }
+                    }
+                    list($awal, $final, $ori, $segmented) = $this->KoordinatBuild($coordinates, false);
+                } else {
+                    list($coord) = $this->KoordinatJalanSearch($this->no_jalan);
+                    $coordinates = (!empty($coord['segmented'])) ? $coord['segmented'] : $coord['ori'];
+                    $coordinates = json_decode($coordinates, true);
+                    list($awal, $final, $ori, $segmented) = $this->KoordinatBuild($coordinates);
                 }
             }
         }
-        // var_dump($_POST['coord']);
-        // var_dump($coord['awal']);
 
-        $koordinat_awal = [];
-        foreach ($coord['awal'] as $idx => $row) {
-            $row = $this->my_model->populateKoordinatDetail($row);
-            $rows = $this->my_model->makeKoordinatDetail($row);
-            array_push($koordinat_awal, $rows);
-        }
-
-        for ($i = count($coordsegment) - 1; $i >= 0; $i--) {
-            $new = array(array($coordsegment[$i][0], $coordsegment[$i][1], 1));
-            array_splice($koordinat_awal, $coordsegment[$i][2] + 1, 0, $new);
-        }
-
-        $data = [];
-        $n = 1;
-        foreach ($koordinat_awal as $idx => $row) {
-            $rows[$idx] = [];
-            $row['latitude'] = (isset($row['latitude'])) ? $row['latitude'] : $row[0];
-            $row['longitude'] = (isset($row['longitude'])) ? $row['longitude'] : $row[1];
-            $row['segment'] = (isset($row['segment'])) ? $row['segment'] : $row[2];
-
-            array_push($rows[$idx], number_format($row['latitude'], 8)); // ? latitude
-            array_push($rows[$idx], number_format($row['longitude'], 8)); // ? longitude
-            array_push($rows[$idx], $row['lebar']); // ? lebar
-            array_push($rows[$idx], $row['perkerasan']); // ? perkerasan
-            array_push($rows[$idx], $row['kondisi']); // ? kondisi
-            array_push($rows[$idx], ($row['segment'] > 0) ? $n++ : null); // ? segment
-            array_push($rows[$idx], $row['foto']); // ? foto
-            array_push($rows[$idx], $row['iri']); // ? iri
-
-            array_push($data, $rows[$idx]);
-        }
-
+        $coord = [];
         Functions::clearDataSession('coordinates');
-        $coord['awal'] = $coord['awal'];
-        $coord['final'] = $data;
+        array_push($coord, $awal, $final, $ori, $segmented);
         Functions::setDataSession('coordinates', $coord);
     }
 
@@ -567,15 +451,18 @@ class Jalan extends Controller
         foreach ($_POST as $key => $value) {
             $$key = $value;
             if (in_array($key, ['index', 'tag'])) continue;
-            array_push($values, $value);
+            $value = (!empty($value)) ? $value : null;
+            if (in_array($key, ['lebar', 'segment'])) {
+                $value = ($value > 0) ? $value : null;
+            }
+            $values[$key] = $value;
         }
 
         if ($tag == 'edit') {
-            $_SESSION['coordinates']['final'][$index] = $values;
+            $_SESSION['coordinates'][1][$index] = $values;
         }
 
         Functions::setDataSession('alert', ["Set Koordinat berhasil.", 'success']);
-
         return Functions::getDataSession('alert');
     }
     /**

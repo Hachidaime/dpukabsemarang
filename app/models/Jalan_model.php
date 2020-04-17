@@ -201,32 +201,21 @@ class Jalan_model extends Database
     public function populateKoordinatDetail($data)
     {
         $count = count($data);
-
         for ($i = $count; $i < 8; $i++) {
             array_push($data, "");
         }
-
         return $data;
     }
 
     public function prepareSaveKoordinatDetail()
     {
-        $data = Functions::getDataSession('coordinates', false);
+        list($awal, $final, $ori, $segmented) = Functions::getDataSession('coordinates', false);
 
-        $awal = [];
-        $final = [];
-        foreach ($data['final'] as $row) {
-            $row = $this->makeKoordinatDetail($row);
-            if ($row['segment'] > 0) {
-                array_push($final, [$row['latitude'], $row['longitude']]);
-            } else {
-                array_push($awal, [$row['latitude'], $row['longitude']]);
-                array_push($final, [$row['latitude'], $row['longitude']]);
-            }
-        }
+        $ori = array_map("Functions::buildGeo", $ori);
+        $segmented = array_map("Functions::buildGeo", $segmented);
 
-        $values = "no_jalan = ?, koordinat_awal = ?, koordinat_final = ?, jml_koordinat_awal = ?, jml_koordinat_final = ?, update_dt = NOW(), login_id = ?, remote_ip = ?";
-        $bindVar = [$_POST['no_jalan'], json_encode($awal), json_encode($final), count($awal), count($final), Auth::User('id'), $_SERVER['REMOTE_ADDR']];
+        $values = "no_jalan = ?, ori = ?, segmented = ?, jml_ori = ?, jml_segmented = ?, update_dt = NOW(), login_id = ?, remote_ip = ?";
+        $bindVar = [$_POST['no_jalan'], json_encode($ori), json_encode($segmented), count($ori), count($segmented), Auth::User('id'), $_SERVER['REMOTE_ADDR']];
 
         return [$bindVar, $values];
     }
@@ -298,36 +287,33 @@ class Jalan_model extends Database
     public function createDetail()
     {
         $no_jalan = $_POST['no_jalan'];
-        $coord = Functions::getDataSession('coordinates', false);
-        $koordinat = $coord['final'];
+        list($awal, $final, $ori, $segmented) = Functions::getDataSession('coordinates', false);
 
-        $rows = [];
+        $perkerasan = [];
+        $kondisi = [];
+        $segment = [];
         $data = [];
-        $foto = [];
-        foreach ($koordinat as $idx => $row) {
-            $perkerasan[$idx] = 0;
-            $kondisi[$idx] = 0;
-            $segment[$idx] = 0;
 
-            $rows[$idx] = $this->makeKoordinatDetail($row);
+        foreach ($final as $idx => $row) {
             if ($idx == 0) {
-                $perkerasan[$idx] = (!empty($rows[$idx]['perkerasan'])) ? $rows[$idx]['perkerasan'] : '0';
-                $kondisi[$idx] = (!empty($rows[$idx]['kondisi'])) ? $rows[$idx]['kondisi'] : '0';
+                $perkerasan[$idx] = (!empty($row['perkerasan'])) ? $row['perkerasan'] : '0';
+                $kondisi[$idx] = (!empty($row['kondisi'])) ? $row['kondisi'] : '0';
                 $segment[$idx] = 0;
             } else {
-                $perkerasan[$idx] = (empty($rows[$idx]['perkerasan'])) ? $perkerasan[$idx - 1] : $rows[$idx]['perkerasan'];
-                $kondisi[$idx] = (empty($rows[$idx]['kondisi'])) ? $kondisi[$idx - 1] : $rows[$idx]['kondisi'];
-                $segment[$idx] = (empty($rows[$idx]['segment'])) ? $segment[$idx - 1] : $rows[$idx]['segment'];
+                $perkerasan[$idx] = (empty($row['perkerasan'])) ? $perkerasan[$idx - 1] : $row['perkerasan'];
+                $kondisi[$idx] = (empty($row['kondisi'])) ? $kondisi[$idx - 1] : $row['kondisi'];
+                $segment[$idx] = (empty($row['segment'])) ? $segment[$idx - 1] : $row['segment'];
             }
 
-            $data[$perkerasan[$idx]][$kondisi[$idx]][$segment[$idx]][] = $rows[$idx];
+            $data[$perkerasan[$idx]][$kondisi[$idx]][$segment[$idx]][] = $row;
 
-            if (!empty(trim($rows[$idx]['foto']))) {
-                $foto[$idx + 1]['row'] = $idx + 1;
-                $foto[$idx + 1]['no_jalan'] = $no_jalan;
-                $foto[$idx + 1]['latitude'] = $rows[$idx]['latitude'];
-                $foto[$idx + 1]['longitude'] = $rows[$idx]['longitude'];
-                $foto[$idx + 1]['foto'] = $rows[$idx]['foto'];
+            if (!empty(trim($row['foto']))) {
+                $row_id = $idx + 1;
+                $foto[$row_id]['row'] = $row_id;
+                $foto[$row_id]['no_jalan'] = $no_jalan;
+                $foto[$row_id]['latitude'] = $row['latitude'];
+                $foto[$row_id]['longitude'] = $row['longitude'];
+                $foto[$row_id]['foto'] = $row['foto'];
             }
         }
         $this->clearFoto($no_jalan);
@@ -337,14 +323,14 @@ class Jalan_model extends Database
         $n = 0;
         $latitude = [];
         $longitude = [];
-        $field = ['no_detail', 'no_jalan', 'latitude', 'longitude', 'perkerasan', 'kondisi', 'segment', 'koordinat', 'koordinat_final', 'update_dt', 'login_id', 'remote_ip'];
+        $field = ['no_detail', 'no_jalan', 'latitude', 'longitude', 'perkerasan', 'kondisi', 'segment', 'koordinat', 'data', 'update_dt', 'login_id', 'remote_ip'];
         foreach ($data as $perkerasan => $x) {
             foreach ($x as $kondisi => $y) {
                 foreach ($y as $segment => $z) {
                     $value[$n] = [];
                     $val = [];
-                    $c = [];
-                    $f = [];
+                    $c = []; // ? tdetail_jalan.koordinat
+                    $f = []; // ? tdetail_jalan.final
                     foreach ($z as $idx => $row) {
                         array_push($c, [$row['latitude'], $row['longitude']]);
                         $g = [];
@@ -354,9 +340,11 @@ class Jalan_model extends Database
                         }
                         array_push($f, $g);
                     }
+
                     $latitude[$n] = $z[0]['latitude'];
                     $longitude[$n] = $z[0]['longitude'];
-                    // ? no_detail, no_jalan, latitude, longitude, perkerasan, kondisi, segment, koordinat, koordinat_final, update_dt, login_id, remote_ip
+
+                    // ? no_detail, no_jalan, latitude, longitude, perkerasan, kondisi, segment, koordinat, data, update_dt, login_id, remote_ip
                     array_push($val, $n, $no_jalan, $latitude[$n], $longitude[$n], $perkerasan, $kondisi, $segment, $c, $f, "NOW()", Auth::User('id'), $_SERVER['REMOTE_ADDR']);
                     foreach ($field as $k => $v) {
                         $value[$n][$v] = $val[$k];
@@ -373,7 +361,7 @@ class Jalan_model extends Database
             }
 
             $row['koordinat'] = json_encode($row['koordinat']);
-            $row['koordinat_final'] = json_encode($row['koordinat_final']);
+            $row['data'] = json_encode($row['data']);
 
             foreach ($row as $key => $value) {
                 if ($key == 'update_dt') continue;

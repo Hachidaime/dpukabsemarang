@@ -664,4 +664,13 @@ class Functions
 
         return $array;
     }
+
+    public function buildGeo(array $coordinate)
+    {
+        $result[0] = $coordinate[1];
+        $result[1] = $coordinate[0];
+        $result[2] = 0;
+
+        return $result;
+    }
 }
