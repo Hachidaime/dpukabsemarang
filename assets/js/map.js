@@ -114,54 +114,25 @@ function controlOpenNav(controlDiv, map) {
 
 }
 
-let makeCoordinateArray = koordinat => {
-    let coord = []
+let makeRoadArr = coordinates => {
+    let arr = [];
     $(koordinat).each(function (k, i) {
-        coord.push([i.latitude, i.longitude]);
+        arr.push([i[1], i.longitude]);
     });
-    return coord;
-}
-
-let makeCoordinatArrayObject = koordinat => {
-    let coordinates = [];
-    $(koordinat).each(function (k, i) {
-        coordinates.push(new google.maps.LatLng(i.latitude, i.longitude));
-    });
-    return coordinates;
+    return arr;
 }
 
 let makePath = coordinates => {
+    let path = [];
+    coordinates.forEach(function (i) {
+        path.push(new google.maps.LatLng(i[1], i[0]));
+    });
     return new google.maps.Polyline({
-        path: coordinates
+        path: path
     });
 }
 
 let countLength = path => google.maps.geometry.spherical.computeLength(path.getPath());
-
-let getSegment = (path, coord, segmentasi, remainingDist) => {
-    var coordSegment = [];
-    if (segmentasi > 0) {
-        var i = 1;
-        while (remainingDist > 0) {
-            var point = path.GetPointAtDistance(segmentasi * i);
-            if (point != null) {
-                coordSegment.push([point.lat(), point.lng()]);
-            }
-            remainingDist -= segmentasi;
-            i++;
-        }
-
-        $(coordSegment).each(function (k, i) {
-            var line = turf.lineString(coord);
-            var pt = turf.point(i);
-            var snapped = turf.nearestPointOnLine(line, pt);
-
-            coordSegment[k].push(snapped.properties.index);
-        });
-    }
-
-    return coordSegment;
-}
 
 let genSegmentOld = () => {
     let url = $table.bootstrapTable('getOptions').url;
@@ -195,17 +166,77 @@ let genSegment = () => {
     let coordinates = [];
     let importFilename = document.getElementById('upload_koordinat').value;
     let koordinat;
+    let url = $table.bootstrapTable('getOptions').url;
+
     if (importFilename != '') {
         importFilename = /*html*/`${server_base}/upload/temp/${importFilename}`;
         coordinates = getKML(importFilename);
     }
     else {
-        let url = $table.bootstrapTable('getOptions').url;
-        url = url.replace('search', 'searchori');
-        koordinat = getAJAX(url);
+        koordinat = getAJAX(url.replace('search', 'searchori'));
         coordinates = JSON.parse(koordinat);
     }
-    console.log(coordinates);
+
+    let roadPath = makePath(coordinates);
+    let roadLength = countLength(roadPath);
+
+    document.getElementById('panjang').value = roadLength.toFixed(2);
+    document.getElementById('panjang_text').value = roadLength.toFixed(2);
+
+    let segmentasi = document.getElementById('segmentasi').value;
+
+    let segment = [];
+    if (segmentasi > 0) {
+        let seg = [];
+        let i = 1;
+        while (roadLength > 0) {
+            let point = roadPath.GetPointAtDistance(segmentasi * i);
+            if (point != null) {
+                seg.push([point.lat(), point.lng()]);
+                segment.push([point.lng(), point.lat(), 0]);
+            }
+            roadLength -= segmentasi;
+            i++;
+        }
+
+        let coord = [];
+        coordinates.forEach(function (j) {
+            coord.push([j[1], j[0]]);
+        });
+
+        seg.forEach(function (i, k) {
+            segment[k].push(turf.nearestPointOnLine(turf.lineString(coord), turf.point(i)).properties.index);
+        });
+
+        i = 0;
+        segment.forEach(function (x, j) {
+            let segmented = [];
+            coordinates.forEach(function (y, k) {
+                if (k < x[3]) {
+                    segmented.push(y);
+                }
+            });
+            segmented.push(x);
+
+            let segLength = countLength(makePath(segmented));
+            x[3] += i;
+            if (segLength >= segmentasi * (j + 1)) {
+                x[3] += 1;
+            }
+
+            let index = x[3];
+            x.pop();
+            x.push(j + 1);
+            coordinates.splice(index, 0, x);
+            i++;
+        });
+    }
+
+    let params = {};
+    params['coordinates'] = coordinates;
+    $.post(url.replace('search', 'setsession'), $.param(params), function () {
+        $table.bootstrapTable('refresh');
+    });
 }
 
 let getKML = importFilename => {
