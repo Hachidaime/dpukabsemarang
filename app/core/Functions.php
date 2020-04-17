@@ -414,9 +414,9 @@ class Functions
         return self::makeTableData($data);
     }
 
-    public function makeMapPoint(array $point)
+    public function makeMapPoint(array $point, $raw = false)
     {
-        $point = array_reverse($point);
+        $point = ($raw) ? $point : array_reverse($point);
         foreach ($point as $key => $value) {
             $point[$key] = (float) $value;
         }
@@ -445,14 +445,24 @@ class Functions
                 if ($row['kepemilikan'] == 1) continue;
             }
 
-            $koordinat = array_map("self::makeMapPoint", json_decode($row['koordinat'], true));
-            // $koordinat = array_map("array_reverse", json_decode($row['koordinat'], true));
-            unset($row['koordinat_final']);
+            $coord = (!empty($row['segmented'])) ? $row['segemented'] : $row['ori'];
+            unset($row['ori']);
+            unset($row['segmented']);
+
+            $koordinat = [];
+            foreach (json_decode($coord, true) as $row) {
+                $koordinat[] = self::makeMapPoint($row, true);
+            }
+
             $row['koordinat'] = $koordinat;
             $row['style'] = $style[$row['kepemilikan']][0][0];
             $line[] = $row;
         }
 
+        // print '<pre>';
+        // // print_r($data);
+        // print_r($line);
+        // print '</pre>';
         return $line;
     }
 

@@ -22,7 +22,8 @@ class Data_model extends Database
                 "{$jalan_table}.kepemilikan",
                 "{$jalan_table}.panjang",
                 "{$jalan_table}.lebar_rata",
-                "{$koordinat_table}.segmented AS koordinat"
+                "{$koordinat_table}.ori",
+                "{$koordinat_table}.segmented"
             ],
             'join' => [
                 "LEFT JOIN {$koordinat_table} ON {$koordinat_table}.no_jalan = {$jalan_table}.no_jalan"
