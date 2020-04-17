@@ -417,6 +417,7 @@ class Functions
     public function makeMapPoint(array $point, $raw = false)
     {
         $point = ($raw) ? $point : array_reverse($point);
+        unset($point[2]);
         foreach ($point as $key => $value) {
             $point[$key] = (float) $value;
         }
