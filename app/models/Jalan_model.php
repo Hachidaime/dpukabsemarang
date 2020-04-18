@@ -293,6 +293,10 @@ class Jalan_model extends Database
         $kondisi = [];
         $segment = [];
         $data = [];
+        $foto = [];
+        print '<pre>';
+        print_r($final);
+        print '</pre>';
 
         foreach ($final as $idx => $row) {
             if ($idx == 0) {

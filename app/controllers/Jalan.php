@@ -448,6 +448,12 @@ class Jalan extends Controller
     {
         // var_dump($_POST);
         $values = [];
+        foreach ($this->my_model->getKoordinatForm() as $row) {
+            if (in_array($row['id'], ['index', 'tag'])) continue;
+            $values[$row['id']] = null;
+        }
+        // var_dump($form);
+
         foreach ($_POST as $key => $value) {
             $$key = $value;
             if (in_array($key, ['index', 'tag'])) continue;
@@ -457,6 +463,8 @@ class Jalan extends Controller
             }
             $values[$key] = $value;
         }
+
+        // var_dump($values);
 
         if ($tag == 'edit') {
             $_SESSION['coordinates'][1][$index] = $values;
