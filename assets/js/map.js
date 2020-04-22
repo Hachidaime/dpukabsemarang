@@ -180,8 +180,7 @@ let genSegment = () => {
     let roadPath = makePath(coordinates);
     let roadLength = countLength(roadPath);
 
-    document.getElementById('panjang').value = roadLength.toFixed(2);
-    document.getElementById('panjang_text').value = roadLength.toFixed(2);
+    console.log(roadLength);
 
     let segmentasi = document.getElementById('segmentasi').value;
 
@@ -230,7 +229,14 @@ let genSegment = () => {
             coordinates.splice(index, 0, x);
             i++;
         });
+
+        roadLength = countLength(makePath(coordinates));
     }
+
+    console.log(roadLength);
+
+    document.getElementById('panjang').value = roadLength.toFixed(2);
+    document.getElementById('panjang_text').value = roadLength.toFixed(2);
 
     let params = {};
     params['coordinates'] = coordinates;
