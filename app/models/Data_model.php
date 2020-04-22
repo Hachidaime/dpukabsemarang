@@ -12,6 +12,7 @@ class Data_model extends Database
         $koordinat_table = $jalan_model->getTable('koordinat');
         $detail_table = $jalan_model->getTable('detail');
         $foto_table = $jalan_model->getTable('foto');
+        $panjang_table = $jalan_model->getTable('panjang');
 
         $data = [];
 
@@ -23,10 +24,13 @@ class Data_model extends Database
                 "{$jalan_table}.panjang",
                 "{$jalan_table}.lebar_rata",
                 "{$koordinat_table}.ori",
-                "{$koordinat_table}.segmented"
+                "{$koordinat_table}.segmented",
+                "{$panjang_table}.perkerasan",
+                "{$panjang_table}.kondisi",
             ],
             'join' => [
-                "LEFT JOIN {$koordinat_table} ON {$koordinat_table}.no_jalan = {$jalan_table}.no_jalan"
+                "LEFT JOIN {$koordinat_table} ON {$koordinat_table}.no_jalan = {$jalan_table}.no_jalan",
+                "LEFT JOIN {$panjang_table} ON {$panjang_table}.no_jalan = {$jalan_table}.no_jalan"
             ],
             'sort' => [
                 "{$jalan_table}.kepemilikan ASC",
@@ -102,7 +106,7 @@ class Data_model extends Database
         list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
         $filename = "JalanSemua";
 
-        $laporan = $this->generateDataLaporan($jalan, $perkerasan, $kondisi);
+        $laporan = $this->generateDataLaporan($list['jalan']);
 
         $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir, $laporan);
 
@@ -117,27 +121,36 @@ class Data_model extends Database
         }
     }
 
-    public function generateDataLaporan($jalan, $perkerasan, $kondisi)
+    public function generateDataLaporan($jalan)
     {
         $laporan = [];
-        $laporan_data = ['kepemilikan', 'no_jalan', 'nama_jalan', 'panjang', 'lebar_rata'];
-        foreach ($jalan as $row) {
-            $no_jalan = $row['no_jalan'];
-            foreach ($row as $key => $value) {
-                if (in_array($key, $laporan_data))
-                    $laporan[$no_jalan][$key] = $value;
+        $dd1 = [];
+        foreach ($this->model('Laporan_model')->getDd1Thead()[3] as $row) {
+            $row['field'] = ($row['field'] == 'perkerasan_1') ? 'perkerasan_2' : (($row['field'] == 'perkerasan_2') ? 'perkerasan_1' : $row['field']);
+            if (!empty($row['field'])) $dd1['field'][] = $row['field'];
+        }
+
+        foreach ($jalan as $idx => $row) {
+            $row['row'] = $idx + 1;
+            $row['panjang_km'] = number_format($row['panjang'] / 1000, 2);
+
+            foreach (json_decode($row['perkerasan'], true) as $key => $value) {
+                $row["perkerasan_{$key}"] = number_format($value, 2);
             }
-            $laporan[$no_jalan]['perkerasan'] = [];
-            $laporan[$no_jalan]['kondisi'] = [];
-        }
 
-        foreach ($perkerasan as $row) {
-            $laporan[$row['no_jalan']]['perkerasan'][$row['perkerasan']] = $row['koordinat'];
-        }
+            foreach (json_decode($row['kondisi'], true) as $key => $value) {
+                $row["kondisi_{$key}"] = number_format($value / 1000, 2);
+                $row["kondisi_{$key}_percent"] = number_format($value / $row['panjang'] * 100, 2);
+            }
 
-        foreach ($kondisi as $row) {
-            $laporan[$row['no_jalan']]['kondisi'][$row['kondisi']] = $row['koordinat'];
+            foreach ($dd1['field'] as $value) {
+                $laporan[$idx][$value] = $row[$value];
+            }
         }
+        // print '<pre>';
+        // print_r($jalan);
+        // print_r($laporan);
+        // print '</pre>';
 
         return $laporan;
     }
