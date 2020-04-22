@@ -281,6 +281,9 @@ class Jalan extends Controller
             case 'form':
                 $this->KoordinatForm();
                 break;
+            case 'detail':
+                $this->DetailSearch();
+                break;
             case 'submit':
                 $this->KoordinatSubmit();
                 break;
@@ -505,6 +508,19 @@ class Jalan extends Controller
         if (!empty($this->old_detail)) {
             $this->my_model->clearDetail($this->old_detail);
         }
+    }
+
+    private function DetailSearch()
+    {
+        $final = Functions::getDataSession('coordinates', false)[1];
+        $result = [];
+
+        foreach (['perkerasan', 'kondisi'] as $value) {
+            $result[$value] = Functions::buildLine($final, $value);
+        }
+
+        echo json_encode($result);
+        exit;
     }
     /**
      * * End Detail Jalan

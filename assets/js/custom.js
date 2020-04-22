@@ -55,23 +55,30 @@ $(document).ready(function () {
             params += '&' + mySwitch.serialize();
         }
 
+        if (controller == 'Jalan' && method == 'index') {
+            let panjang = $.param(getPanjangJalan());
+            params += `&${panjang}`;
+        }
+
+
         // TODO: Post Form Input Data dengan Ajax Request
-        $.post(url, params, function (data) {
+        $.post(url, params, data => {
             // TODO: Menampilkan Alert
             makeAlert(data);
 
             // TODO: Cek success
             if (Object.keys(data)[0] == 'success') {
                 // TODO: Redirect ke halaman utama Controller
-                setTimeout(function () {
+                setTimeout(() => {
                     window.location.href = `${base_url}/${controller}/${method}`;
                 }, 3000);
             }
         }, "json");
+
     });
 
     // TODO: Menjalankan jQuery Datepicker melalui button
-    $('.date-trigger').click(function () {
+    $('.date-trigger').click(() => {
         let id = $(this).data('id');
         let picker = $(`#${id}.datepicker`);
         if (picker.datepicker('widget').is(':visible')) {

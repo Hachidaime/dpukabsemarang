@@ -678,10 +678,36 @@ class Functions
 
     public function buildGeo(array $coordinate)
     {
-        $result[0] = $coordinate[1];
-        $result[1] = $coordinate[0];
+        $result[0] = (float) $coordinate[1];
+        $result[1] = (float) $coordinate[0];
         $result[2] = 0;
 
+        return $result;
+    }
+
+    public function buildLine(array $params, string $type)
+    {
+        $result = [];
+        $data = [];
+        $index = -1;
+
+        foreach ($params as $idx => $row) {
+            $point = [];
+            array_push($point, (float) $row['longitude'], (float) $row['latitude'], 0);
+            $data[$idx] = ($idx > 0) ? $data[$idx - 1] : 0;
+            if ($row[$type] > 0) {
+                // if ($index >= 0) $result[$index][$data[$idx]][] = $point;
+                if ($index >= 0) $result[$data[$idx]][$index][] = $point;
+
+                $data[$idx] = $row[$type];
+                $index++;
+            }
+
+            // $result[$index][$data[$idx]][] = $point;
+            $result[$data[$idx]][$index][] = $point;
+        }
+
+        unset($result[0]);
         return $result;
     }
 }

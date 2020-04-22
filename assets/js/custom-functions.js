@@ -35,7 +35,7 @@ let makeAlert = data => {
         let queue = [];
         let steps = [];
         let n = 1;
-        $.each(data, function (type, message) {
+        $.each(data, (type, message) => {
             let icon = type.replace('danger', 'error');
             let msg = {};
             msg.icon = icon;
@@ -54,7 +54,7 @@ let makeAlert = data => {
         }).queue(queue);
     }
     else {
-        $.each(data, function (type, message) {
+        $.each(data, (type, message) => {
             let icon = type.replace('danger', 'error');
             Swal.fire({
                 position: "center",
@@ -84,7 +84,7 @@ let snackbar = (param = null) => {
     snack.fadeIn().html(param);
 
     // TODO: Menyembunyikan Snackbar
-    setTimeout(function () {
+    setTimeout(() => {
         snack.hide().html('');
     }, 3000);
 }
@@ -99,7 +99,7 @@ let loadGallery = (page = 1) => {
     let params = {};
     params['page'] = page;
 
-    $.post(url, $.param(params), function (data) {
+    $.post(url, $.param(params), data => {
         $('#gallery-item').html(data.item);
     }, "json");
 }
@@ -127,14 +127,14 @@ let login = () => {
     let url = `${base_url}/Session/login`;
 
     // TODO: Ajax Request
-    $.post(url, params, function (data) {
+    $.post(url, params, data => {
         // TODO: Menampilkan Alert
         makeAlert(data);
 
         // TODO: Cek login success
         if (Object.keys(data)[0] == 'success') {
             // TODO: Redirect ke halaman Admin
-            setTimeout(function () {
+            setTimeout(() => {
                 window.location.href = `${base_url}/Admin`;
             }, 3000);
         }
@@ -151,14 +151,14 @@ let logout = () => {
     let url = `${base_url}/Session/logout`;
 
     // TODO: Ajax Request
-    $.post(url, function (data) {
+    $.post(url, data => {
         // TODO: Menampilkan Alert
         makeAlert(data);
 
         // TODO: Cek logout success
         if (Object.keys(data)[0] == 'success') {
             // TODO: Redirect ke halaman Log In
-            setTimeout(function () {
+            setTimeout(() => {
                 window.location.href = server_base;
             }, 3000);
         }
@@ -173,7 +173,7 @@ let logout = () => {
 let setMenu = id => {
     let params = 'id=' + id;
     let url = `${base_url}/Session/setMenu`;
-    $.post(url, params, function (data) {
+    $.post(url, params, data => {
         if (data == 1) window.location.href = base_url;
     }, "json");
 }
@@ -208,3 +208,37 @@ let getAJAX = url => {
     request.send(null);
     return request.responseText;
 };
+
+let getPanjangJalan = () => {
+    let url = $table.bootstrapTable('getOptions').url;
+    url = url.replace('search', 'detail');
+    let coordinates = JSON.parse(getAJAX(url));
+
+    let perkerasan = [0, 0, 0, 0, 0];
+    let kondisi = [0, 0, 0, 0, 0];
+
+    for (const [type, value] of Object.entries(coordinates)) {
+        for (const [val, row] of Object.entries(value)) {
+            // console.log(row);
+            for (const [idx, points] of Object.entries(row)) {
+                // console.log(points);
+                switch (type) {
+                    case 'perkerasan':
+                        perkerasan[val] += countLength(makePath(points));
+                        break;
+                    case 'kondisi':
+                        kondisi[val] += points;
+                        break;
+                }
+            }
+        }
+    }
+
+    let result = [];
+    result['perkerasan'] = perkerasan;
+    result['kondisi'] = kondisi;
+    console.log(result);
+    result = Object.assign({}, result);
+    console.log(result);
+    return result;
+}

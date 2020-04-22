@@ -1,7 +1,7 @@
 <?php
 class Jalan_model extends Database
 {
-    private $my_tables = ['jalan' => 'tjalan', 'detail' => 'tdetail_jalan', 'koordinat' => 'tkoordinat_jalan', 'foto' => 'tfoto_jalan'];
+    private $my_tables = ['jalan' => 'tjalan', 'detail' => 'tdetail_jalan', 'koordinat' => 'tkoordinat_jalan', 'foto' => 'tfoto_jalan', 'panjang' => 'tpanjang_jalan'];
 
     public function getTable(string $type = null)
     {
@@ -106,7 +106,7 @@ class Jalan_model extends Database
         $values = [];
         $bindVar = [];
         foreach ($_POST as $key => $value) {
-            if (in_array($key, ['id', 'upload_koordinat'])) continue;
+            if (in_array($key, ['id', 'upload_koordinat', 'perkerasan', 'kondisi'])) continue;
             $value = (!empty($value)) ? $value : null;
             array_push($values, "{$key}=?");
             array_push($bindVar, $value);
@@ -287,16 +287,13 @@ class Jalan_model extends Database
     public function createDetail()
     {
         $no_jalan = $_POST['no_jalan'];
-        list($awal, $final, $ori, $segmented) = Functions::getDataSession('coordinates', false);
+        $final = Functions::getDataSession('coordinates', false)[1];
 
         $perkerasan = [];
         $kondisi = [];
         $segment = [];
         $data = [];
         $foto = [];
-        print '<pre>';
-        print_r($final);
-        print '</pre>';
 
         foreach ($final as $idx => $row) {
             if ($idx == 0) {
@@ -322,6 +319,9 @@ class Jalan_model extends Database
         }
         $this->clearFoto($no_jalan);
         $this->createFoto($foto);
+
+        $this->clearPanjang($no_jalan);
+        $this->createPanjang($no_jalan);
 
         $values = [];
         $n = 0;
@@ -411,6 +411,28 @@ class Jalan_model extends Database
     public function clearFoto(string $no_jalan)
     {
         $query = "DELETE FROM {$this->my_tables['foto']} WHERE no_jalan = ?";
+        $bindVar = [$no_jalan];
+        $this->execute($query, $bindVar);
+    }
+
+    /**
+     * * Panjang jalan
+     */
+    public function createPanjang(string $no_jalan)
+    {
+        $perkerasan = json_encode($_POST['perkerasan']);
+        $kondisi = json_encode($_POST['kondisi']);
+
+        $field = implode(',', ['no_jalan', 'perkerasan', 'kondisi', 'update_dt', 'login_id', 'remote_ip']);
+        $values = implode(',', ["'{$no_jalan}'", "'{$perkerasan}'", "'{$kondisi}'", 'NOW()', Auth::User('id'), "'{$_SERVER['REMOTE_ADDR']}'"]);
+
+        $query = "INSERT INTO {$this->my_tables['panjang']} ({$field}) VALUES ({$values})";
+        $this->execute($query);
+    }
+
+    public function clearPanjang(string $no_jalan)
+    {
+        $query = "DELETE FROM {$this->my_tables['panjang']} WHERE no_jalan = ?";
         $bindVar = [$no_jalan];
         $this->execute($query, $bindVar);
     }

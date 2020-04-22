@@ -200,18 +200,18 @@ let genSegment = () => {
         }
 
         let coord = [];
-        coordinates.forEach(function (j) {
+        coordinates.forEach(j => {
             coord.push([j[1], j[0]]);
         });
 
-        seg.forEach(function (i, k) {
+        seg.forEach((i, k) => {
             segment[k].push(turf.nearestPointOnLine(turf.lineString(coord), turf.point(i)).properties.index);
         });
 
         i = 0;
-        segment.forEach(function (x, j) {
+        segment.forEach((x, j) => {
             let segmented = [];
-            coordinates.forEach(function (y, k) {
+            coordinates.forEach((y, k) => {
                 if (k < x[3]) {
                     segmented.push(y);
                 }
