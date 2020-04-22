@@ -227,7 +227,7 @@ let getPanjangJalan = () => {
                         perkerasan[val] += countLength(makePath(points));
                         break;
                     case 'kondisi':
-                        kondisi[val] += points;
+                        kondisi[val] += countLength(makePath(points));
                         break;
                 }
             }
