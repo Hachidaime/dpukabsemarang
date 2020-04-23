@@ -446,7 +446,10 @@ class Functions
                 if ($row['kepemilikan'] == 1) continue;
             }
 
-            $coord = (!empty($row['segmented'])) ? $row['segemented'] : $row['ori'];
+            // $coord = (!empty($row['segmented'])) ? $row['segemented'] : $row['ori'];
+            $coord = $row['segmented'];
+            if (empty($coord)) $coord = $row['ori'];
+
             unset($row['ori']);
             unset($row['segmented']);
 
@@ -460,10 +463,6 @@ class Functions
             $line[] = $row;
         }
 
-        // print '<pre>';
-        // // print_r($data);
-        // print_r($line);
-        // print '</pre>';
         return $line;
     }
 
@@ -676,12 +675,15 @@ class Functions
         return $array;
     }
 
-    public function buildGeo(array $coordinate)
+    public function buildGeo(array $coordinate, bool $raw)
     {
-        $result[0] = (float) $coordinate[1];
-        $result[1] = (float) $coordinate[0];
-        $result[2] = 0;
+        $result = [];
+        array_push($result, (float) $coordinate[0], (float) $coordinate[1], 0);
 
+        if (!$raw) {
+            $result = [];
+            array_push($result, (float) $coordinate[1], (float) $coordinate[0], 0);
+        }
         return $result;
     }
 

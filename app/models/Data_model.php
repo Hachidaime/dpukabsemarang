@@ -147,16 +147,15 @@ class Data_model extends Database
                 $laporan[$idx][$value] = $row[$value];
             }
         }
-        // print '<pre>';
-        // print_r($jalan);
-        // print_r($laporan);
-        // print '</pre>';
 
         return $laporan;
     }
 
     public function generateDataSave(string $filename, $style, $jalan = [], $segment = [], $complete = [], $perkerasan = [], $kondisi = [], $awal = [], $akhir = [], $laporan = [])
     {
+        // print '<pre>';
+        // print_r($jalan);
+        // print '</pre>';
         // TODO: Save Segment & Jalan with perkerasan kondisi as JSON
         if (!empty($jalan)) Functions::saveGeoJSON("{$filename}.json", $style, $jalan, 1); // TODO: Save Jalan without attribute as GeoJSON
         if (!empty($complete)) Functions::saveGeoJSON("{$filename}Complete.json", $style, $complete, 1);

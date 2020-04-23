@@ -338,7 +338,7 @@ class Jalan extends Controller
         return $this->my_model->getKoordinatJalan($this->no_jalan);
     }
 
-    private function KoordinatBuild(array $coordinates, bool $raw = true)
+    private function KoordinatBuild(array $coordinates, bool $raw = false)
     {
         $awal       = [];
         $final      = [];
@@ -356,8 +356,10 @@ class Jalan extends Controller
                 $rows[3] = '';
             } else {
                 $rows = $row;
+                $row = Functions::buildGeo($row, false);
             }
             $rows = $this->my_model->makeKoordinatDetail($rows);
+
 
             if ($rows['segment'] <= 0) {
                 $awal[] = $rows;
@@ -372,13 +374,16 @@ class Jalan extends Controller
 
     private function KoordinatSetSesion()
     {
+        $coord = [];
+        // ? Corrdinate from Session
+        $coord = Functions::getDataSession('coordinates', false);
+
+        // ? Coordinate from Request
         if (!empty($_REQUEST['coordinates'])) {
-            list($awal, $final, $ori, $segmented) = $this->KoordinatBuild($_REQUEST['coordinates']);
+            $coord = $this->KoordinatBuild($_REQUEST['coordinates'], true);
         } else {
-            $coord = Functions::getDataSession('coordinates', false);
-            if (!empty($coord)) {
-                list($awal, $final, $ori, $segmented) = $coord;
-            } else {
+            if (empty($coord)) {
+                // ? Coordinates from tdetail_jalan;
                 list($detail, $detail_count) = $this->DetailJalanSearch($this->no_jalan);
                 if ($detail_count > 0) {
                     $coordinates = [];
@@ -389,19 +394,27 @@ class Jalan extends Controller
                             }
                         }
                     }
-                    list($awal, $final, $ori, $segmented) = $this->KoordinatBuild($coordinates, false);
+                    $coord = $this->KoordinatBuild($coordinates);
                 } else {
+                    // ? Coordinates form tkoordinat_jalan;
                     list($coord) = $this->KoordinatJalanSearch($this->no_jalan);
                     $coordinates = (!empty($coord['segmented'])) ? $coord['segmented'] : $coord['ori'];
                     $coordinates = json_decode($coordinates, true);
-                    list($awal, $final, $ori, $segmented) = $this->KoordinatBuild($coordinates);
+                    $coord = $this->KoordinatBuild($coordinates, true);
                 }
             }
         }
 
-        $coord = [];
-        Functions::clearDataSession('coordinates');
-        array_push($coord, $awal, $final, $ori, $segmented);
+        // print '<pre>';
+        // print_r($coord);
+        // print '</pre>';
+        // exit;
+
+        // list($awal, $final, $ori, $segmented) = $coord;
+
+        // $coord = [];
+        // Functions::clearDataSession('coordinates');
+        // array_push($coord, $awal, $final, $ori, $segmented);
         Functions::setDataSession('coordinates', $coord);
     }
 
