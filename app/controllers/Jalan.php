@@ -205,6 +205,7 @@ class Jalan extends Controller
             }
 
             $result = $this->KoordinatProcess();
+
             if (!$result) {
                 Functions::setDataSession('alert', ["{$tag} Koordinat gagal.", 'danger']);
                 Functions::setDataSession('alert', ["{$tag} Jalan success.", 'success']);

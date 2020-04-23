@@ -210,13 +210,18 @@ class Jalan_model extends Database
     public function prepareSaveKoordinatDetail()
     {
         list($awal, $final, $ori, $segmented) = Functions::getDataSession('coordinates', false);
+        // print '<pre>';
+        // print_r($ori);
+        // print_r($segmented);
+        // print '</pre>';
 
-        $ori = array_map("Functions::buildGeo", $ori);
-        $segmented = array_map("Functions::buildGeo", $segmented);
+        // $ori = array_map("Functions::buildGeo", $ori);
+        // $segmented = array_map("Functions::buildGeo", $segmented);
 
         $values = "no_jalan = ?, ori = ?, segmented = ?, jml_ori = ?, jml_segmented = ?, update_dt = NOW(), login_id = ?, remote_ip = ?";
         $bindVar = [$_POST['no_jalan'], json_encode($ori), json_encode($segmented), count($ori), count($segmented), Auth::User('id'), $_SERVER['REMOTE_ADDR']];
 
+        // exit;
         return [$bindVar, $values];
     }
 
