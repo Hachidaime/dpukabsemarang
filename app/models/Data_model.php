@@ -82,6 +82,13 @@ class Data_model extends Database
         $this->execute($query);
         list($data['detail'],) = $this->multiarray();
 
+        $jembatan = [
+            'select' => [],
+            'join' => [],
+            'sort' => [],
+            'filter' => []
+        ];
+
         return $data;
     }
 
@@ -90,6 +97,7 @@ class Data_model extends Database
      */
     public function generateData()
     {
+        // TODO: Remove old data
         array_map('unlink', glob(DOC_ROOT . "/data/*.json"));
 
         // * Setup from database
@@ -109,6 +117,7 @@ class Data_model extends Database
         $filename = "JalanSemua";
 
         $laporan['dd1'] = $this->generateDataLaporanDd1($list['jalan']);
+        $laporan['dd2'] = $this->generateDataLaporanDd2($list['jembatan']);
 
         $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir, $laporan);
 
@@ -151,6 +160,11 @@ class Data_model extends Database
         }
 
         return $laporan;
+    }
+
+    public function generateDataLaporanDd2($jembatan)
+    {
+        # code...
     }
 
     public function generateDataSave(string $filename, $style, $jalan = [], $segment = [], $complete = [], $perkerasan = [], $kondisi = [], $awal = [], $akhir = [], $laporan = [])
