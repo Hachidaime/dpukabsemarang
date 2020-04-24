@@ -446,7 +446,6 @@ class Functions
                 if ($row['kepemilikan'] == 1) continue;
             }
 
-            // $coord = (!empty($row['segmented'])) ? $row['segemented'] : $row['ori'];
             $coord = $row['segmented'];
             if (empty($coord)) $coord = $row['ori'];
 
@@ -454,12 +453,13 @@ class Functions
             unset($row['segmented']);
 
             $koordinat = [];
-            foreach (json_decode($coord, true) as $row) {
-                $koordinat[] = self::makeMapPoint($row, true);
+            foreach (json_decode($coord, true) as $value) {
+                $koordinat[] = self::makeMapPoint($value, true);
             }
 
             $row['koordinat'] = $koordinat;
             $row['style'] = $style[$row['kepemilikan']][0][0];
+
             $line[] = $row;
         }
 

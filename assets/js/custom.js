@@ -406,3 +406,5 @@ $(document).on('click', '[data-toggle="lightbox"]', function (event) {
 });
 
 window.onscroll = function () { scrollFunction() };
+
+let cur_time = getTime();

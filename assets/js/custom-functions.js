@@ -242,3 +242,8 @@ let getPanjangJalan = () => {
     console.log(result);
     return result;
 }
+
+let getTime = () => {
+    let d = new Date();
+    return d.getTime();
+}

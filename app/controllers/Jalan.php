@@ -294,8 +294,7 @@ class Jalan extends Controller
     private function KoordinatSearch()
     {
         $this->KoordinatSetSesion();
-        $coord = Functions::getDataSession('coordinates', false);
-        list($awal, $final, $ori, $segmented) = $coord;
+        $final = Functions::getDataSession('coordinates', false)[1];
 
         $perkerasan_opt = $this->options('perkerasan_opt');
         $kondisi_opt = $this->options('kondisi_opt');
@@ -405,16 +404,6 @@ class Jalan extends Controller
             }
         }
 
-        // print '<pre>';
-        // print_r($coord);
-        // print '</pre>';
-        // exit;
-
-        // list($awal, $final, $ori, $segmented) = $coord;
-
-        // $coord = [];
-        // Functions::clearDataSession('coordinates');
-        // array_push($coord, $awal, $final, $ori, $segmented);
         Functions::setDataSession('coordinates', $coord);
     }
 
