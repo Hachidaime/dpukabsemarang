@@ -22,8 +22,6 @@ td,
     }
 }
 
-
-
 /**
   * * Body
   */
@@ -56,6 +54,10 @@ body {
 /*
  * Content
  */
+.content-gis {
+  margin-top: 40px;
+}
+
 [role="main"] {
   padding-top: 133px; /* Space for fixed navbar */
 }

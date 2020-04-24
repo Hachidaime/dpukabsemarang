@@ -47,7 +47,7 @@
         {$header}
         <!-- </div> -->
 
-        <div class="content p-2">
+        <div class="{if $data.controller eq 'Gis'}content-gis{/if} p-2">
             {$content}
         </div>
     </div>
