@@ -90,6 +90,8 @@ class Data_model extends Database
      */
     public function generateData()
     {
+        array_map('unlink', glob(DOC_ROOT . "/data/*.json"));
+
         // * Setup from database
         $cond[] = "jenis = 1"; // ? Setup for jalan
         // TODO: Get setup from database
@@ -106,7 +108,7 @@ class Data_model extends Database
         list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
         $filename = "JalanSemua";
 
-        $laporan = $this->generateDataLaporan($list['jalan']);
+        $laporan['dd1'] = $this->generateDataLaporanDd1($list['jalan']);
 
         $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir, $laporan);
 
@@ -121,13 +123,13 @@ class Data_model extends Database
         }
     }
 
-    public function generateDataLaporan($jalan)
+    public function generateDataLaporanDd1($jalan)
     {
         $laporan = [];
-        $dd1 = [];
+        $field = [];
         foreach ($this->model('Laporan_model')->getDd1Thead()[3] as $row) {
             $row['field'] = ($row['field'] == 'perkerasan_1') ? 'perkerasan_2' : (($row['field'] == 'perkerasan_2') ? 'perkerasan_1' : $row['field']);
-            if (!empty($row['field'])) $dd1['field'][] = $row['field'];
+            if (!empty($row['field'])) $field[] = $row['field'];
         }
 
         foreach ($jalan as $idx => $row) {
@@ -143,7 +145,7 @@ class Data_model extends Database
                 $row["kondisi_{$key}_percent"] = number_format($value / $row['panjang'] * 100, 2);
             }
 
-            foreach ($dd1['field'] as $value) {
+            foreach ($field as $value) {
                 $laporan[$idx][$value] = $row[$value];
             }
         }
@@ -161,6 +163,9 @@ class Data_model extends Database
         if (!empty($segment)) Functions::saveGeoJSON("{$filename}Segment.json", $style, $segment, 2);
         if (!empty($awal)) Functions::saveGeoJSON("{$filename}Awal.json", $style, $awal, 2);
         if (!empty($akhir)) Functions::saveGeoJSON("{$filename}Akhir.json", $style, $akhir, 2);
-        if (!empty($laporan)) Functions::saveJSON('Laporan.json', $laporan);
+        foreach ($laporan as $key => $value) {
+            $key = strtoupper($key);
+            if (!empty($value)) Functions::saveJSON("Laporan{$key}.json", $value);
+        }
     }
 }

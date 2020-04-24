@@ -27,24 +27,8 @@ class Laporan extends Controller
         $data['data'] = Functions::makeTableData(['show-export' => 'true']);
         $data['search'] = false;
         // $data['url'] = BASE_URL . "/Laporan/dd1/search";
-        $data['url'] = SERVER_BASE . "/data/Laporan.json";
+        $data['url'] = SERVER_BASE . "/data/LaporanDD1.json";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
         $this->view('Layout/Default', $data);
-    }
-
-    private function Dd1Search()
-    {
-        $list = $this->my_model->getLaporan();
-
-        print '<pre>';
-        print_r($list);
-        print '</pre>';
-        exit;
-        $data = [];
-
-        $count = count($data);
-        // TODO: Echoing data as JSON
-        Functions::setDataTable($data, $count, $count);
-        exit;
     }
 }
