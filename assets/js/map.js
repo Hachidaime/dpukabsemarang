@@ -424,6 +424,27 @@ let getFeatureInfo = (param, jenis) => {
         );
     }
 
+    if (jenis == 'jembatan') {
+        nomor = param.feature.getProperty('no_jalan');
+        nama = param.feature.getProperty('nama_jalan');
+        html.push(
+            /*html*/`
+            <tr>
+                <td>No Ruas Jalan</td>
+                <td>${nomor}</td>
+            </tr>
+            `
+        );
+        html.push(
+            /*html*/`
+            <tr>
+                <td>Nama Ruas Jalan</td>
+                <td>${nama}</td>
+            </tr>
+            `
+        );
+    }
+
     html.push(/*html*/`</table>`);
     html.push(/*html*/`</div>`);
     // console.log(html);
