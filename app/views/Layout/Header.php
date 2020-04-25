@@ -1,7 +1,7 @@
 {assign var=active value='text-white'}
-{if $data.controller ne 'Gis'}
+
 <img src="{$smarty.const.SERVER_BASE}/assets/img/header.jpeg" id="header-img" class="img-fluid w-100 header-banner" height="200px">
-{/if}
+
 <nav class="navbar navbar-expand-lg bg-transparent navbar-dark sticky-top p-0">
     <div class="container-md d-flex flex-column justify-content-beetween p-0">
         <div class="bg-primary w-100">
