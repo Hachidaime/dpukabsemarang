@@ -26,7 +26,6 @@ class Laporan extends Controller
         $data['data'] = Functions::makeTableData(['show-export' => 'true']);
         $data['search'] = false;
         $data['url'] = BASE_URL . "/Laporan/dd1/search";
-        // $data['url'] = SERVER_BASE . "/data/LaporanDD1.json";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
         $this->view('Layout/Default', $data);
     }
@@ -63,6 +62,9 @@ class Laporan extends Controller
         $this->my_model = $this->model('Laporan_model');
 
         switch ($param1) {
+            case 'search':
+                $this->Dd2Search();
+                exit;
             default:
                 $this->Dd2Default();
                 break;
@@ -77,9 +79,34 @@ class Laporan extends Controller
         $data['thead'] = $this->my_model->getDd2Thead();
         $data['data'] = Functions::makeTableData(['show-export' => 'true']);
         $data['search'] = false;
-        // $data['url'] = BASE_URL . "/Laporan/dd1/search";
-        $data['url'] = SERVER_BASE . "/data/LaporanDD2.json";
+        $data['url'] = BASE_URL . "/Laporan/dd2/search";
         $data['main'][] = $this->dofetch('Layout/Table', $data);
         $this->view('Layout/Default', $data);
+    }
+
+    private function Dd2Search()
+    {
+        $kepemilikan_opt = $this->options('kepemilikan_opt'); // TODO: Get Kepemilikan Options
+        $list =  $this->my_model->getLaporanDd2();
+        $data = $list;
+
+        $alphabet = range('A', 'Z');
+
+        $field = [];
+        foreach ($this->model('Laporan_model')->getDd1Thead()[3] as $row) {
+            if (!empty($row['field'])) $field[$row['field']] = '';
+        }
+
+        $start = 0;
+        foreach ($list as $idx => $row) {
+            if ($row['kepemilikan'] != $list[$idx - 1]['kepemilikan']) {
+                $field['nama_jalan'] = "<strong>{$alphabet[$row['kepemilikan'] - 1]}. {$kepemilikan_opt[$row['kepemilikan']]}</strong>";
+                array_splice($data, $idx + $start, 0, [$field]);
+                $start++;
+            }
+        }
+
+        echo json_encode($data);
+        exit;
     }
 }

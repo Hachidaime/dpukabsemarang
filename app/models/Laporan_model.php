@@ -68,7 +68,63 @@ class Laporan_model extends Database
     {
         $filepath = DOC_ROOT . "data/LaporanDD1.json";
         $data = Functions::readJSON($filepath);
+        return $data;
+    }
 
+    public function getDd2Thead()
+    {
+        // TODO: Set column table
+        Functions::setDataSession('thead', ['0', null, 'No', 'data-halign="center" data-rowspan="3"']);
+        Functions::setDataSession('thead', ['0', null, 'No<br>Jembatan', 'data-halign="center" data-rowspan="3"']);
+        Functions::setDataSession('thead', ['0', null, 'Nama<br>Jembatan', 'data-halign="center" data-rowspan="3"']);
+        Functions::setDataSession('thead', ['0', null, 'No<br>Ruas', 'data-halign="center" data-rowspan="3"']);
+        Functions::setDataSession('thead', ['0', null, 'Nama<br>Ruas', 'data-halign="center" data-rowspan="3"']);
+        Functions::setDataSession('thead', ['0', null, 'Dimensi', 'data-halign="center" data-colspan="3"']);
+        Functions::setDataSession('thead', ['0', null, 'Tipe/Kondisi', 'data-halign="center" data-colspan="8"']);
+        Functions::setDataSession('thead', ['0', null, 'Keterangan', 'data-halign="center" data-rowspan="3"']);
+
+        Functions::setDataSession('thead', ['1', null, 'Panjang<br>(m)', 'data-halign="center" data-rowspan="2"']);
+        Functions::setDataSession('thead', ['1', null, 'Lebar<br>(m)', 'data-halign="center" data-rowspan="2"']);
+        Functions::setDataSession('thead', ['1', null, 'Jumlah Bentang', 'data-halign="center" data-rowspan="2"']);
+        Functions::setDataSession('thead', ['1', null, 'Bangunan<br>Atas', 'data-halign="center" data-colspan="2"']);
+        Functions::setDataSession('thead', ['1', null, 'Bangunan<br>Bawah', 'data-halign="center" data-colspan="2"']);
+        Functions::setDataSession('thead', ['1', null, 'Fondasi', 'data-halign="center" data-colspan="2"']);
+        Functions::setDataSession('thead', ['1', null, 'Lantai', 'data-halign="center" data-colspan="2"']);
+
+        Functions::setDataSession('thead', ['2', null, 'Tipe', 'data-halign="center"']);
+        Functions::setDataSession('thead', ['2', null, 'Kondisi', 'data-halign="center"']);
+        Functions::setDataSession('thead', ['2', null, 'Tipe', 'data-halign="center"']);
+        Functions::setDataSession('thead', ['2', null, 'Kondisi', 'data-halign="center"']);
+        Functions::setDataSession('thead', ['2', null, 'Tipe', 'data-halign="center"']);
+        Functions::setDataSession('thead', ['2', null, 'Kondisi', 'data-halign="center"']);
+        Functions::setDataSession('thead', ['2', null, 'Tipe', 'data-halign="center"']);
+        Functions::setDataSession('thead', ['2', null, 'Kondisi', 'data-halign="center"']);
+
+        Functions::setDataSession('thead', ['3', 'row', '1', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'no_jembatan', '2', 'data-halign="center" data-align="center"']);
+        Functions::setDataSession('thead', ['3', 'nama_jembatan', '3', 'data-halign="center" data-align="left"']);
+        Functions::setDataSession('thead', ['3', 'no_jalan', '2', 'data-halign="center" data-align="center"']);
+        Functions::setDataSession('thead', ['3', 'nama_jalan', '3', 'data-halign="center" data-align="left"']);
+        Functions::setDataSession('thead', ['3', 'panjang', '7', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'lebar', '8', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'bentang', '9', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'tipe_bangunan_atas', '10', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'kondisi_bangunan_atas', '11', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'tipe_bangunan_bawah', '12', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'kondisi_bangunan_bawah', '13', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'tipe_fondasi', '14', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'kondisi_fondasi', '15', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'tipe_lantai', '16', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'kondisi_lantai', '17', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'keterangan', '18', 'data-halign="center" data-align="left"']);
+
+        return Functions::getDataSession('thead');
+    }
+
+    public function getLaporanDd2()
+    {
+        $filepath = DOC_ROOT . "data/LaporanDD2.json";
+        $data = Functions::readJSON($filepath);
         return $data;
     }
 }

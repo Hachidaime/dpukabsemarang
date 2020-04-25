@@ -84,6 +84,8 @@ class Data_model extends Database
 
         $jembatan = [
             'select' => [
+                "{$jalan_table}.no_jalan",
+                "{$jalan_table}.nama_jalan",
                 "{$jalan_table}.kepemilikan",
                 "{$jembatan_table}.no_jembatan",
                 "{$jembatan_table}.nama_jembatan",
@@ -191,9 +193,37 @@ class Data_model extends Database
 
     public function generateDataLaporanDd2($jembatan)
     {
-        // print '<pre>';
-        // print_r($jembatan);
-        // print '</pre>';
+        $kondisi_opt = $this->options('kondisi_opt');
+
+        $laporan = [];
+        $field = [];
+        foreach ($this->model('Laporan_model')->getDd2Thead()[3] as $row) {
+            if (!empty($row['field'])) $field[] = $row['field'];
+        }
+
+
+        foreach ($jembatan as $idx => $row) {
+            $row['row'] = $idx + 1;
+            $laporan[$idx]['kepemilikan'] = $row['kepemilikan'];
+
+            $row['kondisi_bangunan_atas'] = $kondisi_opt[$row['kondisi_bangunan_atas']];
+            $row['kondisi_bangunan_bawah'] = $kondisi_opt[$row['kondisi_bangunan_bawah']];
+            $row['kondisi_fondasi'] = $kondisi_opt[$row['kondisi_fondasi']];
+            $row['kondisi_lantai'] = $kondisi_opt[$row['kondisi_lantai']];
+
+            foreach ($row as $key => $value) {
+                if (strpos($value, 'kondisi')) {
+                    $value = $kondisi_opt[$value];
+                }
+                $row[$key] = (!empty($value)) ? $value : null;
+            }
+
+            foreach ($field as $value) {
+                $laporan[$idx][$value] = $row[$value];
+            }
+        }
+
+        return $laporan;
     }
 
     public function generateDataSave(string $filename, $style, $jalan = [], $segment = [], $complete = [], $perkerasan = [], $kondisi = [], $awal = [], $akhir = [], $laporan = [])
