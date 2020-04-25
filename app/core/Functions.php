@@ -437,6 +437,22 @@ class Functions
         return $params;
     }
 
+    public function getPointFromJembatan(array $data, array $style, string $kepemilikan = null)
+    {
+        $point = [];
+        foreach ($data as $row) {
+            if (!is_null($kepemilikan)) {
+                if ($row['kepemilikan'] != $kepemilikan) continue;
+            } else {
+                if ($row['kepemilikan'] == 1) continue;
+            }
+            $row['koordinat'] = [(float) $row['longitude'], (float) $row['latitude']];
+            $point[] = $row;
+        }
+
+        return $point;
+    }
+
     public function getLineFromJalan(array $data, array $style, string $kepemilikan = null)
     {
         foreach ($data as $row) {
@@ -638,6 +654,8 @@ class Functions
                 'properties' => [
                     'nama_jalan' => $row['nama_jalan'],
                     'no_jalan' => $row['no_jalan'],
+                    'nama_jembatan' => $row['nama_jembatan'],
+                    'no_jembatan' => $row['no_jembatan'],
                     'segment' => $row['segment'],
                     'strokeColor' => $style[$mystyle]['color'],
                     'strokeWeight' => $style[$mystyle]['weight'],

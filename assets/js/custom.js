@@ -388,6 +388,11 @@ $(document).ready(function () {
         else clearAkhir();
     });
 
+    $('input[type=checkbox]#jembatan').change(function () {
+        if (this.checked) loadJembatan();
+        else clearJembatan();
+    });
+
     $('.btn-search-gis').click(function () {
         let params = searchGisForm.serialize();
     });

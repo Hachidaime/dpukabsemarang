@@ -89,18 +89,24 @@ class Data_model extends Database
                 "{$jalan_table}.kepemilikan",
                 "{$jembatan_table}.no_jembatan",
                 "{$jembatan_table}.nama_jembatan",
+                "{$jembatan_table}.latitude",
+                "{$jembatan_table}.longitude",
                 "{$jembatan_table}.lebar",
                 "{$jembatan_table}.panjang",
                 "{$jembatan_table}.bentang",
                 "{$jembatan_table}.keterangan",
                 "{$jembatan_table}.tipe_bangunan_atas",
-                "{$jembatan_table}.kondisi_bangunan_atas",
                 "{$jembatan_table}.tipe_bangunan_bawah",
-                "{$jembatan_table}.kondisi_bangunan_bawah",
                 "{$jembatan_table}.tipe_fondasi",
-                "{$jembatan_table}.kondisi_fondasi",
                 "{$jembatan_table}.tipe_lantai",
+                "{$jembatan_table}.kondisi_bangunan_atas",
+                "{$jembatan_table}.kondisi_bangunan_bawah",
+                "{$jembatan_table}.kondisi_fondasi",
                 "{$jembatan_table}.kondisi_lantai",
+                "{$jembatan_table}.foto_bangunan_atas",
+                "{$jembatan_table}.foto_bangunan_bawah",
+                "{$jembatan_table}.foto_fondasi",
+                "{$jembatan_table}.foto_lantai",
             ],
             'join' => [
                 "LEFT JOIN {$jalan_table} ON {$jalan_table}.no_jalan = {$jembatan_table}.no_jalan",
@@ -140,6 +146,7 @@ class Data_model extends Database
         $list = $this->getAllDataJalan();
 
         $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle);
+        $jembatan = Functions::getPointFromJembatan($list['jembatan'], $iconStyle);
 
         list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
         $filename = "JalanSemua";
@@ -147,7 +154,7 @@ class Data_model extends Database
         $laporan['dd1'] = $this->generateDataLaporanDd1($list['jalan']);
         $laporan['dd2'] = $this->generateDataLaporanDd2($list['jembatan']);
 
-        $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir, $laporan);
+        $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir, $jembatan,  $laporan);
 
         // TODO: Save Segment & Jalan with perkerasan kondisi by kepemilikan as JSON
         $kepemilikan_opt = $this->options('kepemilikan_opt'); // TODO: Get Kepemilikan Options
@@ -155,8 +162,9 @@ class Data_model extends Database
             $filename = preg_replace("/[^A-Za-z0-9]/", '', $value);
 
             $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle, $kepemilikan);
+            $jembatan = Functions::getPointFromJembatan($list['jembatan'], $iconStyle, $kepemilikan);
             list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle, $kepemilikan);
-            $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir);
+            $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir, $jembatan);
         }
     }
 
@@ -201,7 +209,6 @@ class Data_model extends Database
             if (!empty($row['field'])) $field[] = $row['field'];
         }
 
-
         foreach ($jembatan as $idx => $row) {
             $row['row'] = $idx + 1;
             $laporan[$idx]['kepemilikan'] = $row['kepemilikan'];
@@ -221,7 +228,7 @@ class Data_model extends Database
         return $laporan;
     }
 
-    public function generateDataSave(string $filename, $style, $jalan = [], $segment = [], $complete = [], $perkerasan = [], $kondisi = [], $awal = [], $akhir = [], $laporan = [])
+    public function generateDataSave(string $filename, $style, $jalan = [], $segment = [], $complete = [], $perkerasan = [], $kondisi = [], $awal = [], $akhir = [], $jembatan = [], $laporan = [])
     {
         // TODO: Save Segment & Jalan with perkerasan kondisi as JSON
         if (!empty($jalan)) Functions::saveGeoJSON("{$filename}.json", $style, $jalan, 1); // TODO: Save Jalan without attribute as GeoJSON
@@ -231,6 +238,7 @@ class Data_model extends Database
         if (!empty($segment)) Functions::saveGeoJSON("{$filename}Segment.json", $style, $segment, 2);
         if (!empty($awal)) Functions::saveGeoJSON("{$filename}Awal.json", $style, $awal, 2);
         if (!empty($akhir)) Functions::saveGeoJSON("{$filename}Akhir.json", $style, $akhir, 2);
+        if (!empty($jembatan)) Functions::saveGeoJSON("{$filename}Jembatan.json", $style, $jembatan, 2);
         foreach ($laporan as $key => $value) {
             $key = strtoupper($key);
             if (!empty($value)) Functions::saveJSON("Laporan{$key}.json", $value);

@@ -384,6 +384,8 @@ let getFeatureInfo = (param, jenis) => {
             break;
         case 'jembatan':
             type = "Jembatan";
+            nomor = param.feature.getProperty('no_jembatan');
+            nama = param.feature.getProperty('nama_jembatan');
             break;
         case 'saluran':
             type = "Saluran Air";
@@ -449,6 +451,7 @@ let KondisiLines;
 let SegmentasiPoints;
 let AwalPoints;
 let AkhirPoints;
+let JembatanPoints;
 
 let loadSwitch = () => {
     let jlnProvinsi = document.getElementById('jalan_provinsi').checked;
@@ -525,6 +528,12 @@ let loadAkhir = () => {
     AkhirPoints = loadData(map_data, 'points', 'akhir', 'rhombus');
 }
 
+let loadJembatan = () => {
+    kepemilikan = getKepemilikan();
+    map_data = `${server_base}/data/${kepemilikan}Jembatan.json?t=${cur_time}`;
+    JembatanPoints = loadData(map_data, 'points', 'jembatan', 'bridge');
+}
+
 let clearJalanProvinsi = () => {
     if (JalanProvinsiLines !== undefined) {
         JalanProvinsiLines.setMap(null);
@@ -564,6 +573,12 @@ let clearAwal = () => {
 let clearAkhir = () => {
     if (AkhirPoints !== undefined) {
         AkhirPoints.setMap(null);
+    }
+}
+
+let clearJembatan = () => {
+    if (JembatanPoints !== undefined) {
+        JembatanPoints.setMap(null);
     }
 }
 
