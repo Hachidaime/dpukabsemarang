@@ -93,7 +93,7 @@ class Laporan extends Controller
         $alphabet = range('A', 'Z');
 
         $field = [];
-        foreach ($this->model('Laporan_model')->getDd1Thead()[3] as $row) {
+        foreach ($this->model('Laporan_model')->getDd2Thead()[3] as $row) {
             if (!empty($row['field'])) $field[$row['field']] = '';
         }
 

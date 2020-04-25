@@ -206,11 +206,6 @@ class Data_model extends Database
             $row['row'] = $idx + 1;
             $laporan[$idx]['kepemilikan'] = $row['kepemilikan'];
 
-            $row['kondisi_bangunan_atas'] = $kondisi_opt[$row['kondisi_bangunan_atas']];
-            $row['kondisi_bangunan_bawah'] = $kondisi_opt[$row['kondisi_bangunan_bawah']];
-            $row['kondisi_fondasi'] = $kondisi_opt[$row['kondisi_fondasi']];
-            $row['kondisi_lantai'] = $kondisi_opt[$row['kondisi_lantai']];
-
             foreach ($row as $key => $value) {
                 if (strpos($value, 'kondisi')) {
                     $value = $kondisi_opt[$value];
