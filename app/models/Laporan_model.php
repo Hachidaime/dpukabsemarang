@@ -42,7 +42,7 @@ class Laporan_model extends Database
         Functions::setDataSession('thead', ['3', 'row', '1', 'data-halign="center" data-align="right"']);
         Functions::setDataSession('thead', ['3', 'no_jalan', '2', 'data-halign="center" data-align="center"']);
         Functions::setDataSession('thead', ['3', 'nama_jalan', '3', 'data-halign="center" data-align="left"']);
-        Functions::setDataSession('thead', ['3', null, '4', 'data-halign="center" data-align="left"']);
+        Functions::setDataSession('thead', ['3', 'kecamatan', '4', 'data-halign="center" data-align="left"']);
         Functions::setDataSession('thead', ['3', 'panjang_km', '5', 'data-halign="center" data-align="right"']);
         Functions::setDataSession('thead', ['3', 'lebar_rata', '6', 'data-halign="center" data-align="right"']);
         Functions::setDataSession('thead', ['3', 'perkerasan_2', '7', 'data-halign="center" data-align="right"']);
@@ -57,17 +57,16 @@ class Laporan_model extends Database
         Functions::setDataSession('thead', ['3', 'kondisi_3_percent', '16', 'data-halign="center" data-align="right"']);
         Functions::setDataSession('thead', ['3', 'kondisi_4', '17', 'data-halign="center" data-align="right"']);
         Functions::setDataSession('thead', ['3', 'kondisi_4_percent', '18', 'data-halign="center" data-align="right"']);
-        Functions::setDataSession('thead', ['3', null, '19', 'data-halign="center" data-align="right"']);
-        Functions::setDataSession('thead', ['3', null, '20', 'data-halign="center" data-align="right"']);
-        Functions::setDataSession('thead', ['3', null, '21', 'data-halign="center" data-align="left"']);
+        Functions::setDataSession('thead', ['3', 'lhr', '19', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'npk', '20', 'data-halign="center" data-align="right"']);
+        Functions::setDataSession('thead', ['3', 'keterangan', '21', 'data-halign="center" data-align="left"']);
 
         return Functions::getDataSession('thead');
     }
 
-    public function getLaporan()
+    public function getLaporanDd1()
     {
-        $active_data_dir = $this->model('Data_model')->getActiveData();
-        $filepath = DOC_ROOT . "data/{$active_data_dir}/Laporan.json";
+        $filepath = DOC_ROOT . "data/LaporanDD1.json";
         $data = Functions::readJSON($filepath);
 
         return $data;

@@ -13,6 +13,7 @@ class Data_model extends Database
         $detail_table = $jalan_model->getTable('detail');
         $foto_table = $jalan_model->getTable('foto');
         $panjang_table = $jalan_model->getTable('panjang');
+        $jembatan_table = 'tjembatan';
 
         $data = [];
 
@@ -78,16 +79,41 @@ class Data_model extends Database
             ]
         ];
         $query = $this->getSelectQuery($detail_table, Functions::getParams($detail));
-        // echo $query . "<br>";
         $this->execute($query);
         list($data['detail'],) = $this->multiarray();
 
         $jembatan = [
-            'select' => [],
-            'join' => [],
-            'sort' => [],
-            'filter' => []
+            'select' => [
+                "{$jalan_table}.kepemilikan",
+                "{$jembatan_table}.no_jembatan",
+                "{$jembatan_table}.nama_jembatan",
+                "{$jembatan_table}.lebar",
+                "{$jembatan_table}.panjang",
+                "{$jembatan_table}.bentang",
+                "{$jembatan_table}.keterangan",
+                "{$jembatan_table}.tipe_bangunan_atas",
+                "{$jembatan_table}.kondisi_bangunan_atas",
+                "{$jembatan_table}.tipe_bangunan_bawah",
+                "{$jembatan_table}.kondisi_bangunan_bawah",
+                "{$jembatan_table}.tipe_fondasi",
+                "{$jembatan_table}.kondisi_fondasi",
+                "{$jembatan_table}.tipe_lantai",
+                "{$jembatan_table}.kondisi_lantai",
+            ],
+            'join' => [
+                "LEFT JOIN {$jalan_table} ON {$jalan_table}.no_jalan = {$jembatan_table}.no_jalan",
+            ],
+            'sort' => [
+                "{$jembatan_table}.no_jalan ASC",
+                "{$jembatan_table}.no_jembatan ASC",
+            ],
+            'filter' => [
+                "{$jalan_table}.nama_jalan NOT LIKE '%test%'"
+            ]
         ];
+        $query = $this->getSelectQuery($jembatan_table, Functions::getParams($jembatan));
+        $this->execute($query);
+        list($data['jembatan'],) = $this->multiarray();
 
         return $data;
     }
@@ -154,6 +180,7 @@ class Data_model extends Database
                 $row["kondisi_{$key}_percent"] = number_format($value / $row['panjang'] * 100, 2);
             }
 
+            $laporan[$idx]['kepemilikan'] = $row['kepemilikan'];
             foreach ($field as $value) {
                 $laporan[$idx][$value] = $row[$value];
             }
@@ -164,7 +191,9 @@ class Data_model extends Database
 
     public function generateDataLaporanDd2($jembatan)
     {
-        # code...
+        // print '<pre>';
+        // print_r($jembatan);
+        // print '</pre>';
     }
 
     public function generateDataSave(string $filename, $style, $jalan = [], $segment = [], $complete = [], $perkerasan = [], $kondisi = [], $awal = [], $akhir = [], $laporan = [])
