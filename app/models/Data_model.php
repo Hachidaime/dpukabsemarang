@@ -163,10 +163,17 @@ class Data_model extends Database
         list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
         $filename = "JalanSemua";
 
-        $laporan['dd1'] = $this->generateDataLaporanDd1($list['jalan']);
-        $laporan['dd2'] = $this->generateDataLaporanDd2($list['jembatan']);
+        $dd1 = $this->generateDataLaporanDd1($list['jalan']);
+        $dd2 = $this->generateDataLaporanDd2($list['jembatan']);
 
-        $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir, $jembatan,  $laporan);
+        $info = $this->generateDataInfo($list);
+
+        $data = [
+            'lines' => [[$filename, $jalan], ["{$filename}Complete", $complete], ["{$filename}Perkerasan", $perkerasan], ["{$filename}Kondisi", $kondisi]],
+            'points' => [["{$filename}Segment", $segment], ["{$filename}Awal", $awal], ["{$filename}Akhir", $akhir], ["{$filename}Jembatan", $jembatan]],
+            'other' => [["LaporanDD1", $dd1], ["LaporanDD2", $dd2], ["Info", $info]]
+        ];
+        $this->generateDataFile($data, $style);
 
         // TODO: Save Segment & Jalan with perkerasan kondisi by kepemilikan as JSON
         $kepemilikan_opt = $this->options('kepemilikan_opt'); // TODO: Get Kepemilikan Options
@@ -176,7 +183,12 @@ class Data_model extends Database
             $jalan = Functions::getLineFromJalan($list['jalan'], $lineStyle, $kepemilikan);
             $jembatan = Functions::getPointFromJembatan($list['jembatan'], $iconStyle, $kepemilikan);
             list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle, $kepemilikan);
-            $this->GenerateDataSave($filename, $style, $jalan, $segment, $complete, $perkerasan, $kondisi, $awal, $akhir, $jembatan);
+
+            $data = [
+                'lines' => [[$filename, $jalan], ["{$filename}Complete", $complete], ["{$filename}Perkerasan", $perkerasan], ["{$filename}Kondisi", $kondisi]],
+                'points' => [["{$filename}Segment", $segment], ["{$filename}Awal", $awal], ["{$filename}Akhir", $akhir], ["{$filename}Jembatan", $jembatan]]
+            ];
+            $this->generateDataFile($data, $style);
         }
     }
 
@@ -240,20 +252,62 @@ class Data_model extends Database
         return $laporan;
     }
 
-    public function generateDataSave(string $filename, $style, $jalan = [], $segment = [], $complete = [], $perkerasan = [], $kondisi = [], $awal = [], $akhir = [], $jembatan = [], $laporan = [])
+    public function generateDataInfo($list)
     {
-        // TODO: Save Segment & Jalan with perkerasan kondisi as JSON
-        if (!empty($jalan)) Functions::saveGeoJSON("{$filename}.json", $style, $jalan, 1); // TODO: Save Jalan without attribute as GeoJSON
-        if (!empty($complete)) Functions::saveGeoJSON("{$filename}Complete.json", $style, $complete, 1);
-        if (!empty($perkerasan)) Functions::saveGeoJSON("{$filename}Perkerasan.json", $style, $perkerasan, 1);
-        if (!empty($kondisi)) Functions::saveGeoJSON("{$filename}Kondisi.json", $style, $kondisi, 1);
-        if (!empty($segment)) Functions::saveGeoJSON("{$filename}Segment.json", $style, $segment, 2);
-        if (!empty($awal)) Functions::saveGeoJSON("{$filename}Awal.json", $style, $awal, 2);
-        if (!empty($akhir)) Functions::saveGeoJSON("{$filename}Akhir.json", $style, $akhir, 2);
-        if (!empty($jembatan)) Functions::saveGeoJSON("{$filename}Jembatan.json", $style, $jembatan, 2);
-        foreach ($laporan as $key => $value) {
-            $key = strtoupper($key);
-            if (!empty($value)) Functions::saveJSON("Laporan{$key}.json", $value);
+        $kepemilikan_opt = $this->options('kepemilikan_opt'); // TODO: Get Kepemilikan Options
+
+        $panjang = []; // ? in metres
+        foreach ($list['jalan'] as $row) {
+            $kepemilikan = 'JalanSemua';
+            $panjang[$kepemilikan]['total'] += $row['panjang'];
+            foreach (json_decode($row['perkerasan'], true) as $key => $value) {
+                $panjang[$kepemilikan]['perkerasan'][$key] += $value;
+            }
+            foreach (json_decode($row['kondisi'], true) as $key => $value) {
+                $panjang[$kepemilikan]['kondisi'][$key] += $value;
+            }
+
+            $kepemilikan = preg_replace("/[^A-Za-z0-9]/", '', $kepemilikan_opt[$row['kepemilikan']]);
+            $panjang[$kepemilikan]['total'] += $row['panjang'];
+            foreach (json_decode($row['perkerasan'], true) as $key => $value) {
+                $panjang[$kepemilikan]['perkerasan'][$key] += $value;
+            }
+            foreach (json_decode($row['kondisi'], true) as $key => $value) {
+                $panjang[$kepemilikan]['kondisi'][$key] += $value;
+            }
+        }
+
+        $jembatan = [];
+        foreach ($list['jembatan'] as $row) {
+            $kepemilikan = 'JalanSemua';
+            $jembatan[$kepemilikan]['total'] += 1;
+
+            $kepemilikan = preg_replace("/[^A-Za-z0-9]/", '', $kepemilikan_opt[$row['kepemilikan']]);
+            $jembatan[$kepemilikan]['total'] += 1;
+        }
+
+        $info['panjang'] = $panjang;
+        $info['jembatan'] = $jembatan;
+        return $info;
+    }
+
+    public function generateDataFile($data, $style)
+    {
+        foreach ($data as $key => $values) {
+            foreach ($values as $row) {
+                list($filename, $value) = $row;
+                switch ($key) {
+                    case 'lines':
+                        if (!empty($value)) Functions::saveGeoJSON("{$filename}.json", $style, $value, 1);
+                        break;
+                    case 'points':
+                        if (!empty($value)) Functions::saveGeoJSON("{$filename}.json", $style, $value, 2);
+                        break;
+                    default:
+                        if (!empty($value)) Functions::saveJSON("{$filename}.json", $value);
+                        break;
+                }
+            }
         }
     }
 }
