@@ -630,48 +630,59 @@ class Functions
         return [$style, $lineStyle, $iconStyle];
     }
 
-    public function createGeoJSON($style, $content, $simbol)
+    public function createFeatureCollection($style, $content, $simbol)
     {
+        if (empty($content)) return null;
         $list['type'] = 'FeatureCollection';
         $list['features'] = [];
         foreach ($content as $idx => $row) {
-            switch ($simbol) {
-                case '1':
-                    $type = 'LineString';
-                    break;
-                case '2':
-                    $type = 'Point';
-                    break;
-            }
-
-            $mystyle = str_replace('#', '', $row['style']);
-            $list['features'][$idx] = [
-                'type' => 'Feature',
-                'geometry' => [
-                    'type' => $type,
-                    'coordinates' => $row['koordinat']
-                ],
-                'properties' => [
-                    'nama_jalan' => $row['nama_jalan'],
-                    'no_jalan' => $row['no_jalan'],
-                    'nama_jembatan' => $row['nama_jembatan'],
-                    'no_jembatan' => $row['no_jembatan'],
-                    'segment' => $row['segment'],
-                    'strokeColor' => $style[$mystyle]['color'],
-                    'strokeWeight' => $style[$mystyle]['weight'],
-                    'strokeOpacity' => $style[$mystyle]['opacity'],
-                    'fillColor' => $style[$mystyle]['color'],
-                    'fillOpacity' => $style[$mystyle]['opacity'],
-                ]
-            ];
+            $list['features'][$idx] = self::createFeature($style, $row, $simbol);
         }
 
         return $list;
     }
 
+    public function createFeature($style, $data, $simbol)
+    {
+        switch ($simbol) {
+            case '1':
+                $type = 'LineString';
+                break;
+            case '2':
+                $type = 'Point';
+                break;
+        }
+
+        $mystyle = str_replace('#', '', $data['style']);
+        $feature = [
+            'type' => 'Feature',
+            'geometry' => [
+                'type' => $type,
+                'coordinates' => $data['koordinat']
+            ],
+            'properties' => [
+                'nama_jalan' => $data['nama_jalan'],
+                'no_jalan' => $data['no_jalan'],
+                'nama_jembatan' => $data['nama_jembatan'],
+                'no_jembatan' => $data['no_jembatan'],
+                'kepemilikan' => $data['kepemilikan_text'],
+                'panjang' => $data['panjang'],
+                'lebar' => $data['lebar'],
+                'segment' => $data['segment'],
+                'strokeColor' => $style[$mystyle]['color'],
+                'strokeWeight' => $style[$mystyle]['weight'],
+                'strokeOpacity' => $style[$mystyle]['opacity'],
+                'fillColor' => $style[$mystyle]['color'],
+                'fillOpacity' => $style[$mystyle]['opacity'],
+            ]
+        ];
+
+        return $feature;
+    }
+
     public function saveGeoJSON(string $filename, $style, $content, $simbol)
     {
-        $content = self::createGeoJSON($style, $content, $simbol);
+        $content = self::createFeatureCollection($style, $content, $simbol);
         self::saveJSON($filename, $content);
     }
 

@@ -359,23 +359,30 @@ $(document).ready(function () {
         }, 'json');
     });
 
-    searchCheckbox.attr("disabled", true);
+    searchGisForm.find('select#no_jalan').change(function () {
+        document.querySelectorAll('input[type=checkbox').forEach(CheckBox => {
+            CheckBox.checked = false;
+        });
+        searchCheckbox.attr("disabled", true);
 
-    $('input[type=checkbox]#jalan_provinsi').change(function () {
-        loadSwitch();
+        if (loadDataJalan(this.value) == true) searchCheckbox.removeAttr("disabled");
     });
 
+    searchCheckbox.attr("disabled", true);
+
     $('input[type=checkbox]#perkerasan').change(function () {
-        loadSwitch();
+        if (this.checked) loadPerkerasan();
+        else clearPerkerasan();
     });
 
     $('input[type=checkbox]#kondisi').change(function () {
-        loadSwitch();
+        if (this.checked) loadKondisi();
+        else clearKondisi();
     });
 
     $('input[type=checkbox]#segmentasi').change(function () {
-        if (this.checked) loadSegmentasi();
-        else clearSegmentasi();
+        if (this.checked) loadSegment();
+        else clearSegment();
     });
 
     $('input[type=checkbox]#awal').change(function () {

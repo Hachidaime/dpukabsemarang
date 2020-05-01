@@ -55,6 +55,48 @@ let initMap = () => {
     return map;
 }
 
+let initMap2 = () => {
+    /**
+     * * Map Options
+     */
+    map = new google.maps.Map(document.getElementById("map_canvas"), {
+        center: new google.maps.LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE),
+        gestureHandling: 'greedy',
+        zoom: 11,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+            position: google.maps.ControlPosition.TOP_RIGHT
+        },
+        fullscreenControl: false,
+        navigationControl: true,
+        navigationControlOptions: {
+            style: google.maps.NavigationControlStyle.SMALL
+        },
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_CENTER
+        },
+        streetViewControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
+        }
+    });
+    center = bounds.getCenter();
+
+    // Create the DIV to hold the control and call the CenterControl()
+    // constructor passing in this DIV.
+    let controlCentering = document.createElement('div');
+    let centering = new centerControl(controlCentering, map);
+    // controlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlCentering);
+
+    // let controlNav = document.createElement('div');
+    // let myNav = new controlOpenNav(controlNav, map);
+    // // controlDiv.index = 1;
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlNav);
+    return map;
+}
+
 let makeControl = () => {
     let controlUI = document.createElement('div');
     controlUI.style.backgroundColor = '#fff';
@@ -133,34 +175,6 @@ let makePath = coordinates => {
 }
 
 let countLength = path => google.maps.geometry.spherical.computeLength(path.getPath());
-
-let genSegmentOld = () => {
-    let url = $table.bootstrapTable('getOptions').url;
-    url = url.replace('search', 'searchori');
-    let segmentasi = $('#segmentasi').val();
-    let file = $('#upload_koordinat').val();
-    let params = {};
-    params['file'] = file;
-    $.post(url, $.param(params), function (data) {
-        let koordinat = data;
-        let coord = makeCoordinateArray(koordinat);
-        let coordinates = makeCoordinatArrayObject(koordinat);
-        let roadPath = makePath(coordinates);
-        let roadLength = countLength(roadPath);
-        let coordSegment = getSegment(roadPath, coord, segmentasi, roadLength);
-
-        $('#panjang').val(roadLength.toFixed(2));
-        $('#panjang_text').val(roadLength.toFixed(2));
-        url = url.replace('searchori', 'setsession');
-        let params = {};
-        params['coordsegment'] = coordSegment;
-        params['coord'] = coord;
-
-        $.post(url, $.param(params), function () {
-            $table.bootstrapTable('refresh')
-        });
-    }, "json");
-}
 
 let genSegment = () => {
     let coordinates = [];
@@ -300,7 +314,7 @@ let getKepemilikan = () => {
 
 let loadData = (map_data, type, jenis, simbol = null) => {
     features = new google.maps.Data();
-    features.loadGeoJson(map_data);
+    features.addGeoJson(map_data);
     if (jenis != 'batas') {
         features.addListener('click', function (event) {
             // var myHTML = event.feature.getProperty("nama_jalan");
@@ -451,114 +465,51 @@ let getFeatureInfo = (param, jenis) => {
     return (html.join(''));
 }
 
-let Lines;
-
-let loadLines = () => {
-    kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${kepemilikan}.json?t=${cur_time}`;
-    Lines = loadData(map_data, 'lines', 'jalan');
-}
-
-let clearLines = () => {
-    if (Lines !== undefined) {
-        Lines.setMap(null);
-    }
-}
-
-let JalanProvinsiLines;
 let CompleteLines;
 let PerkerasanLines;
 let KondisiLines;
-let SegmentasiPoints;
+let SegmentPoints;
 let AwalPoints;
 let AkhirPoints;
 let JembatanPoints;
 
-let loadSwitch = () => {
-    let jlnProvinsi = document.getElementById('jalan_provinsi').checked;
-    if (jlnProvinsi) {
-        loadJalanProvinsi();
+let DataJalan;
+let JalanLines;
+let loadDataJalan = no_jalan => {
+    clearJalan();
+    DataJalan = getAJAX(`${base_url}/Gis/index/datajalan/${no_jalan}`);
+    if (DataJalan.length > 0) {
+        DataJalan = JSON.parse(DataJalan);
+        loadJalan();
+        return true;
     }
-
-    let perkerasan = document.getElementById('perkerasan').checked;
-    let kondisi = document.getElementById('kondisi').checked;
-
-    if (perkerasan && kondisi) {
-        clearPerkerasan();
-        clearKondisi();
-        loadComplete();
-    }
-    else {
-        clearComplete();
-
-        if (perkerasan) {
-            loadPerkerasan()
-        }
-        else {
-            clearPerkerasan();
-        }
-
-        if (kondisi) {
-            loadKondisi();
-        }
-        else {
-            clearKondisi();
-        }
-    }
+    return false;
 }
 
-let loadJalanProvinsi = () => {
-    // kepemilikan = "JalanProvinsi";
-    map_data = `${server_base}/data/JalanProvinsi.json?t=${cur_time}`;
-    JalanProvinsiLines = loadData(map_data, 'lines', 'jalan');
+let clearDataJalan = () => {
+
+}
+
+let loadJalan = () => {
+    JalanLines = loadData(DataJalan.jalan, 'lines', 'jalan');
+}
+
+let clearJalan = () => {
+    if (JalanLines !== undefined) {
+        JalanLines.setMap(null);
+
+        clearComplete();
+        clearPerkerasan();
+        clearKondisi();
+        clearSegment();
+        clearAwal();
+        clearAkhir();
+        clearJembatan();
+    }
 }
 
 let loadComplete = () => {
-    kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${kepemilikan}Complete.json?t=${cur_time}`;
-    CompleteLines = loadData(map_data, 'lines', 'jalan');
-}
-
-let loadPerkerasan = () => {
-    kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${kepemilikan}Perkerasan.json?t=${cur_time}`;
-    PerkerasanLines = loadData(map_data, 'lines', 'jalan');
-}
-
-let loadKondisi = () => {
-    kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${kepemilikan}Kondisi.json?t=${cur_time}`;
-    KondisiLines = loadData(map_data, 'lines', 'jalan');
-}
-
-let loadSegmentasi = () => {
-    kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${kepemilikan}Segment.json?t=${cur_time}`;
-    SegmentasiPoints = loadData(map_data, 'points', 'segment', 'circle');
-}
-
-let loadAwal = () => {
-    kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${kepemilikan}Awal.json?t=${cur_time}`;
-    AwalPoints = loadData(map_data, 'points', 'awal', 'triangle');
-}
-
-let loadAkhir = () => {
-    kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${kepemilikan}Akhir.json?t=${cur_time}`;
-    AkhirPoints = loadData(map_data, 'points', 'akhir', 'rhombus');
-}
-
-let loadJembatan = () => {
-    kepemilikan = getKepemilikan();
-    map_data = `${server_base}/data/${kepemilikan}Jembatan.json?t=${cur_time}`;
-    JembatanPoints = loadData(map_data, 'points', 'jembatan', 'bridge');
-}
-
-let clearJalanProvinsi = () => {
-    if (JalanProvinsiLines !== undefined) {
-        JalanProvinsiLines.setMap(null);
-    }
+    CompleteLines = loadData(DataJalan.complete, 'lines', 'jalan');
 }
 
 let clearComplete = () => {
@@ -567,10 +518,18 @@ let clearComplete = () => {
     }
 }
 
+let loadPerkerasan = () => {
+    PerkerasanLines = loadData(DataJalan.perkerasan, 'lines', 'jalan');
+}
+
 let clearPerkerasan = () => {
     if (PerkerasanLines !== undefined) {
         PerkerasanLines.setMap(null);
     }
+}
+
+let loadKondisi = () => {
+    KondisiLines = loadData(DataJalan.kondisi, 'lines', 'jalan');
 }
 
 let clearKondisi = () => {
@@ -579,10 +538,18 @@ let clearKondisi = () => {
     }
 }
 
-let clearSegmentasi = () => {
-    if (SegmentasiPoints !== undefined) {
-        SegmentasiPoints.setMap(null);
+let loadSegment = () => {
+    SegmentPoints = loadData(DataJalan.segment, 'points', 'segment', 'circle');
+}
+
+let clearSegment = () => {
+    if (SegmentPoints !== undefined) {
+        SegmentPoints.setMap(null);
     }
+}
+
+let loadAwal = () => {
+    AwalPoints = loadData(DataJalan.awal, 'points', 'awal', 'triangle');
 }
 
 let clearAwal = () => {
@@ -591,10 +558,18 @@ let clearAwal = () => {
     }
 }
 
+let loadAkhir = () => {
+    AkhirPoints = loadData(DataJalan.akhir, 'points', 'akhir', 'rhombus');
+}
+
 let clearAkhir = () => {
     if (AkhirPoints !== undefined) {
         AkhirPoints.setMap(null);
     }
+}
+
+let loadJembatan = () => {
+    JembatanPoints = loadData(DataJalan.jembatan, 'points', 'jembatan', 'bridge');
 }
 
 let clearJembatan = () => {

@@ -88,6 +88,44 @@ class Controller
         return $this->smarty->display('Layout/Mainlayout.php');
     }
 
+    public function view2(string $view, array $data = [])
+    {
+        // TODO: Check user permission, will be redirected to Error page if user no have permission
+        if (!$this->permission()) Header("Location: " . BASE_URL . "/StaticPage/Error403");
+
+        // TODO: Set active Controller & Method into data
+        list($data['controller'], $data['method']) = $this->currentPage();
+
+        // TODO: Assign data into template
+        $this->smarty->assign('data', $data);
+
+        /**
+         * * Navigation
+         */
+        // TODO: Call system, module, & menu on Navbar
+        $system = $this->model('Layout_model')->system();
+        $module = $this->model('Layout_model')->module();
+        $menu = $this->model('Layout_model')->menu();
+
+        // TODO: Assign system, module, & menu on Navbar
+        $this->smarty->assign('system', $system);
+        $this->smarty->assign('module', $module);
+        $this->smarty->assign('menu', $menu);
+
+        // TODO: Fetch Navigation template
+        $header = $this->smarty->fetch('Layout/Header.php');
+
+        // TODO: Fetch Content template
+        $content = $this->smarty->fetch($view . '.php');
+
+        // TODO: Assign Navigation & Content
+        $this->smarty->assign('header', $header);
+        $this->smarty->assign('content', $content);
+
+        // TODO: Display template (Layout/Mainlayout.php)
+        return $this->smarty->display('Layout/Mainlayout2.php');
+    }
+
     /**
      * * Controller::dofetch
      * ? Display part of web page
