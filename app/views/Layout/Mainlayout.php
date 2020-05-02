@@ -42,7 +42,7 @@
 </head>
 
 <body>
-    <div class="main-container container-md p-0 min-vh-100 border bg-light">
+    <div class="main-container container-md p-0 min-vh-100 bg-light">
         <!-- <div class="header sticky-top"> -->
         {$header}
         <!-- </div> -->

@@ -3,7 +3,7 @@
     {$v}
     {/foreach}
 </div>
-{$toolbar}
+{*$toolbar*}
 <div class="main d-flex flex-column">
     {foreach from=$data.main key=k item=v}
     {$v}
@@ -20,23 +20,24 @@
 {/if}
 
 <!-- Modal -->
-<div class="modal fade" id="{$data.modalId|default:'myModal'}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+{foreach from=$data.modal key=modalKey item=modal}
+<div class="modal fade" id="{$modal.modalId|default:'myModal'}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-{$modal.modalSize|default:'lg'} modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">Modal title</h5>
+                <h5 class="modal-title" id="modalLabel">{$modal.modalLabel}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                {foreach from=$data.modalbody key=k item=v}
+                {foreach from=$modal.modalBody key=k item=v}
                 {$v}
                 {/foreach}
             </div>
-            {if $data.modalfoot|count}
+            {if $modal.modalFoot|count}
             <div class="modal-footer">
-                {foreach from=$data.modalfoot key=k item=v}
+                {foreach from=$modal.modalFoot key=k item=v}
                 {$v}
                 {/foreach}
             </div>
@@ -44,3 +45,4 @@
         </div>
     </div>
 </div>
+{/foreach}
