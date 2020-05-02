@@ -196,6 +196,11 @@ let clearKoordinatModal = () => {
     file_action.find('img').attr('href', '');
 }
 
+let clearAddKoordinatModal = () => {
+    let myForm = $('.addKoordinatForm');
+    myForm[0].reset();
+}
+
 let width = () => $(window).width();
 
 let openNav = () => $('#mySidepanel').show();
@@ -237,9 +242,7 @@ let getPanjangJalan = () => {
     let result = [];
     result['perkerasan'] = perkerasan;
     result['kondisi'] = kondisi;
-    console.log(result);
     result = Object.assign({}, result);
-    console.log(result);
     return result;
 }
 

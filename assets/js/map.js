@@ -176,25 +176,31 @@ let makePath = coordinates => {
 
 let countLength = path => google.maps.geometry.spherical.computeLength(path.getPath());
 
-let genSegment = () => {
-    let coordinates = [];
+let roadPath;
+let roadLength;
+let coordinates = [];
+let koordinat;
+let tableUrl;
+
+let getCoordinates = (type = 'ori') => {
     let importFilename = document.getElementById('upload_koordinat').value;
-    let koordinat;
-    let url = $table.bootstrapTable('getOptions').url;
+    tableUrl = $table.bootstrapTable('getOptions').url;
 
     if (importFilename != '') {
         importFilename = /*html*/`${server_base}/upload/temp/${importFilename}`;
         coordinates = getKML(importFilename);
     }
     else {
-        koordinat = getAJAX(url.replace('search', 'searchori'));
+        koordinat = getAJAX(tableUrl.replace('search', `search${type}`));
         coordinates = JSON.parse(koordinat);
     }
 
-    let roadPath = makePath(coordinates);
-    let roadLength = countLength(roadPath);
+    roadPath = makePath(coordinates);
+    roadLength = countLength(roadPath);
+}
 
-    console.log(roadLength);
+let genSegment = () => {
+    getCoordinates();
 
     let segmentasi = document.getElementById('segmentasi').value;
 
@@ -247,16 +253,60 @@ let genSegment = () => {
         roadLength = countLength(makePath(coordinates));
     }
 
-    console.log(roadLength);
-
     document.getElementById('panjang').value = roadLength.toFixed(2);
     document.getElementById('panjang_text').value = roadLength.toFixed(2);
 
     let params = {};
     params['coordinates'] = coordinates;
-    $.post(url.replace('search', 'setsession'), $.param(params), function () {
+    $.post(tableUrl.replace('search', 'setsession'), $.param(params), function () {
         $table.bootstrapTable('refresh');
     });
+}
+
+let addPoint = distance => {
+    getCoordinates('segmented');
+
+    let coord = [];
+    coordinates.forEach(j => {
+        coord.push([j[1], j[0]]);
+    });
+
+    if (distance <= roadLength) {
+        let point;
+        let newPoint;
+        point = roadPath.GetPointAtDistance(distance);
+        newPoint = [point.lng(), point.lat(), 0];
+        point = [point.lat(), point.lng()];
+        let index = turf.nearestPointOnLine(turf.lineString(coord), turf.point(point)).properties.index;
+        newPoint.push('new');
+
+        let points = [];
+        coordinates.forEach((y, k) => {
+            if (k < index) {
+                points.push(y);
+            }
+        });
+        points.push(newPoint);
+
+        let pointsLength = countLength(makePath(points));
+
+        if (pointsLength >= distance) {
+            index += 1;
+        }
+
+        coordinates.splice(index, 0, newPoint);
+
+        let params = {};
+        params['coordinates'] = coordinates;
+        $.post(tableUrl.replace('search', 'setsession'), $.param(params), function () {
+            let modal = $('#addKoordinatModal');
+            modal.modal('hide');
+            $table.bootstrapTable('refresh');
+        });
+    }
+    else {
+        makeAlert(JSON.parse('{"danger":["Jarak lebih besar dari Panjang Ruas Jalan."]}'));
+    }
 }
 
 let getKML = importFilename => {

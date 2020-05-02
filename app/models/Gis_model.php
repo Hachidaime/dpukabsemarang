@@ -30,6 +30,8 @@ class Gis_model extends Database
         $panjang_table = $jalan_model->getTable('panjang');
         $jembatan_table = 'tjembatan';
 
+        $filter = "{$jalan_table}.no_jalan = ?";
+
         $data_query = [
             'select' => [
                 "{$jalan_table}.no_jalan",
@@ -50,9 +52,7 @@ class Gis_model extends Database
                 "{$jalan_table}.kepemilikan ASC",
                 "{$jalan_table}.no_jalan ASC"
             ],
-            'filter' => [
-                "{$jalan_table}.no_jalan = ?"
-            ]
+            'filter' => [$filter]
         ];
 
         $query = $this->getSelectQuery($jalan_table, Functions::getParams($data_query));
@@ -86,9 +86,7 @@ class Gis_model extends Database
                 "{$detail_table}.kondisi ASC",
                 "{$detail_table}.segment ASC"
             ],
-            'filter' => [
-                "{$jalan_table}.no_jalan = ?"
-            ]
+            'filter' => [$filter]
         ];
         $query = $this->getSelectQuery($detail_table, Functions::getParams($data_query));
         $this->execute($query, $bindVar);
@@ -127,9 +125,7 @@ class Gis_model extends Database
                 "{$jembatan_table}.no_jalan ASC",
                 "{$jembatan_table}.no_jembatan ASC",
             ],
-            'filter' => [
-                "{$jalan_table}.no_jalan = ?"
-            ]
+            'filter' => [$filter]
         ];
         $query = $this->getSelectQuery($jembatan_table, Functions::getParams($data_query));
         $this->execute($query, $bindVar);

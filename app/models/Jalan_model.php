@@ -192,15 +192,14 @@ class Jalan_model extends Database
 
     public function makeKoordinatDetail($data)
     {
-        // var_dump($data);
         $n = 0;
         foreach ($this->getKoordinatForm() as $row) {
             if (in_array($row['name'], ['index', 'tag'])) continue;
             $data[$n] = (!empty($data[$n]) && $data[$n] != 0) ? $data[$n] : null;
             $detail[$row['name']] = $data[$n];
+            if (in_array($row['name'], ['latitude', 'longitude'])) $detail[$row['name']] = number_format($data[$n], 8);
             $n++;
         }
-        // var_dump($detail);
         return $detail;
     }
 

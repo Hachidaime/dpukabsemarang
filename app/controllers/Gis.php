@@ -100,7 +100,8 @@ class Gis extends Controller
                 'perkerasan'    => Functions::createFeatureCollection($style, $perkerasan, 1),
                 'kondisi'       => Functions::createFeatureCollection($style, $kondisi, 1),
                 'awal'          => Functions::createFeatureCollection($style, $awal, 2),
-                'akhir'         => Functions::createFeatureCollection($style, $akhir, 2)
+                'akhir'         => Functions::createFeatureCollection($style, $akhir, 2),
+                'jembatan'      => Functions::createFeatureCollection($style, $jembatan, 2)
             ];
             echo json_encode($result);
             exit;

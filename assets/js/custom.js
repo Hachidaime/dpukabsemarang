@@ -304,6 +304,36 @@ $(document).ready(function () {
         }, "json");
     });
 
+    $('.btn-add-point').click(() => {
+        let modal = $('#addKoordinatModal');
+        modal.modal('show');
+    });
+    $('#distance').keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
+    $('#addKoordinatModal').on('hidden.bs.modal', function () {
+        let modal = $('#addKoordinatModal');
+        modal.find('.modal-body').html();
+        clearAddKoordinatModal();
+    });
+
+    $('.btn-cancel-add-point').click(function () {
+        let modal = $('#addKoordinatModal');
+        modal.modal('hide');
+    });
+
+    $('.btn-submit-add-point').click(() => {
+        let distance = document.querySelector('#distance').value;
+        if (!isNaN(distance)) addPoint(distance);
+        else {
+            makeAlert(JSON.parse('{"danger":["Jarak harus dalam bentuk angka."]}'));
+        }
+    });
+
     $('.btn-sidebar-open').click(function () {
         openNav();
     });

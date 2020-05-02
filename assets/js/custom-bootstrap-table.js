@@ -79,6 +79,11 @@ function rowStyle(row, index) {
             classes: "clr-food-egg"
         }
     }
+    if (row.new == true) {
+        return {
+            classes: "clr-food-cherry"
+        }
+    }
     return "bg-light";
 }
 
@@ -134,7 +139,6 @@ window.coordEvents = {
         modal.modal('show');
         modal.find('.modal-title').text(`Edit Koordinat #${row.row}`);
 
-        console.log(row);
         let selectinput = ['perkerasan', 'kondisi'];
 
         let myForm = $('.koordinatForm');

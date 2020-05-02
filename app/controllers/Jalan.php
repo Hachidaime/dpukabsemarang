@@ -303,6 +303,9 @@ class Jalan extends Controller
             case 'searchori':
                 $this->KoordinatOri();
                 break;
+            case 'searchsegmented':
+                $this->KoordinatSegmented();
+                break;
             case 'setsession':
                 $this->KoordinatSetSesion();
                 break;
@@ -359,6 +362,13 @@ class Jalan extends Controller
         exit;
     }
 
+    private function KoordinatSegmented()
+    {
+        list($list) = $this->KoordinatJalanSearch($this->no_jalan);
+        echo (!empty($list['segmented'])) ? $list['segmented'] : $list['ori'];
+        exit;
+    }
+
     private function KoordinatJalanSearch()
     {
         return $this->my_model->getKoordinatJalan($this->no_jalan);
@@ -367,11 +377,12 @@ class Jalan extends Controller
     private function KoordinatBuild(array $coordinates = [], bool $raw = false)
     {
         $coord = Functions::getDataSession('coordinates', false);
-        $detail = [];
+        $old = [];
         if (!empty($coord)) {
             foreach ($coord[1] as $row) {
                 $old["{$row['longitude']},{$row['latitude']}"] = $row;
             }
+            var_dump($old);
         }
 
         $awal       = [];
@@ -393,8 +404,15 @@ class Jalan extends Controller
                 $row = Functions::buildGeo($row, false);
             }
             $rows = $this->my_model->makeKoordinatDetail($rows);
+
             $rows_old = $old["{$rows['longitude']},{$rows['latitude']}"];
-            $rows = (!empty($rows_old)) ? $rows_old : $rows;
+
+            $rows['new'] = false;
+            if (!empty($rows_old)) {
+                $rows = $rows_old;
+            } else {
+                $rows['new'] = (!empty($old)) ? true : false;
+            }
 
             if ($rows['segment'] <= 0) {
                 $awal[] = $rows;
