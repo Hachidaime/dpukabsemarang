@@ -46,8 +46,8 @@ class Jalan_model extends Database
         Functions::setDataSession('thead', ['0', 'perkerasan_text', 'Perkerasan', 'data-halign="center" data-align="left" data-width="150"']);
         Functions::setDataSession('thead', ['0', 'kondisi_text', 'Kondisi', 'data-halign="center" data-align="left" data-width="150"']);
         Functions::setDataSession('thead', ['0', 'foto_file', 'Foto', 'data-halign="center" data-align="left" data-width="100"']);
-        Functions::setDataSession('thead', ['0', 'segment', 'Seg', 'data-halign="center" data-align="center" data-width="70"']);
-        Functions::setDataSession('thead', ['0', 'iri', 'IRI', 'data-halign="center" data-align="left" data-width="150"']);
+        Functions::setDataSession('thead', ['0', 'segment', 'Segment', 'data-halign="center" data-align="center" data-width="100"']);
+        Functions::setDataSession('thead', ['0', 'iri', 'IRI', 'data-halign="center" data-align="left" data-width="80"']);
         Functions::setDataSession('thead', ['0', 'coord']);
 
         return Functions::getDataSession('thead');
@@ -65,6 +65,12 @@ class Jalan_model extends Database
         Functions::setDataSession('form', ['number', 'segment', 'segment', 'segment', [], false, false]);
         Functions::setDataSession('form', ['img', 'foto', 'foto', 'Foto', [], false, false]);
         Functions::setDataSession('form', ['text', 'iri', 'iri', 'IRI', [], false, false]);
+        return Functions::getDataSession('form');
+    }
+
+    public function getAddKoordinatForm()
+    {
+        Functions::setDataSession('form', ['text', 'distance', 'distance', 'Jarak (m)', [], true, false]);
         return Functions::getDataSession('form');
     }
 

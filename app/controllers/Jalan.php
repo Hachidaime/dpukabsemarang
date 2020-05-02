@@ -97,29 +97,56 @@ class Jalan extends Controller
         exit;
     }
 
-    private function JalanForm($data)
+    private function JalanForm($param)
     {
-        $data['form'] = $this->my_model->getJalanForm();
-
-        $data['toolbar'][] = $this->dofetch('Component/Button', Functions::makeButton('button', 'genCoord', '<i class="fas fa-route"></i>&nbsp;Generate Koordinat', 'warning', 'btn-gen-coord', 250));
-        $data['main'][] = $this->dofetch('Layout/Form', $data);
-
-        $data['data'] = Functions::defaultTableData();
-        $data['thead'] = $this->my_model->getKoordinatThead();
-        $data['search'] = 'false';
-
-        $data['main'][] = $this->dofetch('Layout/Table', $data);
-
-        // TODO: Load Koordinat Form
-        unset($data['form']);
-        $data['formClass'] = 'koordinatForm';
-        $data['form'] = $this->my_model->getKoordinatForm();
-        $data['modalbody'][] = $this->dofetch('Layout/Form', $data);
-
-        $data['modalfoot'][] = $this->dofetch('Component/Button', Functions::makeButton('button', 'cancel-koordinat', 'Cancel', 'danger', 'btn-cancel-koordinat'));
-        $data['modalfoot'][] = $this->dofetch('Component/Button', Functions::makeButton('button', 'submit-koordinat', 'Submit', 'success', 'btn-submit-koordinat'));
-        $data['modalId'] = 'koordinatModal';
-
+        $data = [
+            'main' => [
+                $this->dofetch('Layout/Form', [
+                    'form' => $this->my_model->getJalanForm(),
+                    'detail' => $param['detail']
+                ]),
+                $this->dofetch('Layout/Table', [
+                    'url' => $param['url'],
+                    'data' => Functions::defaultTableData(),
+                    'thead' => $this->my_model->getKoordinatThead(),
+                    'search' => 'false'
+                ])
+            ],
+            'toolbar' => [
+                $this->dofetch('Component/Button', Functions::makeButton('button', 'genCoord', '<i class="fas fa-route"></i>&nbsp;Generate Koordinat', 'warning', 'btn-gen-coord', 200)),
+                $this->dofetch('Component/Button', Functions::makeButton('button', 'addPoint', '<i class="fas fa-map-marker-alt"></i>&nbsp;Tambah Koordinat', 'success', 'btn-add-point', 180))
+            ],
+            'modal' => [
+                [
+                    'modalId' => 'koordinatModal',
+                    'modalBody' => [
+                        $this->dofetch('Layout/Form', [
+                            'formClass' => 'koordinatForm',
+                            'form' => $this->my_model->getKoordinatForm()
+                        ]),
+                    ],
+                    'modalFoot' => [
+                        $this->dofetch('Component/Button', Functions::makeButton('button', 'cancel-koordinat', 'Cancel', 'danger', 'btn-cancel-koordinat')),
+                        $this->dofetch('Component/Button', Functions::makeButton('button', 'submit-koordinat', 'Submit', 'success', 'btn-submit-koordinat'))
+                    ]
+                ],
+                [
+                    'modalId' => 'addKoordinatModal',
+                    'modalLabel' => 'Tambah Koordinat',
+                    'modalSize' => 'md',
+                    'modalBody' => [
+                        $this->dofetch('Layout/Form', [
+                            'formClass' => 'addKoordinatForm',
+                            'form' => $this->my_model->getAddKoordinatForm()
+                        ]),
+                    ],
+                    'modalFoot' => [
+                        $this->dofetch('Component/Button', Functions::makeButton('button', 'cancel-add-point', 'Cancel', 'danger', 'btn-cancel-add-point')),
+                        $this->dofetch('Component/Button', Functions::makeButton('button', 'submit-add-point', 'Submit', 'success', 'btn-submit-add-point'))
+                    ]
+                ]
+            ]
+        ];
         $this->form($data);
     }
 
@@ -337,8 +364,16 @@ class Jalan extends Controller
         return $this->my_model->getKoordinatJalan($this->no_jalan);
     }
 
-    private function KoordinatBuild(array $coordinates, bool $raw = false)
+    private function KoordinatBuild(array $coordinates = [], bool $raw = false)
     {
+        $coord = Functions::getDataSession('coordinates', false);
+        $detail = [];
+        if (!empty($coord)) {
+            foreach ($coord[1] as $row) {
+                $old["{$row['longitude']},{$row['latitude']}"] = $row;
+            }
+        }
+
         $awal       = [];
         $final      = [];
         $ori        = [];
@@ -358,7 +393,8 @@ class Jalan extends Controller
                 $row = Functions::buildGeo($row, false);
             }
             $rows = $this->my_model->makeKoordinatDetail($rows);
-
+            $rows_old = $old["{$rows['longitude']},{$rows['latitude']}"];
+            $rows = (!empty($rows_old)) ? $rows_old : $rows;
 
             if ($rows['segment'] <= 0) {
                 $awal[] = $rows;
@@ -419,11 +455,15 @@ class Jalan extends Controller
 
     private function KoordinatForm()
     {
-        $data['detail'] = $_POST;
-        $data['formId'] = "koordinatForm";
-        $data['form'] = $this->my_model->getKoordinatForm();
-
-        $data['main'][] = $this->dofetch('Layout/Form', $data);
+        $data = [
+            'main' => [
+                $this->dofetch('Layout/Form', [
+                    'detail' => $_POST,
+                    'formId' => 'koordinatForm',
+                    'form' => $this->my_model->getKoordinatForm()
+                ])
+            ]
+        ];
         echo json_encode($this->dofetch('Layout/Default', $data));
         exit;
     }
