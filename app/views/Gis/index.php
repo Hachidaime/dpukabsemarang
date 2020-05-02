@@ -3,7 +3,7 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs nav-fill clr-2018-coconut-milk border-bottom">
             <li class="nav-item order-2">
-                <a class="nav-link" href="#legend">Legend</a>
+                <a class="nav-link" href="#legend">Legenda</a>
             </li>
             <li class="nav-item order-1">
                 <a class="nav-link active" href="#cari">Cari</a>
@@ -20,52 +20,73 @@
 
         <!-- Tab panes -->
         <div class="tab-content">
-            <div id="legend" class="tab-pane fade pt-3 px-3">
+            <div id="legend" class="tab-pane fade py-3 px-3">
                 <div class="d-flex flex-column">
-                    {*
-                    <div class="pr-3 py-1">
-                        <svg height="18" width="20">
-                            <polygon points="0,8 0,14 18,14 18,8" style="fill:#00b050;"></polygon>
+                    <div class="pr-3 legend-title">Perkerasan:</div>
+                    <div class="pr-3">
+                        <svg height="16" width="20">
+                            <polygon points="0,4 0,10 18,10 18,4" style="fill:#5c5c5b;"></polygon>
+                        </svg>
+                        Jalan Beton
+                    </div>
+                    <div class="pr-3">
+                        <svg height="16" width="20">
+                            <polygon points="0,4 0,10 18,10 18,4" style="fill:#373538;"></polygon>
+                        </svg>
+                        Jalan Aspal
+                    </div>
+                    <div class="pr-3">
+                        <svg height="16" width="20">
+                            <polygon points="0,4 0,10 18,10 18,4" style="fill:#745d46;"></polygon>
+                        </svg>
+                        Jalan Kerikil
+                    </div>
+                    <div class="pr-3">
+                        <svg height="16" width="20">
+                            <polygon points="0,4 0,10 18,10 18,4" style="fill:#ac7e54;"></polygon>
+                        </svg>
+                        Jalan Tanah
+                    </div>
+
+                    <div class="pr-3 legend-title">Kondisi:</div>
+                    <div class="pr-3">
+                        <svg height="16" width="20">
+                            <polygon points="0,4 0,10 18,10 18,4" style="fill:#28a745;"></polygon>
                         </svg>
                         Baik
                     </div>
-                    <div class="pr-3 py-1">
-                        <svg height="18" width="20">
-                            <polygon points="0,8 0,14 18,14 18,8" style="fill:#0070c0;"></polygon>
+                    <div class="pr-3">
+                        <svg height="16" width="20">
+                            <polygon points="0,4 0,10 18,10 18,4" style="fill:#17a2b8;"></polygon>
                         </svg>
                         Sedang
                     </div>
-                    <div class="pr-3 py-1">
-                        <svg height="18" width="20">
-                            <polygon points="0,8 0,14 18,14 18,8" style="fill:#ffc000;"></polygon>
+                    <div class="pr-3">
+                        <svg height="16" width="20">
+                            <polygon points="0,4 0,10 18,10 18,4" style="fill:#ffc107;"></polygon>
                         </svg>
                         Rusak Ringan
                     </div>
-                    <div class="pr-3 py-1">
-                        <svg height="18" width="20">
-                            <polygon points="0,8 0,14 18,14 18,8" style="fill:#e36c09;"></polygon>
+                    <div class="pr-3">
+                        <svg height="16" width="20">
+                            <polygon points="0,4 0,10 18,10 18,4" style="fill:#dc3545;"></polygon>
                         </svg>
                         Rusak Berat
                     </div>
-                    <div class="pr-3 py-1">
-                        <svg height="18" width="20">
-                            <polygon points="9,2 2,16 15,16" style="fill:#4681b4;stroke:#325c81;stroke-width:3"></polygon>
-                        </svg>
+
+                    <div class="pr-3 legend-title">Marker:</div>
+                    <div class="pr-3">
+                        <img src="{$smarty.const.SERVER_BASE}/assets/img/triangle.png" alt="">
                         Titik Awal Ruas Jalan
                     </div>
-                    <div class="pr-3 py-1">
-                        <svg height="18" width="20">
-                            <circle cx="9" cy="9" r="7" style="fill:#4681b4;stroke:#325c81;stroke-width:3"></circle>
-                        </svg>
+                    <div class="pr-3">
+                        <img src="{$smarty.const.SERVER_BASE}/assets/img/circle.png" alt="">
                         Segmentasi
                     </div>
-                    <div class="pr-3 py-1">
-                        <svg height="18" width="20">
-                            <polygon points="9,2 2,9 9,16 16,9" style="fill:#4681b4;stroke:#325c81;stroke-width:3"></polygon>
-                        </svg>
+                    <div class="pr-3">
+                        <img src="{$smarty.const.SERVER_BASE}/assets/img/rhombus.png" alt="">
                         Titik Awal Ruas Jalan
                     </div>
-                    *}
                 </div>
             </div>
             <div id="cari" class="tab-pane pt-3 active">

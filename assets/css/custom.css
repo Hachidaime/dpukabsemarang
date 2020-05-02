@@ -212,6 +212,10 @@ body {
   transition: 0.4s;
 }
 
+.legend-title{
+  font-weight: bold;;
+}
+
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
     .gallery-item {

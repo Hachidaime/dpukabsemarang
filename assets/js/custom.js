@@ -401,12 +401,20 @@ $(document).ready(function () {
     searchCheckbox.attr("disabled", true);
 
     $('input[type=checkbox]#perkerasan').change(function () {
-        if (this.checked) loadPerkerasan();
+        if (this.checked) {
+            clearKondisi();
+            document.querySelector('input[type=checkbox]#kondisi').checked = false;
+            loadPerkerasan();
+        }
         else clearPerkerasan();
     });
 
     $('input[type=checkbox]#kondisi').change(function () {
-        if (this.checked) loadKondisi();
+        if (this.checked) {
+            clearPerkerasan();
+            document.querySelector('input[type=checkbox]#perkerasan').checked = false;
+            loadKondisi();
+        }
         else clearKondisi();
     });
 
