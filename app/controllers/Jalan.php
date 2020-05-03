@@ -332,6 +332,7 @@ class Jalan extends Controller
         $search = Functions::getSearch();
         $list_koordinat = [];
         foreach ($final as $idx => $row) {
+            // var_dump($row);
             $row['row'] = $idx + 1;
             $row['perkerasan_text'] = $perkerasan_opt[$row['perkerasan']];
             $row['kondisi_text'] = $kondisi_opt[$row['kondisi']];
@@ -414,6 +415,7 @@ class Jalan extends Controller
                 $rows['new'] = (!empty($old)) ? true : false;
             }
 
+
             if ($rows['segment'] <= 0) {
                 $awal[] = $rows;
                 $ori[] = $row;
@@ -448,6 +450,7 @@ class Jalan extends Controller
                         }
                     }
                     $coord = $this->KoordinatBuild($coordinates);
+                    // var_dump($coord);
                 } else {
                     // ? Coordinates form tkoordinat_jalan;
                     list($coord) = $this->KoordinatJalanSearch($this->no_jalan);
@@ -458,6 +461,7 @@ class Jalan extends Controller
             }
         }
 
+        // var_dump($coord);
         Functions::setDataSession('coordinates', $coord);
     }
 

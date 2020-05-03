@@ -456,11 +456,11 @@ class Functions
     public function getLineFromJalan(array $data, array $style, string $kepemilikan = null)
     {
         foreach ($data as $row) {
-            if (!is_null($kepemilikan)) {
-                if ($row['kepemilikan'] != $kepemilikan) continue;
-            } else {
-                if ($row['kepemilikan'] == 1) continue;
-            }
+            // if (!is_null($kepemilikan)) {
+            //     if ($row['kepemilikan'] != $kepemilikan) continue;
+            // } else {
+            //     if ($row['kepemilikan'] == 1) continue;
+            // }
 
             $coord = $row['segmented'];
             if (empty($coord)) $coord = $row['ori'];
@@ -674,6 +674,7 @@ class Functions
                 'strokeOpacity' => $style[$mystyle]['opacity'],
                 'fillColor' => $style[$mystyle]['color'],
                 'fillOpacity' => $style[$mystyle]['opacity'],
+                'foto' => $data['foto']
             ]
         ];
 
