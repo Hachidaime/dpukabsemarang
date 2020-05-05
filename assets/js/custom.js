@@ -45,7 +45,6 @@ $(document).ready(function () {
      */
     $('.btn-submit').click(function () {
         // * Mendefinisikan variable
-        let url = `${base_url}/${controller}/${method}/submit`;
         let params = $('.myForm').serialize();
 
         // TODO: Cek #mySwitch exist
@@ -60,9 +59,10 @@ $(document).ready(function () {
             params += `&${panjang}`;
         }
 
+        console.log('submit');
 
         // TODO: Post Form Input Data dengan Ajax Request
-        $.post(url, params, data => {
+        $.post(`${base_url}/${controller}/${method}/submit`, params, data => {
             // TODO: Menampilkan Alert
             makeAlert(data);
 

@@ -224,9 +224,7 @@ let getPanjangJalan = () => {
 
     for (const [type, value] of Object.entries(coordinates)) {
         for (const [val, row] of Object.entries(value)) {
-            // console.log(row);
             for (const [idx, points] of Object.entries(row)) {
-                // console.log(points);
                 switch (type) {
                     case 'perkerasan':
                         perkerasan[val] += countLength(makePath(points));

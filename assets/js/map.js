@@ -327,6 +327,7 @@ let getKML = importFilename => {
             el.split(',').forEach(function (row) {
                 geo.push(parseFloat(row));
             })
+            geo[2] = 0;
             coordinates.push(geo);
         });
     }
@@ -337,6 +338,7 @@ let getKML = importFilename => {
             el.textContent.split(' ').forEach(function (row) {
                 geo.push(parseFloat(row));
             });
+            geo[2] = 0;
             coordinates.push(geo);
         });
     }
@@ -415,41 +417,51 @@ let loadData = (map_data, type, jenis, simbol = null) => {
 
 let getFeatureInfo = (param, jenis) => {
     let type;
-    let nomor;
-    let nama;
+    let no_jalan;
+    let nama_jalan;
+    let no_point;
+    let nama_point;
     let segment;
+    let img;
 
     let html = [
         /*html*/`<div style="width:450px;">`,
         /*html*/`<table class="table table-bordered table-striped table-sm">`
     ];
 
+    no_jalan = param.feature.getProperty('no_jalan');
+    nama_jalan = param.feature.getProperty('nama_jalan');
+
+    let jalandir = `${server_base}/upload/img/jalan/`;
+
     switch (jenis) {
         case 'jalan':
             type = "Ruas Jalan";
-            nomor = param.feature.getProperty('no_jalan');
-            nama = param.feature.getProperty('nama_jalan');
             break;
         case 'segment':
             type = "Ruas Jalan";
-            nomor = param.feature.getProperty('no_jalan');
-            nama = param.feature.getProperty('nama_jalan');
             segment = param.feature.getProperty('segment');
+            row = param.feature.getProperty('row');
+            foto = param.feature.getProperty('foto');
+            img = (foto != null) ? `<img src="${jalandir}${no_jalan}/${row}/${foto}" width="300px" >` : '';
             break;
         case 'awal':
             type = "Ruas Jalan";
-            nomor = param.feature.getProperty('no_jalan');
-            nama = param.feature.getProperty('nama_jalan');
+            row = param.feature.getProperty('row');
+            foto = param.feature.getProperty('foto');
+            img = (foto != null) ? `<img src="${jalandir}${no_jalan}/${row}/${foto}" width="300px" >` : '';
             break;
         case 'akhir':
             type = "Ruas Jalan";
-            nomor = param.feature.getProperty('no_jalan');
-            nama = param.feature.getProperty('nama_jalan');
+            row = param.feature.getProperty('row');
+            foto = param.feature.getProperty('foto');
+            img = (foto != null) ? `<img src="${jalandir}${no_jalan}/${row}/${foto}" width="300px" >` : '';
             break;
         case 'jembatan':
             type = "Jembatan";
-            nomor = param.feature.getProperty('no_jembatan');
-            nama = param.feature.getProperty('nama_jembatan');
+            no_point = param.feature.getProperty('no_point');
+            nama_point = param.feature.getProperty('nama_point');
+            foto = param.feature.getProperty('foto');
             break;
         case 'saluran':
             type = "Saluran Air";
@@ -462,17 +474,14 @@ let getFeatureInfo = (param, jenis) => {
     html.push(
         /*html*/`
         <tr>
-            <td width="130px">No ${type}</td>
-            <td width="*">${nomor}</td>
+            <td width="130px">No Ruas Jalan</td>
+            <td width="*">${no_jalan}</td>
         </tr>
-        `
-    );
-
-    html.push(
+        `,
         /*html*/`
         <tr>
-            <td>Nama ${type}</td>
-            <td>${nama}</td>
+            <td>Nama Ruas Jalan</td>
+            <td>${nama_jalan}</td>
         </tr>
         `
     );
@@ -484,26 +493,39 @@ let getFeatureInfo = (param, jenis) => {
                 <td>Segment</td>
                 <td>${segment}</td>
             </tr>
+            `,
+            /*html*/`
+            <tr>
+                <td>Foto</td>
+                <td>${img}</td>
+            </tr>
+            `
+        );
+    }
+
+    if (jenis == 'awal' || jenis == 'akhir') {
+        html.push(
+            /*html*/`
+            <tr>
+                <td>Foto</td>
+                <td>${img}</td>
+            </tr>
             `
         );
     }
 
     if (jenis == 'jembatan') {
-        nomor = param.feature.getProperty('no_jalan');
-        nama = param.feature.getProperty('nama_jalan');
         html.push(
             /*html*/`
             <tr>
-                <td>No Ruas Jalan</td>
-                <td>${nomor}</td>
+                <td>No ${type}</td>
+                <td>${no_point}</td>
             </tr>
-            `
-        );
-        html.push(
+            `,
             /*html*/`
             <tr>
-                <td>Nama Ruas Jalan</td>
-                <td>${nama}</td>
+                <td>Nama ${nama_point}</td>
+                <td>${nama_point}</td>
             </tr>
             `
         );

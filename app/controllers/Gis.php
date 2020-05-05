@@ -59,6 +59,11 @@ class Gis extends Controller
 
     private function DataJalan()
     {
+        if ($this->no_jalan == 'semua') {
+            $this->DataJalanSemua();
+            exit;
+        }
+
         if ($this->no_jalan > 0) {
             $result = [];
             $kepemilikan_opt = $this->options('kepemilikan_opt'); // TODO: Get Kepemilikan Options
@@ -106,5 +111,25 @@ class Gis extends Controller
             echo json_encode($result);
             exit;
         }
+    }
+
+    private function DataJalanSemua()
+    {
+        $filedir = DOC_ROOT . "data/";
+
+        $data = ['jalan', 'segment', 'complete', 'perkerasan', 'kondisi', 'awal', 'akhir', 'jembatan'];
+
+        $result = [];
+        foreach ($data as $value) {
+            $name = ucfirst($value);
+            $filename = "{$name}.json";
+            $filepath = "{$filedir}{$filename}";
+            $result[$value] = [];
+            if (file_exists($filepath)) {
+                $result[$value] = Functions::readJSON($filepath);
+            }
+        }
+        echo json_encode($result);
+        exit;
     }
 }

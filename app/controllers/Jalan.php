@@ -247,10 +247,11 @@ class Jalan extends Controller
                     $coord = Functions::getDataSession('coordinates', false);
 
                     // var_dump($coord['final']);
-                    foreach ($coord['final'] as $idx => $row) {
+                    // var_dump($coord[1]);
+                    foreach ($coord[1] as $idx => $row) {
                         $row['row'] = $idx + 1;
-                        if (!empty($row[6])) {
-                            FileHandler::MoveFromTemp("img/jalan/{$_POST['no_jalan']}/{$row['row']}", $row[6], false, true);
+                        if (!empty($row['foto'])) {
+                            FileHandler::MoveFromTemp("img/jalan/{$_POST['no_jalan']}/{$row['row']}", $row['foto'], false, true);
                         }
                     }
                 }

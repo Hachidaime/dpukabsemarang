@@ -8,9 +8,11 @@
             <li class="nav-item order-1">
                 <a class="nav-link active" href="#cari">Cari</a>
             </li>
+            {*
             <li class="nav-item order-3">
                 <a class="nav-link" href="#info">Info</a>
             </li>
+            *}
             <li class="nav-item order-4">
                 <a href="javasript:void(0)" class="close btn-sidebar-close p-1" aria-label="Close">
                     <i class="material-icons">close</i>
@@ -85,7 +87,11 @@
                     </div>
                     <div class="pr-3">
                         <img src="{$smarty.const.SERVER_BASE}/assets/img/rhombus.png" alt="">
-                        Titik Awal Ruas Jalan
+                        Titik Akhir Ruas Jalan
+                    </div>
+                    <div class="pr-3">
+                        <img src="{$smarty.const.SERVER_BASE}/assets/img/bridge.png" width="12px" alt="">
+                        Jembatan
                     </div>
                 </div>
             </div>

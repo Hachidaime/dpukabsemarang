@@ -72,8 +72,7 @@ class Data_model extends Database
                 "{$detail_table}.kondisi",
                 "{$detail_table}.segment",
                 "{$detail_table}.koordinat",
-                "{$foto_table}.row_id",
-                "{$foto_table}.foto"
+                "{$detail_table}.data"
             ],
             'join' => [
                 "LEFT JOIN {$jalan_table} ON {$jalan_table}.no_jalan = {$detail_table}.no_jalan",
@@ -161,7 +160,6 @@ class Data_model extends Database
         $jembatan = Functions::getPointFromJembatan($list['jembatan'], $iconStyle);
 
         list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($list['detail'], $lineStyle, $iconStyle);
-        $filename = "JalanSemua";
 
         $dd1 = $this->generateDataLaporanDd1($list['jalan']);
         $dd2 = $this->generateDataLaporanDd2($list['jembatan']);
@@ -169,12 +167,13 @@ class Data_model extends Database
         $info = $this->generateDataInfo($list);
 
         $data = [
-            'lines' => [[$filename, $jalan], ["{$filename}Complete", $complete], ["{$filename}Perkerasan", $perkerasan], ["{$filename}Kondisi", $kondisi]],
-            'points' => [["{$filename}Segment", $segment], ["{$filename}Awal", $awal], ["{$filename}Akhir", $akhir], ["{$filename}Jembatan", $jembatan]],
+            'lines' => [["Jalan", $jalan], ["Complete", $complete], ["Perkerasan", $perkerasan], ["Kondisi", $kondisi]],
+            'points' => [["Segment", $segment], ["Awal", $awal], ["Akhir", $akhir], ["Jembatan", $jembatan]],
             'other' => [["LaporanDD1", $dd1], ["LaporanDD2", $dd2], ["Info", $info]]
         ];
         $this->generateDataFile($data, $style);
 
+        /* 
         // TODO: Save Segment & Jalan with perkerasan kondisi by kepemilikan as JSON
         $kepemilikan_opt = $this->options('kepemilikan_opt'); // TODO: Get Kepemilikan Options
         foreach ($kepemilikan_opt as $kepemilikan => $value) {
@@ -190,6 +189,7 @@ class Data_model extends Database
             ];
             $this->generateDataFile($data, $style);
         }
+         */
     }
 
     public function generateDataLaporanDd1($jalan)
@@ -299,12 +299,14 @@ class Data_model extends Database
                 switch ($key) {
                     case 'lines':
                         if (!empty($value)) Functions::saveGeoJSON("{$filename}.json", $style, $value, 1);
+                        else Functions::saveJSON("{$filename}.json", $value);
                         break;
                     case 'points':
                         if (!empty($value)) Functions::saveGeoJSON("{$filename}.json", $style, $value, 2);
+                        else Functions::saveJSON("{$filename}.json", $value);
                         break;
                     default:
-                        if (!empty($value)) Functions::saveJSON("{$filename}.json", $value);
+                        Functions::saveJSON("{$filename}.json", $value);
                         break;
                 }
             }

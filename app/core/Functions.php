@@ -441,11 +441,13 @@ class Functions
     {
         $point = [];
         foreach ($data as $row) {
-            if (!is_null($kepemilikan)) {
-                if ($row['kepemilikan'] != $kepemilikan) continue;
-            } else {
-                if ($row['kepemilikan'] == 1) continue;
-            }
+            // if (!is_null($kepemilikan)) {
+            //     if ($row['kepemilikan'] != $kepemilikan) continue;
+            // } else {
+            //     if ($row['kepemilikan'] == 1) continue;
+            // }
+            $row['no_point'] = $row['no_jembatan'];
+            $row['nama_point'] = $row['nama_jembatan'];
             $row['koordinat'] = [(float) $row['longitude'], (float) $row['latitude']];
             $point[] = $row;
         }
@@ -482,7 +484,7 @@ class Functions
         return $line;
     }
 
-    public function getLineFromDetail(array $data, array $lineStyle, array $iconStyle, string $kepemilikan = null)
+    public function getLineFromDetail(array $detail, array $lineStyle, array $iconStyle, string $kepemilikan = null)
     {
         $awal       = [];
         $akhir      = [];
@@ -497,49 +499,58 @@ class Functions
         $k = 0;
         $l = 0;
 
-        foreach ($data as $idx => $row) {
-            if (!is_null($kepemilikan)) {
-                if ($row['kepemilikan'] != $kepemilikan) continue;
-            } else {
-                if ($row['kepemilikan'] == 1) continue;
-            }
+        $row_id[$i] = 0;
+        foreach ($detail as $idx => $row) {
+            // if (!is_null($kepemilikan)) {
+            //     if ($row['kepemilikan'] != $kepemilikan) continue;
+            // } else {
+            //     if ($row['kepemilikan'] == 1) continue;
+            // }
 
             // $koordinat = implode(' ', array_map("Functions::makeMapPoint", json_decode($row['koordinat'], true)));
             $koordinat = array_map("self::makeMapPoint", json_decode($row['koordinat'], true));
             $latitude = $row['latitude'];
             $longitude = $row['longitude'];
 
+            $data = json_decode($row['data'], true);
+            $row['foto'] = $data[0][6];
+
             unset($row['koordinat']);
+            unset($row['data']);
             unset($row['latitude']);
             unset($row['longitude']);
-
-            if ($row['segment'] != $data[$idx - 1]['segment'] && $row['segment'] > 0) {
-                // $row['style'] = $iconStyle[1];
-                $row['koordinat'] = [(float) $longitude, (float) $latitude];
-                $segment[$i] = $row;
-                $i++;
-            }
 
             if ($row['segment'] == 0) {
                 // $row['style'] = $iconStyle[1];
                 $row['koordinat'] = [(float) $longitude, (float) $latitude];
+                $row['row'] = 1;
                 $awal[$f] = $row;
                 $f++;
             }
 
-            if ($data[$idx + 1]['segment'] == 0 || is_null($data[$idx + 1])) {
+            if ($row['segment'] != $detail[$idx - 1]['segment'] && $row['segment'] > 0) {
+                // $row['style'] = $iconStyle[1];
+                $row['koordinat'] = [(float) $longitude, (float) $latitude];
+                $row['row'] = $row_id[$i] + 1;
+                $segment[$i] = $row;
+                $i++;
+            }
+            $row_id[$i] = +count($data);
+
+            if ($detail[$idx + 1]['segment'] == 0 || is_null($detail[$idx + 1])) {
                 $row['koordinat'] = end($koordinat);
+                $row['row'] = $row_id[$i];
                 $akhir[$g] = $row;
                 $g++;
             }
-            unset($row['row_id']);
+            unset($row['row']);
             unset($row['foto']);
 
             $row['koordinat'] = $koordinat;
 
             if ($row['perkerasan'] > 0 || $row['kondisi'] > 0) {
-                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
-                    if (($row['perkerasan'] == $data[$idx - 1]['perkerasan']) && ($row['kondisi'] == $data[$idx - 1]['kondisi'])) {
+                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $detail[$idx - 1]['no_detail'])) {
+                    if (($row['perkerasan'] == $detail[$idx - 1]['perkerasan']) && ($row['kondisi'] == $detail[$idx - 1]['kondisi'])) {
                         $complete[$j - 1]['koordinat'] = array_merge($complete[$j - 1]['koordinat'], $koordinat);
                     } else {
                         $row['style'] = $lineStyle[$row['kepemilikan']][$row['perkerasan']][$row['kondisi']];
@@ -554,8 +565,8 @@ class Functions
             }
 
             if ($row['perkerasan'] > 0) {
-                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
-                    if ($row['perkerasan'] == $data[$idx - 1]['perkerasan']) {
+                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $detail[$idx - 1]['no_detail'])) {
+                    if ($row['perkerasan'] == $detail[$idx - 1]['perkerasan']) {
                         $perkerasan[$k - 1]['koordinat'] = array_merge($perkerasan[$k - 1]['koordinat'], $koordinat);
                     } else {
                         $row['style'] = $lineStyle[$row['kepemilikan']][$row['perkerasan']][0];
@@ -570,8 +581,8 @@ class Functions
             }
 
             if ($row['kondisi'] > 0) {
-                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $data[$idx - 1]['no_detail'])) {
-                    if ($row['kondisi'] == $data[$idx - 1]['kondisi']) {
+                if ($row['no_detail'] > 0 && (($row['no_detail'] - 1) == $detail[$idx - 1]['no_detail'])) {
+                    if ($row['kondisi'] == $detail[$idx - 1]['kondisi']) {
                         $kondisi[$l - 1]['koordinat'] = array_merge($kondisi[$l - 1]['koordinat'], $koordinat);
                     } else {
                         $row['style'] = $lineStyle[$row['kepemilikan']][0][$row['kondisi']];
@@ -644,38 +655,42 @@ class Functions
 
     public function createFeature($style, $data, $simbol)
     {
+        $properties = [
+            'no_jalan' => $data['no_jalan'],
+            'nama_jalan' => $data['nama_jalan'],
+            'kepemilikan' => $data['kepemilikan_text'],
+        ];
+        $mystyle = str_replace('#', '', $data['style']);
         switch ($simbol) {
             case '1':
                 $type = 'LineString';
+                $properties =  array_merge($properties, [
+                    'strokeColor' => $style[$mystyle]['color'],
+                    'strokeWeight' => $style[$mystyle]['weight'],
+                    'strokeOpacity' => $style[$mystyle]['opacity'],
+                    'fillColor' => $style[$mystyle]['color'],
+                    'fillOpacity' => $style[$mystyle]['opacity'],
+                ]);
                 break;
             case '2':
                 $type = 'Point';
+                $properties = array_merge($properties, [
+                    'no_point' => $data['no_point'],
+                    'nama_point' => $data['nama_point'],
+                    'segment' => $data['segment'],
+                    'row' => $data['row'],
+                    'foto' => $data['foto']
+                ]);
                 break;
         }
 
-        $mystyle = str_replace('#', '', $data['style']);
         $feature = [
             'type' => 'Feature',
             'geometry' => [
                 'type' => $type,
                 'coordinates' => $data['koordinat']
             ],
-            'properties' => [
-                'nama_jalan' => $data['nama_jalan'],
-                'no_jalan' => $data['no_jalan'],
-                'nama_jembatan' => $data['nama_jembatan'],
-                'no_jembatan' => $data['no_jembatan'],
-                'kepemilikan' => $data['kepemilikan_text'],
-                'panjang' => $data['panjang'],
-                'lebar' => $data['lebar'],
-                'segment' => $data['segment'],
-                'strokeColor' => $style[$mystyle]['color'],
-                'strokeWeight' => $style[$mystyle]['weight'],
-                'strokeOpacity' => $style[$mystyle]['opacity'],
-                'fillColor' => $style[$mystyle]['color'],
-                'fillOpacity' => $style[$mystyle]['opacity'],
-                'foto' => $data['foto']
-            ]
+            'properties' => $properties
         ];
 
         return $feature;

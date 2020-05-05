@@ -4,6 +4,7 @@ class Gis_model extends Database
     public function getGisForm()
     {
         $jalan_opt = $this->model('Jalan_model')->getJalanOptions(["nama_jalan NOT LIKE '%test%'"]);
+        $jalan_opt['semua'] = 'Semua';
 
         // Functions::setDataSession('form', ['select', 'kepemilikan', 'kepemilikan', 'Status Kepemilikan', $this->options('kepemilikan_opt2', true), true, true]);
         Functions::setDataSession('form', ['select', 'no_jalan', 'no_jalan', 'Ruas Jalan', $jalan_opt, true, true]);
@@ -72,12 +73,10 @@ class Gis_model extends Database
                 "{$detail_table}.kondisi",
                 "{$detail_table}.segment",
                 "{$detail_table}.koordinat",
-                "{$foto_table}.row_id",
-                "{$foto_table}.foto"
+                "{$detail_table}.data"
             ],
             'join' => [
                 "LEFT JOIN {$jalan_table} ON {$jalan_table}.no_jalan = {$detail_table}.no_jalan",
-                "LEFT JOIN {$foto_table} ON ({$foto_table}.latitude = {$detail_table}.latitude AND {$foto_table}.longitude = {$detail_table}.longitude)"
             ],
             'sort' => [
                 "{$detail_table}.no_jalan ASC",
