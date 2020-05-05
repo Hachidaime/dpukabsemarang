@@ -80,9 +80,9 @@ class Gis_model extends Database
             ],
             'sort' => [
                 "{$detail_table}.no_jalan ASC",
-                "{$detail_table}.no_detail ASC",
-                "{$detail_table}.perkerasan ASC",
-                "{$detail_table}.kondisi ASC",
+                // "{$detail_table}.no_detail ASC",
+                // "{$detail_table}.perkerasan ASC",
+                // "{$detail_table}.kondisi ASC",
                 "{$detail_table}.segment ASC"
             ],
             'filter' => [$filter]
