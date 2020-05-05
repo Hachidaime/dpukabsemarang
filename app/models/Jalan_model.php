@@ -264,6 +264,7 @@ class Jalan_model extends Database
         $params = [];
 
         $params['filter'] = "no_jalan = ?";
+        $params['sort'] = "segment ASC";
         $bindVar = [$no_jalan];
 
         $query = $this->getSelectQuery($this->my_tables['detail'], $params);
@@ -318,8 +319,8 @@ class Jalan_model extends Database
                 $kondisi[$idx] = (empty($row['kondisi'])) ? $kondisi[$idx - 1] : $row['kondisi'];
                 $segment[$idx] = (empty($row['segment'])) ? $segment[$idx - 1] : $row['segment'];
             }
-
-            $data[$perkerasan[$idx]][$kondisi[$idx]][$segment[$idx]][] = $row;
+            // $data[$perkerasan[$idx]][$kondisi[$idx]][$segment[$idx]][] = $row;
+            $data[$segment[$idx]][$perkerasan[$idx]][$kondisi[$idx]][] = $row;
 
             if (!empty(trim($row['foto']))) {
                 $row_id = $idx + 1;
@@ -341,9 +342,9 @@ class Jalan_model extends Database
         $latitude = [];
         $longitude = [];
         $field = ['no_detail', 'no_jalan', 'latitude', 'longitude', 'perkerasan', 'kondisi', 'segment', 'koordinat', 'data', 'update_dt', 'login_id', 'remote_ip'];
-        foreach ($data as $perkerasan => $x) {
-            foreach ($x as $kondisi => $y) {
-                foreach ($y as $segment => $z) {
+        foreach ($data as $segment => $x) {
+            foreach ($x as $perkerasan => $y) {
+                foreach ($y as $kondisi => $z) {
                     $value[$n] = [];
                     $val = [];
                     $c = []; // ? tdetail_jalan.koordinat
