@@ -110,6 +110,9 @@ let makeControl = () => {
     return controlUI;
 }
 
+let default_denter = { lat: DEFAULT_LATITUDE, lng: DEFAULT_LONGITUDE }
+let map_center = default_denter;
+
 function centerControl(controlDiv, map) {
 
     // Set CSS for the control border.
@@ -128,7 +131,7 @@ function centerControl(controlDiv, map) {
 
     // Setup the click event listeners: simply set the map to Chicago.
     controlUI.addEventListener('click', function () {
-        map.setCenter({ lat: DEFAULT_LATITUDE, lng: DEFAULT_LONGITUDE });
+        map.setCenter(map_center);
     });
 }
 
@@ -548,11 +551,13 @@ let JembatanPoints;
 let DataJalan;
 let JalanLines;
 let loadDataJalan = no_jalan => {
+    mam_center = default_denter;
     clearJalan();
     DataJalan = getAJAX(`${base_url}/Gis/index/datajalan/${no_jalan}`);
     if (DataJalan.length > 0) {
         DataJalan = JSON.parse(DataJalan);
         loadJalan();
+        if (no_jalan != 'semua') setFeatureCenter();
         return true;
     }
     return false;
@@ -654,4 +659,33 @@ let BatasLines;
 let loadBatas = () => {
     map_data = `${server_base}/data/Batas.json?t=${cur_time}`;
     BatasLines = loadData(map_data, 'border', 'batas');
+}
+
+let setFeatureCenter = () => {
+    coordinates = DataJalan.jalan.geometry.coordinates;
+
+    // put all latitudes and longitudes in arrays
+    let long = [];
+    let lat = [];
+    coordinates.forEach(i => {
+        long.push(i[0]);
+        lat.push(i[1]);
+    });
+
+    // sort the arrays low to high
+    lat.sort();
+    long.sort();
+
+    // get the min and max of each
+    const lowX = lat[0];
+    const highX = lat[lat.length - 1];
+    const lowy = long[0];
+    const highy = long[lat.length - 1];
+
+    // center of the polygon is the starting point plus the midpoint
+    const centerX = lowX + ((highX - lowX) / 2);
+    const centerY = lowy + ((highy - lowy) / 2);
+
+    map_center = { lat: centerX, lng: centerY };
+    map.setCenter(map_center);
 }
