@@ -760,17 +760,10 @@ class Functions
 
     public static function getGeo($remote_ip)
     {
-        $geo = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip={$remote_ip}"));
-
-        // $feature = [
-        //     'type' => 'Feature',
-        //     'geometry' => [
-        //         'type' => 'Point',
-        //         'coordinates' => [(float) $geo['geoplugin_longitude'], (float) $geo['geoplugin_latitude']]
-        //     ]
-        // ];
-
-        // return $feature;
-        return [(float) $geo['geoplugin_longitude'], (float) $geo['geoplugin_latitude']];
+        if($remote_ip != '127.0.0.1'){
+            $geo = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip={$remote_ip}"));
+            return [(float) $geo['geoplugin_longitude'], (float) $geo['geoplugin_latitude']];
+        }
+        return [110.4037533, -7.1186337];
     }
 }

@@ -378,7 +378,7 @@ let getKepemilikan = () => {
   return kepemilikan;
 };
 
-let loadData = (map_data, type, jenis, simbol = null) => {
+let loadData = (map_data, type, jenis, icon = null) => {
   features = new google.maps.Data();
   features.addGeoJson(map_data);
 
@@ -398,7 +398,7 @@ let loadData = (map_data, type, jenis, simbol = null) => {
   features.setStyle(function (features) {
     switch (type) {
       case "points":
-        return pointStyle(simbol);
+        return pointStyle(icon);
         break;
       case "lines":
         return lineStyle(features);
@@ -413,15 +413,9 @@ let loadData = (map_data, type, jenis, simbol = null) => {
   return features;
 };
 
-let pointStyle = (simbol = null) => {
-  let icon = simbol != null ? `${server_base}/assets/img/${simbol}.png` : "";
-
+let pointStyle = (icon) => {
   return {
-    icon: {
-      url: icon,
-      scaledSize: new google.maps.Size(10, 10),
-      anchor: new google.maps.Point(5, 5),
-    },
+    icon: icon,
   };
 };
 
@@ -665,7 +659,13 @@ let clearKondisi = () => {
 };
 
 let loadSegment = () => {
-  SegmentPoints = loadData(DataJalan.segment, "points", "segment", "circle");
+  let icon = {
+    url: `${server_base}/assets/img/circle.png`,
+    scaledSize: new google.maps.Size(10, 10),
+    anchor: new google.maps.Point(5, 5),
+  };
+
+  SegmentPoints = loadData(DataJalan.segment, "points", "segment", icon);
 };
 
 let clearSegment = () => {
@@ -675,7 +675,13 @@ let clearSegment = () => {
 };
 
 let loadAwal = () => {
-  AwalPoints = loadData(DataJalan.awal, "points", "awal", "triangle");
+  let icon = {
+    url: `${server_base}/assets/img/triangle.png`,
+    scaledSize: new google.maps.Size(10, 10),
+    anchor: new google.maps.Point(5, 5),
+  };
+
+  AwalPoints = loadData(DataJalan.awal, "points", "awal", icon);
 };
 
 let clearAwal = () => {
@@ -685,7 +691,13 @@ let clearAwal = () => {
 };
 
 let loadAkhir = () => {
-  AkhirPoints = loadData(DataJalan.akhir, "points", "akhir", "rhombus");
+  let icon = {
+    url: `${server_base}/assets/img/rhombus.png`,
+    scaledSize: new google.maps.Size(10, 10),
+    anchor: new google.maps.Point(5, 5),
+  };
+
+  AkhirPoints = loadData(DataJalan.akhir, "points", "akhir", icon);
 };
 
 let clearAkhir = () => {
@@ -695,7 +707,13 @@ let clearAkhir = () => {
 };
 
 let loadJembatan = () => {
-  JembatanPoints = loadData(DataJalan.jembatan, "points", "jembatan", "bridge");
+  let icon = {
+    url: `${server_base}/assets/img/bridge.png`,
+    scaledSize: new google.maps.Size(10, 10),
+    anchor: new google.maps.Point(5, 5),
+  };
+
+  JembatanPoints = loadData(DataJalan.jembatan, "points", "jembatan", icon);
 };
 
 let clearJembatan = () => {
@@ -741,13 +759,22 @@ let setFeatureCenter = () => {
 
 let PositionPoint;
 let loadPosition = () => {
-  // let map_data;
-  // map_data = JSON.parse(getAJAX(`${base_url}/Gis/index/getgeo`));
+  let icon = {
+    url: "http://maps.google.com/mapfiles/kml/paddle/red-circle.png",
+    scaledSize: new google.maps.Size(20, 20),
+    anchor: new google.maps.Point(10, 10),
+  };
 
-  // feature = new google.maps.Data();
-  // feature.addGeoJson(map_data);
-  // feature.setMap(map);
+  PositionPoint = loadData(DataJalan.position, "points", "position", icon);
 
-  PositionPoint = loadData(DataJalan.position, "points", "position");
-  console.log(DataJalan.position);
+  const [centerY, centerX] = DataJalan.position.geometry.coordinates;
+
+  map_center = { lat: centerX, lng: centerY };
+  map.setCenter(map_center);
+};
+
+let clearPosition = () => {
+  if (PositionPoint !== undefined) {
+    PositionPoint.setMap(null);
+  }
 };
