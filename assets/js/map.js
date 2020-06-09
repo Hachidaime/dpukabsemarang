@@ -381,6 +381,7 @@ let getKepemilikan = () => {
 let loadData = (map_data, type, jenis, simbol = null) => {
   features = new google.maps.Data();
   features.addGeoJson(map_data);
+
   if (jenis != "batas") {
     features.addListener("click", function (event) {
       // var myHTML = event.feature.getProperty("nama_jalan");
@@ -393,42 +394,17 @@ let loadData = (map_data, type, jenis, simbol = null) => {
       infowindow.open(map);
     });
   }
+
   features.setStyle(function (features) {
     switch (type) {
       case "points":
-        return {
-          icon: {
-            url: `${server_base}/assets/img/${simbol}.png`,
-            scaledSize: new google.maps.Size(10, 10),
-            anchor: new google.maps.Point(5, 5),
-          },
-        };
+        return pointStyle(simbol);
         break;
       case "lines":
-        return {
-          fillColor: features.getProperty("fillColor"),
-          fillOpacity: features.getProperty("fillOpacity"),
-          strokeColor: features.getProperty("strokeColor"),
-          strokeWeight: features.getProperty("strokeWeight"),
-          strokeOpacity: features.getProperty("strokeOpacity"),
-        };
+        return lineStyle(features);
         break;
       case "border":
-        let batasColors = {
-          "Batas Kabupaten": "#0d0d0d",
-          "Batas Kecamatan": "#808080",
-          "Batas Desa": "#997300",
-        };
-        let batasWeight = {
-          "Batas Kabupaten": "3",
-          "Batas Kecamatan": "2",
-          "Batas Desa": "1",
-        };
-        return {
-          fillColor: batasColors[features.getProperty("fillColor")],
-          strokeColor: batasColors[features.getProperty("strokeColor")],
-          strokeWeight: batasWeight[features.getProperty("strokeWeight")],
-        };
+        return borderStyle(features);
         break;
     }
   });
@@ -437,62 +413,69 @@ let loadData = (map_data, type, jenis, simbol = null) => {
   return features;
 };
 
-let getFeatureInfo = (param, jenis) => {
-  let type;
-  let no_jalan;
-  let nama_jalan;
-  let no_point;
-  let nama_point;
-  let segment;
-  let img;
+let pointStyle = (simbol = null) => {
+  let icon = simbol != null ? `${server_base}/assets/img/${simbol}.png` : "";
 
+  return {
+    icon: {
+      url: icon,
+      scaledSize: new google.maps.Size(10, 10),
+      anchor: new google.maps.Point(5, 5),
+    },
+  };
+};
+
+let lineStyle = (features) => {
+  return {
+    fillColor: features.getProperty("fillColor"),
+    fillOpacity: features.getProperty("fillOpacity"),
+    strokeColor: features.getProperty("strokeColor"),
+    strokeWeight: features.getProperty("strokeWeight"),
+    strokeOpacity: features.getProperty("strokeOpacity"),
+  };
+};
+
+let borderStyle = (features) => {
+  let batasColors = {
+    "Batas Kabupaten": "#0d0d0d",
+    "Batas Kecamatan": "#808080",
+    "Batas Desa": "#997300",
+  };
+  let batasWeight = {
+    "Batas Kabupaten": "3",
+    "Batas Kecamatan": "2",
+    "Batas Desa": "1",
+  };
+  return {
+    fillColor: batasColors[features.getProperty("fillColor")],
+    strokeColor: batasColors[features.getProperty("strokeColor")],
+    strokeWeight: batasWeight[features.getProperty("strokeWeight")],
+  };
+};
+
+let jalandir = `${server_base}/upload/img/jalan/`;
+
+let getFeatureInfo = (param, jenis) => {
   let html = [
     /*html*/ `<div style="width:450px;">`,
     /*html*/ `<table class="table table-bordered table-striped table-sm">`,
   ];
 
-  no_jalan = param.feature.getProperty("no_jalan");
-  nama_jalan = param.feature.getProperty("nama_jalan");
-
-  let jalandir = `${server_base}/upload/img/jalan/`;
-
   switch (jenis) {
     case "jalan":
-      type = "Ruas Jalan";
+      html = html.concat(jalanInfo(param));
       break;
     case "segment":
-      type = "Ruas Jalan";
-      segment = param.feature.getProperty("segment");
-      row = param.feature.getProperty("row");
-      foto = param.feature.getProperty("foto");
-      img =
-        foto != null
-          ? `<img src="${jalandir}${no_jalan}/${row}/${foto}" width="300px" >`
-          : "";
+      html = html.concat(jalanInfo(param), segmentInfo(param));
       break;
     case "awal":
-      type = "Ruas Jalan";
-      row = param.feature.getProperty("row");
-      foto = param.feature.getProperty("foto");
-      img =
-        foto != null
-          ? `<img src="${jalandir}${no_jalan}/${row}/${foto}" width="300px" >`
-          : "";
+      html = html.concat(jalanInfo(param), ujungInfo(param));
       break;
     case "akhir":
-      type = "Ruas Jalan";
-      row = param.feature.getProperty("row");
-      foto = param.feature.getProperty("foto");
-      img =
-        foto != null
-          ? `<img src="${jalandir}${no_jalan}/${row}/${foto}" width="300px" >`
-          : "";
+      html = html.concat(jalanInfo(param), ujungInfo(param));
       break;
     case "jembatan":
-      type = "Jembatan";
-      no_point = param.feature.getProperty("no_point");
-      nama_point = param.feature.getProperty("nama_point");
-      foto = param.feature.getProperty("foto");
+      html = html.concat(jalanInfo(param), jembatanInfo(param));
       break;
     case "saluran":
       type = "Saluran Air";
@@ -500,70 +483,112 @@ let getFeatureInfo = (param, jenis) => {
     case "gorong":
       type = "Gorong-gorong";
       break;
+    case "position":
+      html = html.concat(positionInfo());
+      break;
   }
 
-  html.push(
-    /*html*/ `
-        <tr>
-            <td width="130px">No Ruas Jalan</td>
-            <td width="*">${no_jalan}</td>
-        </tr>
-        `,
-    /*html*/ `
-        <tr>
-            <td>Nama Ruas Jalan</td>
-            <td>${nama_jalan}</td>
-        </tr>
-        `
-  );
-
-  if (jenis == "segment") {
-    html.push(
-      /*html*/ `
-            <tr>
-                <td>Segment</td>
-                <td>${segment}</td>
-            </tr>
-            `,
-      /*html*/ `
-            <tr>
-                <td>Foto</td>
-                <td>${img}</td>
-            </tr>
-            `
-    );
-  }
-
-  if (jenis == "awal" || jenis == "akhir") {
-    html.push(/*html*/ `
-            <tr>
-                <td>Foto</td>
-                <td>${img}</td>
-            </tr>
-            `);
-  }
-
-  if (jenis == "jembatan") {
-    html.push(
-      /*html*/ `
-            <tr>
-                <td>No ${type}</td>
-                <td>${no_point}</td>
-            </tr>
-            `,
-      /*html*/ `
-            <tr>
-                <td>Nama ${nama_point}</td>
-                <td>${nama_point}</td>
-            </tr>
-            `
-    );
-  }
-
-  html.push(/*html*/ `</table>`);
-  html.push(/*html*/ `</div>`);
+  html = html.concat([/*html*/ `</table>`, /*html*/ `</div>`]);
   // console.log(html);
   return html.join("");
+};
+
+let jalanInfo = (param) => {
+  let no_jalan = param.feature.getProperty("no_jalan");
+  let nama_jalan = param.feature.getProperty("nama_jalan");
+
+  return [
+    /*html*/ `
+      <tr>
+          <td width="130px">No Ruas Jalan</td>
+          <td width="*">${no_jalan}</td>
+      </tr>
+    `,
+    /*html*/ `
+      <tr>
+          <td>Nama Ruas Jalan</td>
+          <td>${nama_jalan}</td>
+      </tr>
+    `,
+  ];
+};
+
+let segmentInfo = (param) => {
+  let no_jalan = param.feature.getProperty("no_jalan");
+  let segment = param.feature.getProperty("segment");
+  let row = param.feature.getProperty("row");
+  let foto = param.feature.getProperty("foto");
+  let img =
+    foto != null
+      ? `<img src="${jalandir}${no_jalan}/${row}/${foto}" width="300px" >`
+      : "";
+
+  return [
+    /*html*/ `
+      <tr>
+          <td>Segment</td>
+          <td>${segment}</td>
+      </tr>
+      `,
+    /*html*/ `
+      <tr>
+          <td>Foto</td>
+          <td>${img}</td>
+      </tr>
+      `,
+  ];
+};
+
+let ujungInfo = (param) => {
+  let no_jalan = param.feature.getProperty("no_jalan");
+  let row = param.feature.getProperty("row");
+  let foto = param.feature.getProperty("foto");
+  console.log(row);
+  console.log(foto);
+  let img =
+    foto != null
+      ? `<img src="${jalandir}${no_jalan}/${row}/${foto}" width="300px" >`
+      : "";
+  console.log(img);
+  return [
+    /*html*/ `
+    <tr>
+        <td>Foto</td>
+        <td>${img}</td>
+    </tr>
+    `,
+  ];
+};
+
+let jembatanInfo = (param) => {
+  let no_point = param.feature.getProperty("no_point");
+  let nama_point = param.feature.getProperty("nama_point");
+  let foto = param.feature.getProperty("foto");
+
+  return [
+    /*html*/ `
+      <tr>
+          <td>No Jembatan</td>
+          <td>${no_point}</td>
+      </tr>
+      `,
+    /*html*/ `
+      <tr>
+          <td>Nama ${nama_point}</td>
+          <td>${nama_point}</td>
+      </tr>
+      `,
+  ];
+};
+
+let positionInfo = () => {
+  return [
+    /*html*/ `
+    <tr>
+        <td>Lokasi Anda</td>
+    </tr>
+    `,
+  ];
 };
 
 let CompleteLines;
@@ -712,4 +737,17 @@ let setFeatureCenter = () => {
 
   map_center = { lat: centerX, lng: centerY };
   map.setCenter(map_center);
+};
+
+let PositionPoint;
+let loadPosition = () => {
+  // let map_data;
+  // map_data = JSON.parse(getAJAX(`${base_url}/Gis/index/getgeo`));
+
+  // feature = new google.maps.Data();
+  // feature.addGeoJson(map_data);
+  // feature.setMap(map);
+
+  PositionPoint = loadData(DataJalan.position, "points", "position");
+  console.log(DataJalan.position);
 };

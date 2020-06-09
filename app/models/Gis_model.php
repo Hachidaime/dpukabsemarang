@@ -19,6 +19,13 @@ class Gis_model extends Database
         return Functions::getDataSession('form');
     }
 
+    public function getTrackingForm()
+    {
+        $jalan_opt = $this->model('Jalan_model')->getJalanOptions(["nama_jalan NOT LIKE '%test%'"]);
+        Functions::setDataSession('form', ['select', 'no_jalan', 'no_jalan', 'Ruas Jalan', $jalan_opt, true, true]);
+        return Functions::getDataSession('form');
+    }
+
     public function getDetailJalan($no_jalan)
     {
         $bindVar = [$no_jalan];

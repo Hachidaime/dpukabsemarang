@@ -92,7 +92,7 @@ class Pengaduan_model extends Database
         if (isset($_POST['on_site'])) {
             $remote_ip = ($remote_ip != '127.0.0.1') ? $remote_ip : "36.72.219.132";
 
-            $geo = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip={$remote_ip}"));
+            $geo = Functions::getGeo($remote_ip);
             if ($geo['geoplugin_status'] == '200') {
                 array_push($values, "latitude=?", "longitude=?");
                 array_push($bindVar, $geo['geoplugin_latitude'], $geo['geoplugin_longitude']);

@@ -13,7 +13,7 @@ class Functions
      * @param string $key
      * ? Encryption key
      */
-    public function encrypt($data, $key = MY_KEY)
+    public static function encrypt($data, $key = MY_KEY)
     {
         // TODO: Remove the base64 encoding from our key
         $encryption_key = base64_decode($key);
@@ -33,7 +33,7 @@ class Functions
      * @param string $key
      * ? Encryption key
      */
-    public function decrypt($data, $key = MY_KEY)
+    public static function decrypt($data, $key = MY_KEY)
     {
         // TODO: Remove the base64 encoding from our key
         $encryption_key = base64_decode($key);
@@ -48,7 +48,7 @@ class Functions
      * @param string $string
      * ? Title
      */
-    public function setTitle(string $string = "Untitled")
+    public static function setTitle(string $string = "Untitled")
     {
         // Todo: Cek session Admin dan User
         if (isset($_SESSION['admin']) && isset($_SESSION['USER'])) {
@@ -69,7 +69,7 @@ class Functions
      * @param array $array
      * ? array
      */
-    public function setList($array)
+    public static function setList($array)
     {
         $list = [];
         foreach ($array as $idx => $row) {
@@ -83,7 +83,7 @@ class Functions
      * * Functions::getSearch
      * ? Get parameter from Bootstrap Table search
      */
-    public function getSearch()
+    public static function getSearch()
     {
         // TODO: Get parameter
         $params = ltrim(strstr($_SERVER['REQUEST_URI'], '?'), '?');
@@ -107,7 +107,7 @@ class Functions
      * @param string $params
      * ? parameter
      */
-    public function setDataSession(string $type, $params = [])
+    public static function setDataSession(string $type, $params = [])
     {
         switch ($type) {
             case 'alert':
@@ -191,7 +191,7 @@ class Functions
      * @param boolean $clear
      * ? Check clear session. Default: TRUE.
      */
-    public function getDataSession(string $type, bool $clear = true)
+    public static function getDataSession(string $type, bool $clear = true)
     {
         $data = $_SESSION[$type];
         // TODO: Cek clear session.
@@ -205,7 +205,7 @@ class Functions
      * @param string type
      * ? type
      */
-    public function clearDataSession(string $type)
+    public static function clearDataSession(string $type)
     {
         unset($_SESSION[$type]);
     }
@@ -214,7 +214,7 @@ class Functions
      * * Functions::parseURL
      * ? Parsing URL dari $_GET['url];
      */
-    public function parseURL()
+    public static function parseURL()
     {
         // TODO: Cek URL Admin
         if (strpos($_GET['url'], 'Admin') !== false) {
@@ -244,7 +244,7 @@ class Functions
      * @param string $format
      * ? Format Output datetime
      */
-    public function formatDatetime(string $dt, string $format)
+    public static function formatDatetime(string $dt, string $format)
     {
         if (strpos($dt, "/") !== false) {
             $dt = implode("-", array_reverse(explode("/", $dt)));
@@ -262,7 +262,7 @@ class Functions
      * @param string $value
      * ? Variable as array value
      */
-    public function genOptions(array $array, string $value, string $key = null)
+    public static function genOptions(array $array, string $value, string $key = null)
     {
         $options = [];
         foreach ($array as $row) {
@@ -284,7 +284,7 @@ class Functions
      * @param string $title
      * @param string $footer
      */
-    public function getPopupLink($directory, $filename, $title, $footer, $icon = null)
+    public static function getPopupLink($directory, $filename, $title, $footer, $icon = null)
     {
         $data_title = (!empty($title)) ? "data-title=\"{$title}\"" : "";
         $data_footer = (!empty($footer)) ? "data-footer=\"{$footer}\"" : "";
@@ -316,7 +316,7 @@ class Functions
      * @param int $width
      * ? Button width
      */
-    public function makeButton(string $tag, string $id, string $html, string $color = null, string $class = null, int $width = 150)
+    public static function makeButton(string $tag, string $id, string $html, string $color = null, string $class = null, int $width = 150)
     {
         $array = [
             'tag' => $tag,
@@ -338,7 +338,7 @@ class Functions
      * @param string $type
      * ? Type
      */
-    public function getTable(array $tables, string $type = null)
+    public static function getTable(array $tables, string $type = null)
     {
         if (!is_null($type)) {
             $table = $tables[$type];
@@ -356,7 +356,7 @@ class Functions
      * @param int $count
      * @param int $total
      */
-    public function setDataTable(array $rows, int $count,  int $total)
+    public static function setDataTable(array $rows, int $count,  int $total)
     {
         $result = [];
         $search = self::getSearch();
@@ -376,7 +376,7 @@ class Functions
      * @param string $from
      * @param string $to
      */
-    public function getStringBetween(string $str, string $from, string $to)
+    public static function getStringBetween(string $str, string $from, string $to)
     {
 
         $string = substr($str, strpos($str, $from) + strlen($from));
@@ -394,7 +394,7 @@ class Functions
      * ? Setting data properties on DataTable
      * @param array $data
      */
-    public function makeTableData(array $data)
+    public static function makeTableData(array $data)
     {
         foreach ($data as $key => $value) {
             $result[] = "data-{$key}=\"{$value}\"";
@@ -407,14 +407,14 @@ class Functions
      * * Functions::defaultTableData
      * ? Get default data properties on DataTable
      */
-    public function defaultTableData()
+    public static function defaultTableData()
     {
         $data = DEFAULT_TABLE_DATA;
         // var_dump($data);
         return self::makeTableData($data);
     }
 
-    public function makeMapPoint(array $point, $raw = false)
+    public static function makeMapPoint(array $point, $raw = false)
     {
         $point = ($raw) ? $point : array_reverse($point);
         unset($point[2]);
@@ -425,7 +425,7 @@ class Functions
         return $point;
     }
 
-    public function getParams(array $data)
+    public static function getParams(array $data)
     {
         foreach ($data as $key => $value) {
             if (in_array($key, ['select', 'sort'])) {
@@ -437,7 +437,7 @@ class Functions
         return $params;
     }
 
-    public function getPointFromJembatan(array $data, array $style, string $kepemilikan = null)
+    public static function getPointFromJembatan(array $data, array $style, string $kepemilikan = null)
     {
         $point = [];
         foreach ($data as $row) {
@@ -455,7 +455,7 @@ class Functions
         return $point;
     }
 
-    public function getLineFromJalan(array $data, array $style, string $kepemilikan = null)
+    public static function getLineFromJalan(array $data, array $style, string $kepemilikan = null)
     {
         foreach ($data as $row) {
             // if (!is_null($kepemilikan)) {
@@ -484,7 +484,7 @@ class Functions
         return $line;
     }
 
-    public function getLineFromDetail(array $detail, array $lineStyle, array $iconStyle, string $kepemilikan = null)
+    public static function getLineFromDetail(array $detail, array $lineStyle, array $iconStyle, string $kepemilikan = null)
     {
         $awal       = [];
         $akhir      = [];
@@ -600,7 +600,7 @@ class Functions
         return [$segment, $complete, $perkerasan, $kondisi, $awal, $akhir];
     }
 
-    public function getStyle(array $setup)
+    public static function getStyle(array $setup)
     {
         $m = 1;
         foreach (DEFAULT_ICONSTYLE as $idx => $row) {
@@ -641,7 +641,7 @@ class Functions
         return [$style, $lineStyle, $iconStyle];
     }
 
-    public function createFeatureCollection($style, $content, $simbol)
+    public static function createFeatureCollection($style, $content, $simbol)
     {
         if (empty($content)) return null;
         $list['type'] = 'FeatureCollection';
@@ -653,7 +653,7 @@ class Functions
         return $list;
     }
 
-    public function createFeature($style, $data, $simbol)
+    public static function createFeature($style, $data, $simbol)
     {
         $properties = [
             'no_jalan' => $data['no_jalan'],
@@ -696,13 +696,13 @@ class Functions
         return $feature;
     }
 
-    public function saveGeoJSON(string $filename, $style, $content, $simbol)
+    public static function saveGeoJSON(string $filename, $style, $content, $simbol)
     {
         $content = self::createFeatureCollection($style, $content, $simbol);
         self::saveJSON($filename, $content);
     }
 
-    public function saveJSON(string $filename, $content)
+    public static function saveJSON(string $filename, $content)
     {
         $filedir = DOC_ROOT . "data";
         FileHandler::createWritableFolder($filedir);
@@ -712,7 +712,7 @@ class Functions
         fclose($myfile);
     }
 
-    public function readJSON(string $filepath)
+    public static function readJSON(string $filepath)
     {
         $strJsonFileContents = file_get_contents($filepath);
         $array = json_decode($strJsonFileContents, true);
@@ -720,7 +720,7 @@ class Functions
         return $array;
     }
 
-    public function buildGeo(array $coordinate, bool $raw)
+    public static function buildGeo(array $coordinate, bool $raw)
     {
         $result = [];
         array_push($result, (float) $coordinate[0], (float) $coordinate[1], 0);
@@ -732,7 +732,7 @@ class Functions
         return $result;
     }
 
-    public function buildLine(array $params, string $type)
+    public static function buildLine(array $params, string $type)
     {
         $result = [];
         $data = [];
@@ -756,5 +756,21 @@ class Functions
 
         unset($result[0]);
         return $result;
+    }
+
+    public static function getGeo($remote_ip)
+    {
+        $geo = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip={$remote_ip}"));
+
+        // $feature = [
+        //     'type' => 'Feature',
+        //     'geometry' => [
+        //         'type' => 'Point',
+        //         'coordinates' => [(float) $geo['geoplugin_longitude'], (float) $geo['geoplugin_latitude']]
+        //     ]
+        // ];
+
+        // return $feature;
+        return [(float) $geo['geoplugin_longitude'], (float) $geo['geoplugin_latitude']];
     }
 }

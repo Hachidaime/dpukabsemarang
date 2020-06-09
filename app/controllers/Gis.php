@@ -25,6 +25,9 @@ class Gis extends Controller
             case 'datajalan':
                 $this->DataJalan();
                 break;
+            case 'getgeo':
+                $this->GetGeo();
+                break;
             default:
                 $this->GisDefault();
                 break;
@@ -35,10 +38,17 @@ class Gis extends Controller
     {
         Functions::setTitle('GIS');
         $data = [];
-        $data['formClass'] = "searchGisForm";
-        $data['form'] = $this->my_model->getGisForm();
-        $data['mini'] = true;
-        $data['searchform'] = $this->dofetch('Layout/Form', $data);
+        $data['searchform'] = $this->dofetch('Layout/Form', [
+            'formClass' => "searchGisForm",
+            'form' => $this->my_model->getGisForm(),
+            'mini' => true
+        ]);
+
+        $data['trackingform'] = $this->dofetch('Layout/Form', [
+            'formClass' => "trackingGisForm",
+            'form' => $this->my_model->getTrackingForm(),
+            'mini' => true
+        ]);
 
         $this->view('Gis/index', $data);
     }
@@ -98,6 +108,10 @@ class Gis extends Controller
             list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($detail, $lineStyle, $iconStyle);
             $jembatan = Functions::getPointFromJembatan($jembatan, $iconStyle);
 
+            $position = [
+                'koordinat' => $this->GetGeo()
+            ];
+
             $result = [
                 'jalan'         => Functions::createFeature($style, $jalan, 1),
                 'segment'       => Functions::createFeatureCollection($style, $segment, 2),
@@ -106,7 +120,8 @@ class Gis extends Controller
                 'kondisi'       => Functions::createFeatureCollection($style, $kondisi, 1),
                 'awal'          => Functions::createFeatureCollection($style, $awal, 2),
                 'akhir'         => Functions::createFeatureCollection($style, $akhir, 2),
-                'jembatan'      => Functions::createFeatureCollection($style, $jembatan, 2)
+                'jembatan'      => Functions::createFeatureCollection($style, $jembatan, 2),
+                'position'      => Functions::createFeature($style, $position, 2)
             ];
             echo json_encode($result);
             exit;
@@ -131,5 +146,17 @@ class Gis extends Controller
         }
         echo json_encode($result);
         exit;
+    }
+
+    private function GetGeo()
+    {
+        $remote_ip = $_SERVER['REMOTE_ADDR'];
+        $remote_ip = ($remote_ip != '127.0.0.1') ? $remote_ip : "36.72.219.132";
+
+        $geo = Functions::getGeo($remote_ip);
+
+        // echo json_encode($geo);
+        // exit;
+        return $geo;
     }
 }

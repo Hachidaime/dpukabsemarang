@@ -32,9 +32,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/css/bg-color.css?t={$smarty.now|time}">
+    <!-- <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/css/bg-color.css?t={$smarty.now|time}">
     <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/css/text-color.css?t={$smarty.now|time}">
-    <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/css/border-color.css?t={$smarty.now|time}">
+    <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/css/border-color.css?t={$smarty.now|time}"> -->
     <!--
 -->
     <link rel="stylesheet" href="{$smarty.const.SERVER_BASE}/assets/css/custom.css?t={$smarty.now|time}">
