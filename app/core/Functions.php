@@ -760,7 +760,7 @@ class Functions
 
     public static function getGeo($remote_ip)
     {
-        if($remote_ip != '127.0.0.1'){
+        if($remote_ip != '127.0.0.1' && strpos($remote_ip, "192.168") === false){
             $geo = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip={$remote_ip}"));
             return [(float) $geo['geoplugin_longitude'], (float) $geo['geoplugin_latitude']];
         }
