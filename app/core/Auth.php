@@ -11,7 +11,7 @@ class Auth
      * @param string param
      * ? User property
      */
-    public function User(string $param)
+    public static function User(string $param)
     {
         return $_SESSION['USER'][$param];
     }
