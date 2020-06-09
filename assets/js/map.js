@@ -762,7 +762,7 @@ let loadPosition = () => {
   let icon = {
     url: "http://maps.google.com/mapfiles/kml/paddle/red-circle.png",
     scaledSize: new google.maps.Size(20, 20),
-    anchor: new google.maps.Point(10, 10),
+    // anchor: new google.maps.Point(10, 10),
   };
 
   PositionPoint = loadData(DataJalan.position, "points", "position", icon);
@@ -777,4 +777,38 @@ let clearPosition = () => {
   if (PositionPoint !== undefined) {
     PositionPoint.setMap(null);
   }
+};
+
+let getOriginDestination = () => {
+  return [
+    DataJalan.position.geometry.coordinates,
+    DataJalan.awal.features[0].geometry.coordinates,
+  ];
+};
+
+let directionsService = new google.maps.DirectionsService();
+let directionsRenderer = new google.maps.DirectionsRenderer({
+  suppressMarkers: true,
+});
+
+let calcRoute = () => {
+  const [start, end] = getOriginDestination();
+
+  let request = {
+    origin: new google.maps.LatLng(start[1], start[0]),
+    destination: new google.maps.LatLng(end[1], end[0]),
+    travelMode: "DRIVING",
+  };
+
+  directionsRenderer.setMap(map);
+
+  directionsService.route(request, (result, status) => {
+    if (status == "OK") {
+      directionsRenderer.setDirections(result);
+    }
+  });
+};
+
+let clearRoute = () => {
+  directionsRenderer.setMap(null);
 };

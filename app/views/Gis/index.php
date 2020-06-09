@@ -99,13 +99,13 @@
       <div id="tracking" class="tab-pane fade pt-3">
         {$data.trackingform}
         <div class="container tracking-action-container mb-2">
-          <button type="button" class="btn btn-link" id="yourLocation">
+          <button type="button" class="btn btn-light" id="yourLocation">
             <div><i class='fas fa-map-marker-alt text-danger'></i>&nbsp;Tempat Anda</div>
           </button>
-          <button type="button" class="btn btn-link" id="routeLocation">
+          <button type="button" class="btn btn-light" id="routeLocation">
             <div><i class='fas fa-directions text-info'></i>&nbsp;Rute</div>
           </button>
-          <button type="button" class="btn btn-link" id="trackingLocation">
+          <button type="button" class="btn btn-light" id="trackingLocation">
             <div><i class='fas fa-location-arrow text-success'></i>&nbsp;Tracking</div>
           </button>
         </div>

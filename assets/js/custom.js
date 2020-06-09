@@ -421,6 +421,8 @@ $(document)
       );
     });
 
+    $(".tracking-action-container").hide();
+
     searchGisForm.find("select#no_jalan").change(function () {
       trackingGisForm.find("select#no_jalan").selectpicker("val", 0);
       $(".tracking-action-container").hide();
@@ -429,6 +431,8 @@ $(document)
         CheckBox.checked = false;
       });
       searchCheckbox.attr("disabled", true);
+
+      clearRoute();
 
       if (loadDataJalan(this.value) == true)
         searchCheckbox.removeAttr("disabled");
@@ -486,17 +490,20 @@ $(document)
       searchGisForm.find("select#no_jalan").selectpicker("val", 0);
 
       loadDataJalan(this.value);
+      clearRoute();
 
       if (this.value != 0) $(".tracking-action-container").show();
       else $(".tracking-action-container").hide();
     });
 
     $("#yourLocation").click(() => {
+      clearRoute();
       loadPosition();
     });
 
     $("#routeLocation").click(() => {
-      console.log("route-location");
+      clearRoute();
+      calcRoute();
     });
 
     $("#trackingLocation").click(() => {
