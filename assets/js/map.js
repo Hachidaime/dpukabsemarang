@@ -382,7 +382,7 @@ let loadData = (map_data, type, jenis, icon = null) => {
   features = new google.maps.Data();
   features.addGeoJson(map_data);
 
-  if (jenis != "batas") {
+  if (["batas", "position"].indexOf(jenis) == -1) {
     features.addListener("click", function (event) {
       // var myHTML = event.feature.getProperty("nama_jalan");
       // infowindow.setContent("<div style='width:300px;'>" + myHTML + "</div>");
@@ -791,8 +791,24 @@ let directionsRenderer = new google.maps.DirectionsRenderer({
   suppressMarkers: true,
 });
 
+let polyline = null;
+let poly2 = null;
+let steps = [];
+
 let calcRoute = () => {
   const [start, end] = getOriginDestination();
+
+  polyline = new google.maps.Polyline({
+    path: [],
+    strokeColor: "#FF0000",
+    strokeWeight: 3,
+  });
+
+  poly2 = new google.maps.Polyline({
+    path: [],
+    strokeColor: "#FF0000",
+    strokeWeight: 3,
+  });
 
   let request = {
     origin: new google.maps.LatLng(start[1], start[0]),
@@ -805,10 +821,83 @@ let calcRoute = () => {
   directionsService.route(request, (result, status) => {
     if (status == "OK") {
       directionsRenderer.setDirections(result);
+
+      endLocation = new Object();
+
+      var legs = result.routes[0].legs;
+
+      for (i = 0; i < legs.length; i++) {
+        endLocation.latlng = legs[i].end_location;
+
+        var steps = legs[i].steps;
+
+        for (j = 0; j < steps.length; j++) {
+          var nextSegment = steps[j].path;
+
+          for (k = 0; k < nextSegment.length; k++) {
+            polyline.getPath().push(nextSegment[k]);
+            bounds.extend(nextSegment[k]);
+          }
+        }
+      }
     }
   });
 };
 
 let clearRoute = () => {
   directionsRenderer.setMap(null);
+};
+
+let step = 50; // 5; // metres
+let tick = 100; // milliseconds
+let eol;
+let k = 0;
+let stepnum = 0;
+let speed = "";
+let lastVertex = 1;
+
+let updatePoly = (d) => {
+  // Spawn a new polyline every 20 vertices, because updating a 100-vertex poly is too slow
+  if (poly2.getPath().getLength() > 20) {
+    poly2 = new google.maps.Polyline([
+      polyline.getPath().getAt(lastVertex - 1),
+    ]);
+    // map.addOverlay(poly2)
+  }
+
+  if (polyline.GetIndexAtDistance(d) < lastVertex + 2) {
+    if (poly2.getPath().getLength() > 1) {
+      poly2.getPath().removeAt(poly2.getPath().getLength() - 1);
+    }
+    poly2
+      .getPath()
+      .insertAt(poly2.getPath().getLength(), polyline.GetPointAtDistance(d));
+  } else {
+    poly2.getPath().insertAt(poly2.getPath().getLength(), endLocation.latlng);
+  }
+};
+
+let animate = (d) => {
+  if (d > eol) {
+    map.panTo(endLocation.latlng);
+    marker.setPosition(endLocation.latlng);
+    return;
+  }
+
+  var p = polyline.GetPointAtDistance(d);
+  map.panTo(p);
+  marker.setPosition(p);
+  updatePoly(d);
+  timerHandle = setTimeout("animate(" + (d + step) + ")", tick);
+};
+
+let startAnimation = () => {
+  eol = polyline.Distance();
+  map.setCenter(polyline.getPath().getAt(0));
+  poly2 = new google.maps.Polyline({
+    path: [polyline.getPath().getAt(0)],
+    strokeColor: "#0000FF",
+    strokeWeight: 10,
+  });
+  setTimeout("animate(50)", 2000); // Allow time for the initial map display
 };

@@ -433,6 +433,8 @@ $(document)
       searchCheckbox.attr("disabled", true);
 
       clearRoute();
+      $("#routeLocation").hide();
+      $("#trackingLocation").hide();
 
       if (loadDataJalan(this.value) == true)
         searchCheckbox.removeAttr("disabled");
@@ -491,23 +493,30 @@ $(document)
 
       loadDataJalan(this.value);
       clearRoute();
+      $("#routeLocation").hide();
+      $("#trackingLocation").hide();
 
       if (this.value != 0) $(".tracking-action-container").show();
       else $(".tracking-action-container").hide();
     });
 
+    $("#routeLocation").hide();
+    $("#trackingLocation").hide();
+
     $("#yourLocation").click(() => {
       clearRoute();
       loadPosition();
+      $("#routeLocation").show();
     });
 
     $("#routeLocation").click(() => {
       clearRoute();
       calcRoute();
+      $("#trackingLocation").hide();
     });
 
     $("#trackingLocation").click(() => {
-      console.log("tracking-location");
+      startAnimation();
     });
   })
   .ajaxStart(function () {
