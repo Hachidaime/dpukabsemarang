@@ -8,9 +8,6 @@
       <li class="nav-item order-1">
         <a class="nav-link active" href="#cari">Cari</a>
       </li>
-      <li class="nav-item order-3">
-        <a class="nav-link" href="#tracking">Tracking</a>
-      </li>
       <li class="nav-item order-4">
         <a href="javasript:void(0)" class="close btn-sidebar-close p-1" aria-label="Close">
           <i class="material-icons">close</i>

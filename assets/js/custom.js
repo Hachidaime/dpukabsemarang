@@ -387,13 +387,7 @@ $(document)
       let params = {};
       params["kepemilikan"] = kepemilikan;
 
-      // let jalan_opt = searchGisForm.find('select#no_jalan');
-
       clearLines();
-      // let html = [];
-      // html.push(/*html*/`<option value="0">&nbsp;</option>`);
-      // jalan_opt.html(html.join(''));
-      // jalan_opt.selectpicker('refresh');
 
       $.post(
         url,
@@ -404,18 +398,7 @@ $(document)
             searchCheckbox.removeAttr("disabled");
           } else {
             makeAlert(JSON.parse('{"danger":["Data tidak ditemukan."]}'));
-            // initMap();
           }
-
-          // if (Object.keys(data).length != 0) {
-          //     html.push(/*html*/`<option value="all">Semua</option>`);
-          //     $.each(data, function (k, v) {
-          //         html.push(/*html*/`<option value="${k}">${k} -> ${v}</option>`);
-          //     });
-          // }
-
-          // jalan_opt.html(html.join(''));
-          // jalan_opt.selectpicker('refresh');
         },
         "json"
       );
