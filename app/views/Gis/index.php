@@ -95,9 +95,6 @@
       </div>
       <div id="cari" class="tab-pane pt-3 active">
         {$data.searchform}
-      </div>
-      <div id="tracking" class="tab-pane fade pt-3">
-        {$data.trackingform}
         <div class="container tracking-action-container mb-2">
           <button type="button" class="btn btn-light" id="yourLocation">
             <div><i class='fas fa-map-marker-alt text-danger'></i>&nbsp;Tempat Anda</div>

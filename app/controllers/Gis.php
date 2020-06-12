@@ -43,13 +43,6 @@ class Gis extends Controller
       'form' => $this->my_model->getGisForm(),
       'mini' => true
     ]);
-
-    $data['trackingform'] = $this->dofetch('Layout/Form', [
-      'formClass' => "trackingGisForm",
-      'form' => $this->my_model->getTrackingForm(),
-      'mini' => true
-    ]);
-
     $this->view('Gis/index', $data);
   }
 

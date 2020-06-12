@@ -421,11 +421,8 @@ $(document)
       );
     });
 
-    $(".tracking-action-container").hide();
-
     searchGisForm.find("select#no_jalan").change(function () {
       trackingGisForm.find("select#no_jalan").selectpicker("val", 0);
-      $(".tracking-action-container").hide();
 
       document.querySelectorAll("input[type=checkbox").forEach((CheckBox) => {
         CheckBox.checked = false;
@@ -433,8 +430,10 @@ $(document)
       searchCheckbox.attr("disabled", true);
 
       clearRoute();
-      $("#routeLocation").hide();
-      $("#trackingLocation").hide();
+      $("#routeLocation").prop("disabled", true);
+      $("#trackingLocation").prop("disabled", true);
+      if (this.value != "semua") $("#yourLocation").prop("disabled", false);
+      else $("#yourLocation").prop("disabled", true);
 
       if (loadDataJalan(this.value) == true)
         searchCheckbox.removeAttr("disabled");
@@ -484,35 +483,20 @@ $(document)
       let params = searchGisForm.serialize();
     });
 
-    trackingGisForm.find("select#no_jalan").change(function () {
-      document.querySelectorAll("input[type=checkbox").forEach((CheckBox) => {
-        CheckBox.checked = false;
-      });
-      searchCheckbox.attr("disabled", true);
-      searchGisForm.find("select#no_jalan").selectpicker("val", 0);
-
-      loadDataJalan(this.value);
-      clearRoute();
-      $("#routeLocation").hide();
-      $("#trackingLocation").hide();
-
-      if (this.value != 0) $(".tracking-action-container").show();
-      else $(".tracking-action-container").hide();
-    });
-
-    $("#routeLocation").hide();
-    $("#trackingLocation").hide();
+    $("#yourLocation").prop("disabled", true);
+    $("#routeLocation").prop("disabled", true);
+    $("#trackingLocation").prop("disabled", true);
 
     $("#yourLocation").click(() => {
       clearRoute();
       loadPosition();
-      $("#routeLocation").show();
+      $("#routeLocation").prop("disabled", false);
     });
 
     $("#routeLocation").click(() => {
       clearRoute();
       calcRoute();
-      $("#trackingLocation").hide();
+      $("#trackingLocation").prop("disabled", false);
     });
 
     $("#trackingLocation").click(() => {
