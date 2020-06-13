@@ -794,6 +794,26 @@ let directionsRenderer = new google.maps.DirectionsRenderer({
 let polyline = null;
 let poly2 = null;
 let steps = [];
+let marker = null;
+
+function createMarker(latlng, label, html) {
+  // alert("createMarker("+latlng+","+label+","+html+","+color+")");
+  var contentString = "<b>" + label + "</b><br>" + html;
+  var marker = new google.maps.Marker({
+    position: latlng,
+    map: map,
+    title: label,
+    zIndex: Math.round(latlng.lat() * -100000) << 5,
+  });
+  marker.myname = label;
+  // gmarkers.push(marker);
+
+  google.maps.event.addListener(marker, "click", function () {
+    infowindow.setContent(contentString);
+    infowindow.open(map, marker);
+  });
+  return marker;
+}
 
 let calcRoute = () => {
   const [start, end] = getOriginDestination();
@@ -822,11 +842,24 @@ let calcRoute = () => {
     if (status == "OK") {
       directionsRenderer.setDirections(result);
 
+      startLocation = new Object();
       endLocation = new Object();
 
       var legs = result.routes[0].legs;
 
       for (i = 0; i < legs.length; i++) {
+        if (i == 0) {
+          startLocation.latlng = legs[i].start_location;
+          startLocation.address = legs[i].start_address;
+          // marker = google.maps.Marker({map:map,position: startLocation.latlng});
+          marker = createMarker(
+            legs[i].start_location,
+            "start",
+            legs[i].start_address,
+            "green"
+          );
+        }
+
         endLocation.latlng = legs[i].end_location;
 
         var steps = legs[i].steps;
