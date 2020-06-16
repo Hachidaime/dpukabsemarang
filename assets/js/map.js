@@ -759,18 +759,49 @@ let setFeatureCenter = () => {
 
 let PositionPoint;
 let loadPosition = () => {
-  let icon = {
-    url: "http://maps.google.com/mapfiles/kml/paddle/red-circle.png",
-    scaledSize: new google.maps.Size(20, 20),
-    // anchor: new google.maps.Point(10, 10),
-  };
+  getLocation();
+};
 
-  PositionPoint = loadData(DataJalan.position, "points", "position", icon);
+let positionLat = null,
+  positionLng = null;
 
-  const [centerY, centerX] = DataJalan.position.geometry.coordinates;
+const getPositionErrorMessage = (code) => {
+  switch (code) {
+    case 1:
+      return "Permission denied.";
+    case 2:
+      return "Position unavailable.";
+    case 3:
+      return "Timeout reached.";
+  }
+};
 
-  map_center = { lat: centerX, lng: centerY };
-  map.setCenter(map_center);
+let getLocation = () => {
+  marker = new google.maps.Marker({ map });
+
+  trackLocation({
+    onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {
+      marker.setPosition({ lat, lng });
+      map.panTo({ lat, lng });
+
+      positionLat = lat;
+      positionLng = lng;
+      // Print out the user's location.
+    },
+    onError: (err) => {
+      // Print out the error message.
+      alert(getPositionErrorMessage(err.code) || err.message);
+    },
+  });
+};
+
+const trackLocation = ({ onSuccess, onError = () => {} }) => {
+  // Omitted for brevity
+  return navigator.geolocation.watchPosition(onSuccess, onError, {
+    enableHighAccuracy: true,
+    // timeout: 5000,
+    maximumAge: 0,
+  });
 };
 
 let clearPosition = () => {
@@ -780,9 +811,14 @@ let clearPosition = () => {
 };
 
 let getOriginDestination = () => {
+  // return [
+  //   DataJalan.position.geometry.coordinates,
+  //   DataJalan.awal.features[0].geometry.coordinates,
+  // ];
+
   return [
-    DataJalan.position.geometry.coordinates,
-    DataJalan.awal.features[0].geometry.coordinates,
+    [positionLng, positionLat], // ? Origin
+    DataJalan.awal.features[0].geometry.coordinates, // ? Destination
   ];
 };
 

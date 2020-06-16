@@ -118,6 +118,8 @@
   </div>
 </div>
 
+<input type="hidden" id="latitude">
+<input type="hidden" id="longitude">
 {literal}
 <script>
   window.onload = function() {
