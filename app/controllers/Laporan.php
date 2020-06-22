@@ -17,7 +17,7 @@ class Laporan extends Controller
         }
     }
 
-    private function Dd1Default()
+    private function Dd1DefaultOld()
     {
         Functions::setTitle("Laporan DD1");
 
@@ -30,7 +30,30 @@ class Laporan extends Controller
         $this->view('Layout/Default', $data);
     }
 
+    private function Dd1Default()
+    {
+        Functions::setTitle("Laporan DD1");
+        $searchData = $this->Dd1SearchData();
+        // TODO: Menampilkan Table
+        $data = [
+            'thead' => $this->my_model->getDd1Thead(),
+            'data' => $searchData['data'],
+            'panjang' => $searchData['panjang']
+        ];
+        // var_dump($this->Dd1SearchData());
+        // var_dump($this->my_model->getDd1Thead());
+
+        $this->view('Laporan/DD1', $data);
+    }
+
     private function Dd1Search()
+    {
+        $data = $this->Dd1SearchData();
+        echo json_encode($data);
+        exit;
+    }
+
+    private function Dd1SearchData()
     {
         $kepemilikan_opt = $this->options('kepemilikan_opt'); // TODO: Get Kepemilikan Options
         $list =  $this->my_model->getLaporanDd1();
@@ -53,8 +76,45 @@ class Laporan extends Controller
             }
         }
 
-        echo json_encode($data);
-        exit;
+        $panjang = [
+            'jalan' => 0,
+        ];
+
+        $n = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $n[$i] = 0;
+        }
+        $panjang = array_merge($panjang, ["perkerasan" => $n]);
+        $panjang = array_merge($panjang, ["kondisi" => $n]);
+        $panjang = array_merge($panjang, ["kondisi_percent" => $n]);
+
+        foreach ($data as $row) {
+            $panjang['jalan'] += $row['panjang_km'];
+            foreach ($panjang as $key => $value) {
+                foreach ($value as $k => $v) {
+                    if ($key != 'kondisi_percent') {
+                        $panjang[$key][$k] += number_format($row["{$key}_{$k}"], 2);
+                    }
+                }
+            }
+        }
+
+        foreach ($panjang['kondisi_percent'] as $key => $value) {
+            $panjang['kondisi_percent'][$key] = number_format($panjang['kondisi'][$key] / $panjang['jalan'] * 100, 2);
+
+            if (in_array($key, [1, 2])) {
+                $panjang['mantap'] += $panjang['kondisi_percent'][$key];
+            }
+
+            if (in_array($key, [3, 4])) {
+                $panjang['tidak_mantap'] += $panjang['kondisi_percent'][$key];
+            }
+        }
+
+        return [
+            'data' => $data,
+            'panjang' => $panjang
+        ];
     }
 
     public function dd2(string $param1 = null, string $param2 = null)
