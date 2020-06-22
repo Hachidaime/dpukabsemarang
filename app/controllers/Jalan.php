@@ -57,11 +57,11 @@ class Jalan extends Controller
 
     // TODO: Load template
     $data = [
+      'toolbar' => [
+        $this->dofetch('Component/Button', $this->btn_add) // ? Add button
+      ],
       'main' => [
         $this->dofetch('Layout/Table', [
-          'toolbar' => [
-            $this->dofetch('Component/Button', $this->btn_add) // ? Add button
-          ],
           'data' => Functions::defaultTableData(), // ? Table data
           'thead' => $this->my_model->getJalanThead(), // ? Column name
           'url' => BASE_URL . "/Jalan/index/search" // ? data-url

@@ -58,11 +58,11 @@ class Jembatan extends Controller
     Functions::setTitle("Jembatan");
 
     $data = [
+      'toolbar' => [
+        $this->dofetch('Component/Button', $this->btn_add)
+      ],
       'main' => [
         $this->dofetch('Layout/Table', [
-          'toolbar' => [
-            $this->dofetch('Component/Button', $this->btn_add)
-          ],
           'data' => Functions::defaultTableData(),
           'thead' => $this->my_model->getJembatanThead(),
           'url' => BASE_URL . "/Jembatan/index/search",
