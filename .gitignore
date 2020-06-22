@@ -5,6 +5,7 @@ app/config/Local.php
 app/libs/smarty/
 app/libs/smartybu/
 app/libs/adodb5/
+app/libs/dompdf/
 
 assets/libs/fontawesome-markers/
 
