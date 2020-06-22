@@ -415,8 +415,8 @@ $(document)
       clearRoute();
       $("#routeLocation").prop("disabled", true);
       $("#trackingLocation").prop("disabled", true);
-      if (this.value != "semua") $("#yourLocation").prop("disabled", false);
-      else $("#yourLocation").prop("disabled", true);
+      if (this.value != "semua") $("#routeLocation").prop("disabled", false);
+      else $("#routeLocation").prop("disabled", true);
 
       if (loadDataJalan(this.value) == true)
         searchCheckbox.removeAttr("disabled");
@@ -466,14 +466,12 @@ $(document)
       let params = searchGisForm.serialize();
     });
 
-    $("#yourLocation").prop("disabled", true);
     $("#routeLocation").prop("disabled", true);
     $("#trackingLocation").prop("disabled", true);
 
     $("#yourLocation").click(() => {
       clearRoute();
       loadPosition();
-      $("#routeLocation").prop("disabled", false);
     });
 
     $("#routeLocation").click(() => {

@@ -100,6 +100,7 @@ class Gis extends Controller
 
       list($segment, $complete, $perkerasan, $kondisi, $awal, $akhir) = Functions::getLineFromDetail($detail, $lineStyle, $iconStyle);
       $jembatan = Functions::getPointFromJembatan($jembatan, $iconStyle);
+      // var_dump($segment);
 
       $position = [
         'koordinat' => $this->GetGeo()

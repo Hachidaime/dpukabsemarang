@@ -758,12 +758,18 @@ let setFeatureCenter = () => {
 };
 
 let PositionPoint;
-let loadPosition = () => {
-  getLocation();
-};
-
 let positionLat = null,
   positionLng = null;
+
+let loadPosition = () => {
+  // getLocation();
+  marker = new google.maps.Marker({ map });
+
+  const userPosition = { lat: Number(positionLat), lng: Number(positionLng) };
+  console.log(userPosition);
+  marker.setPosition(userPosition);
+  map.panTo(userPosition);
+};
 
 const getPositionErrorMessage = (code) => {
   switch (code) {
@@ -777,19 +783,15 @@ const getPositionErrorMessage = (code) => {
 };
 
 let getLocation = () => {
-  marker = new google.maps.Marker({ map });
-
   trackLocation({
     onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {
-      marker.setPosition({ lat, lng });
-      map.panTo({ lat, lng });
-
       positionLat = lat;
       positionLng = lng;
-      // Print out the user's location.
+
+      console.log(positionLat);
+      console.log(positionLng);
     },
     onError: (err) => {
-      // Print out the error message.
       alert(getPositionErrorMessage(err.code) || err.message);
     },
   });
@@ -799,7 +801,7 @@ const trackLocation = ({ onSuccess, onError = () => {} }) => {
   // Omitted for brevity
   return navigator.geolocation.watchPosition(onSuccess, onError, {
     enableHighAccuracy: true,
-    // timeout: 5000,
+    timeout: 5000,
     maximumAge: 0,
   });
 };
@@ -811,11 +813,6 @@ let clearPosition = () => {
 };
 
 let getOriginDestination = () => {
-  // return [
-  //   DataJalan.position.geometry.coordinates,
-  //   DataJalan.awal.features[0].geometry.coordinates,
-  // ];
-
   return [
     [positionLng, positionLat], // ? Origin
     DataJalan.awal.features[0].geometry.coordinates, // ? Destination

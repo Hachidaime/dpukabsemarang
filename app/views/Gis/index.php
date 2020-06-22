@@ -124,6 +124,9 @@
 <script>
   window.onload = function() {
     initMap();
+    setTimeout(() => {
+      getLocation();
+    }, 3000); 
   };
 </script>
 {/literal}

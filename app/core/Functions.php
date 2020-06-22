@@ -499,7 +499,7 @@ class Functions
     $k = 0;
     $l = 0;
 
-    $row_id[$i] = 0;
+    $row_id = 0;
     foreach ($detail as $idx => $row) {
       // if (!is_null($kepemilikan)) {
       //     if ($row['kepemilikan'] != $kepemilikan) continue;
@@ -531,15 +531,15 @@ class Functions
       if ($row['segment'] != $detail[$idx - 1]['segment'] && $row['segment'] > 0) {
         // $row['style'] = $iconStyle[1];
         $row['koordinat'] = [(float) $longitude, (float) $latitude];
-        $row['row'] = $row_id[$i] + 1;
+        $row['row'] = $row_id + 1;
         $segment[$i] = $row;
         $i++;
       }
-      $row_id[$i] = +count($data);
+      $row_id = $row_id + count($data);
 
       if ($detail[$idx + 1]['segment'] == 0 || is_null($detail[$idx + 1])) {
         $row['koordinat'] = end($koordinat);
-        $row['row'] = $row_id[$i];
+        $row['row'] = $row_id;
         $akhir[$g] = $row;
         $g++;
       }
