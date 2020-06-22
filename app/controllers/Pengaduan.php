@@ -171,6 +171,11 @@ class Pengaduan extends Controller
           'thead' =>  $this->my_model->getPengaduanThead(),
           'url' =>  BASE_URL . "/Pengaduan/index/search"
         ])
+      ],
+      'modal' => [
+        [
+          'modalId' => 'myModal',
+        ]
       ]
     ];
 
