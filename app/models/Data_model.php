@@ -206,7 +206,7 @@ class Data_model extends Database
             $row['panjang_km'] = number_format($row['panjang'] / 1000, 2);
 
             foreach (json_decode($row['perkerasan'], true) as $key => $value) {
-                $row["perkerasan_{$key}"] = number_format($value, 2);
+                $row["perkerasan_{$key}"] = number_format($value / 1000, 2);
             }
 
             foreach (json_decode($row['kondisi'], true) as $key => $value) {
