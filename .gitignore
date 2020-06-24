@@ -15,6 +15,10 @@ assets/css/custom.min.css.map
 assets/css/custom.scss
 assets/css/old.css
 
+### Composer ###
+composer.phar
+/vendor/
+
 request.http
 
 data/
