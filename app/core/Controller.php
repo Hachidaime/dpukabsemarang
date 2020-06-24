@@ -1,5 +1,8 @@
 <?php
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 /**
  * * app/core/Controller.php
  */
@@ -309,5 +312,39 @@ class Controller
 
         // TODO: Menampilkan Template
         $this->view('Layout/Default', $data);
+    }
+
+    public function downloadPdf($content, $filename = false, $options = false)
+    {
+        if ($options == false) {
+            $options = new Options();
+            $options->set('defaultFont', 'Serif');
+            $options->set('defaultPaperSize', 'A4');
+            $options->set('defaultPaperOrientation', 'portrait');
+        }
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($content);
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser
+        $dompdf->stream("{$filename}");
+    }
+
+    public function pdfContent($view, $data)
+    {
+        // TODO: Assign data into template
+        $this->smarty->assign('data', $data);
+
+        // TODO: Fetch Content template
+        $content = $this->smarty->fetch($view . '.php');
+
+        // TODO: Assign Navigation & Content
+        $this->smarty->assign('content', $content);
+
+        // TODO: Display template (Layout/Mainlayout.php)
+        return $this->smarty->fetch('Layout/PdfLayout.php');
     }
 }

@@ -1,5 +1,8 @@
+{if $data.download ne true}
+<a href="{$smarty.const.BASE_URL}/Laporan/dd1/pdf" class="btn btn-primary">Download Pdf</a>
+{/if}
 <div class="table-responsive">
-  <table class="table table-bordered table-sm">
+  <table class="table table-bordered table-sm" id="laporan-table">
     <thead>
       {foreach from=$data.thead key=row item=$myRow}
       <tr>

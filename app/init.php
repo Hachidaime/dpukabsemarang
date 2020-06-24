@@ -8,6 +8,7 @@ require_once 'config/Local.php';
 include_once("libs/adodb5/adodb.inc.php"); // ? ADODB
 include_once('libs/smarty/Smarty.class.php'); // ? Smarty Template Engine
 include_once('libs/RandomStringGenerator.php'); // ? Random String Generator
+include_once('libs/dompdf/autoload.inc.php'); // ? Random String Generator
 
 // * Call Core
 include_once("core/Controller.php");

@@ -1,4 +1,7 @@
 <?php
+
+use Dompdf\Options;
+
 class Laporan extends Controller
 {
     private $my_model;
@@ -10,7 +13,10 @@ class Laporan extends Controller
         switch ($param1) {
             case 'search':
                 $this->Dd1Search();
-                exit;
+                break;
+            case 'pdf';
+                $this->Dd1DownloadPdf();
+                break;
             default:
                 $this->Dd1Default();
                 break;
@@ -44,6 +50,27 @@ class Laporan extends Controller
         // var_dump($this->my_model->getDd1Thead());
 
         $this->view('Laporan/DD1', $data);
+    }
+
+    private function Dd1DownloadPdf()
+    {
+        $searchData = $this->Dd1SearchData();
+        // TODO: Menampilkan Table
+        $data = [
+            'thead' => $this->my_model->getDd1Thead(),
+            'data' => $searchData['data'],
+            'panjang' => $searchData['panjang'],
+            'download' => true
+        ];
+
+        $options = new Options();
+        $options->set('defaultFont', 'Serif');
+        $options->set('defaultPaperSize', 'A4');
+        $options->set('defaultPaperOrientation', 'landscape');
+
+        $content = $this->pdfContent('Laporan/DD1', $data);
+
+        $this->downloadPdf($content, "Laporan-DD1.pdf", $options);
     }
 
     private function Dd1Search()
