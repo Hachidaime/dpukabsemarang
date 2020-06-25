@@ -104,7 +104,7 @@
             {foreach from=$myRow key=col item=$myCol}
             {assign var=colData value=$myCol.data|replace:'data-':''}
             {assign var=colData value=$colData|replace:' halign':''}
-            <th {$colData} class="text-center">{$myCol.title}</th>
+            <th {$colData} class="text-center align-top">{$myCol.title}</th>
             {/foreach}
           </tr>
           {/foreach}
