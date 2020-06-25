@@ -60,7 +60,8 @@ class Laporan extends Controller
             'thead' => $this->my_model->getDd1Thead(),
             'data' => $searchData['data'],
             'panjang' => $searchData['panjang'],
-            'download' => true
+            'download' => true,
+            'format' => 'pdf'
         ];
 
         $options = new Options();
