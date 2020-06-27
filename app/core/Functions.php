@@ -766,4 +766,11 @@ class Functions
     }
     return [110.4037533, -7.1186337];
   }
+
+  public static function getTags($string)
+  {
+    preg_match_all('~<([^/][^>]*?)>~', $string, $arr);
+
+    return $arr[1];
+  }
 }

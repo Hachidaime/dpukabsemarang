@@ -3,6 +3,11 @@
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
+use PhpOffice\PhpSpreadsheet\Helper\Sample;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+
 /**
  * * app/core/Controller.php
  */
@@ -346,5 +351,76 @@ class Controller
 
         // TODO: Display template (Layout/Mainlayout.php)
         return $this->smarty->fetch('Layout/PdfLayout.php');
+    }
+
+    public function donwloadXlsx($spreadsheet, $filename)
+    {
+        $helper = new Sample();
+        if ($helper->isCli()) {
+            $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
+
+            return;
+        }
+
+        // Redirect output to a client’s web browser (Xls)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+    }
+
+    public function spreadsheetContent($data, $baseRow = 0, $template = false)
+    {
+
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+
+        $reader = IOFactory::createReader('Xls');
+        if ($template) {
+            $spreadsheet = $reader->load(DOC_ROOT . "app/views/{$template}");
+        }
+
+        foreach ($data as $idx => $value) {
+            // var_dump($value);
+            $row = $baseRow + $idx;
+            if (isset($value['newline'])) {
+                $spreadsheet->getActiveSheet()->insertNewRowBefore($row, 1);
+                unset($value['newline']);
+            }
+            if (isset($value['absolute'])) {
+                unset($value['absolute']);
+                foreach ($value as $column => $val) {
+                    $cell = explode("|", $val);
+                    $cellName = $column;
+                    $spreadsheet->getActiveSheet()->setCellValue($cellName, $val);
+                }
+            } else {
+                foreach ($value as $column => $val) {
+                    $cell = explode("|", $val);
+                    $cellName = $column . $row;
+
+                    $spreadsheet->getActiveSheet()->setCellValue($cellName, $cell[0]);
+                    // var_dump($cell);
+                    if (in_array('strong', $cell) || in_array('b', $cell)) {
+                        $spreadsheet->getActiveSheet()->getStyle($cellName)->getFont()->setBold(true);
+                    } else {
+                        $spreadsheet->getActiveSheet()->getStyle($cellName)->getFont()->setBold(false);
+                    }
+                }
+            }
+        }
+        // $spreadsheet->getActiveSheet()->setCellValue('C5', ': ' . date('Y'));
+        return $spreadsheet;
     }
 }

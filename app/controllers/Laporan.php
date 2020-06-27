@@ -17,6 +17,9 @@ class Laporan extends Controller
             case 'pdf';
                 $this->Dd1DownloadPdf();
                 break;
+            case 'xlsx':
+                $this->Dd1DownloadXlsx();
+                break;
             default:
                 $this->Dd1Default();
                 break;
@@ -72,6 +75,83 @@ class Laporan extends Controller
         $content = $this->pdfContent('Laporan/DD1', $data);
 
         $this->downloadPdf($content, "Laporan-DD1.pdf", $options);
+    }
+
+    private function Dd1DownloadXlsx()
+    {
+        $searchData = $this->Dd1SearchData();
+        $data = [];
+        foreach ($searchData['data'] as $idx => $row) {
+            $tags = array_map('Functions::getTags', $row);
+
+            foreach ($row as $key => $value) {
+                $tag = implode("|", $tags[$key]);
+                $value = strip_tags($value);
+                if ($tag) $value .= "|{$tag}";
+                $row[$key] = "{$value}";
+            }
+
+            $data[$idx] = [
+                'a' => $row['row'],
+                'b' => $row['no_jalan'],
+                'c' => $row['nama_jalan'],
+                'd' => $row['kecamatan'],
+                'e' => $row['panjang_km'],
+                'f' => $row['lebar_rata'],
+                'g' => $row['perkerasan_1'],
+                'h' => $row['perkerasan_2'],
+                'i' => $row['perkerasan_3'],
+                'j' => $row['perkerasan_4'],
+                'k' => $row['kondisi_1'],
+                'l' => $row['kondisi_1_percent'],
+                'm' => $row['kondisi_2'],
+                'n' => $row['kondisi_2_percent'],
+                'o' => $row['kondisi_3'],
+                'p' => $row['kondisi_3_percent'],
+                'q' => $row['kondisi_4'],
+                'r' => $row['kondisi_4_percent'],
+                's' => $row['lhr'],
+                't' => $row['npk'],
+                'u' => $row['keterangan'],
+                'newline' => ''
+            ];
+        }
+
+        array_push(
+            $data,
+            [],
+            [
+                'f' => $searchData['panjang']['jalan'],
+                'g' => $searchData['panjang']['perkerasan'][1],
+                'h' => $searchData['panjang']['perkerasan'][2],
+                'i' => $searchData['panjang']['perkerasan'][3],
+                'j' => $searchData['panjang']['perkerasan'][4],
+                'k' => $searchData['panjang']['kondisi'][1],
+                'm' => $searchData['panjang']['kondisi'][2],
+                'o' => $searchData['panjang']['kondisi'][3],
+                'q' => $searchData['panjang']['kondisi'][4],
+            ],
+            [
+                'l' => $searchData['panjang']['kondisi_percent'][1],
+                'n' => $searchData['panjang']['kondisi_percent'][2],
+                'p' => $searchData['panjang']['kondisi_percent'][3],
+                'r' => $searchData['panjang']['kondisi_percent'][4],
+            ],
+            [
+                'k' => $searchData['panjang']['mantap'],
+            ],
+            [
+                'o' => $searchData['panjang']['tidak_mantap'],
+            ],
+            [
+                'c5' => ': ' . date('Y'),
+                'absolute' => '',
+            ]
+        );
+
+        $spreadsheet = $this->spreadsheetContent($data, 12, 'Laporan/dd1.xls');
+        $filenname = 'Laporan-DD1.xlsx';
+        $this->donwloadXlsx($spreadsheet, $filenname);
     }
 
     private function Dd1Search()

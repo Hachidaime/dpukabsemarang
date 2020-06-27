@@ -10,6 +10,8 @@ include_once('libs/smarty/Smarty.class.php'); // ? Smarty Template Engine
 include_once('libs/RandomStringGenerator.php'); // ? Random String Generator
 include_once('libs/dompdf/autoload.inc.php'); // ? Random String Generator
 
+require_once DOC_ROOT . "vendor/autoload.php";
+
 // * Call Core
 include_once("core/Controller.php");
 include_once("core/App.php");
