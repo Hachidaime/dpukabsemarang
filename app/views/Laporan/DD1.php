@@ -8,7 +8,7 @@
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" href="{$smarty.const.BASE_URL}/Laporan/dd1/pdf" target="_blank">PDF</a>
         <a class="dropdown-item" href="{$smarty.const.BASE_URL}/Laporan/dd1/xlsx" target="_blank">XLSX</a>
-        <a class="dropdown-item" href="#" target="_blank">CSV</a>
+        <!-- <a class="dropdown-item" href="#" target="_blank">CSV</a> -->
       </div>
     </div>
   </div>
