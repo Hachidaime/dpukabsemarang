@@ -772,34 +772,62 @@ let loadPosition = () => {
 };
 
 const getPositionErrorMessage = (code) => {
+  let msg;
   switch (code) {
     case 1:
-      return "Permission denied.";
+      msg = "Permission denied.";
+      break;
     case 2:
-      return "Position unavailable.";
+      msg = "Position unavailable.";
+      break;
     case 3:
-      return "Timeout reached.";
+      msg = "Timeout reached.";
+      break;
   }
+
+  msg += "\nPlease check your browser location permission.";
+
+  return msg;
 };
 
 let getLocation = () => {
+  // getPosition({
+  //   onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {
+  //     positionLat = lat;
+  //     positionLng = lng;
+  //   },
+  //   onError: (err) => {
+  //     alert(getPositionErrorMessage(err.code) || err.message);
+  //     $("#yourLocation").prop("disabled", true);
+  //   },
+  // });
+
   trackLocation({
     onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {
       positionLat = lat;
       positionLng = lng;
-
-      console.log(positionLat);
-      console.log(positionLng);
     },
     onError: (err) => {
       alert(getPositionErrorMessage(err.code) || err.message);
+      $("#yourLocation").prop("disabled", true);
+      navigator.geolocation.clearWatch(track);
     },
   });
 };
 
+const getPosition = ({ onSuccess, onError = () => {} }) => {
+  // Omitted for brevity
+  return navigator.geolocation.getCurrentPosition(onSuccess, onError, {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0,
+  });
+};
+
+let track;
 const trackLocation = ({ onSuccess, onError = () => {} }) => {
   // Omitted for brevity
-  return navigator.geolocation.watchPosition(onSuccess, onError, {
+  track = navigator.geolocation.watchPosition(onSuccess, onError, {
     enableHighAccuracy: true,
     timeout: 5000,
     maximumAge: 0,
