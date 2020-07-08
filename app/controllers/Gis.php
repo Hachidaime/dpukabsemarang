@@ -36,7 +36,7 @@ class Gis extends Controller
 
   private function GisDefault()
   {
-    Functions::setTitle('GIS');
+    Functions::setTitle('SIG (Sistem Informasi Geografi)');
     $data = [];
     $data['searchform'] = $this->dofetch('Layout/Form', [
       'formClass' => "searchGisForm",

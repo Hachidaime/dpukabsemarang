@@ -12,7 +12,7 @@ class Home extends Controller
     function index()
     {
         $data = [];
-        Functions::setTitle('Home');
+        Functions::setTitle('Beranda');
         $this->view('Home/index', $data);
     }
 }

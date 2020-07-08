@@ -31,7 +31,7 @@ class User extends Controller
 
     private function UserDefault()
     {
-        Functions::setTitle("User");
+        Functions::setTitle("Pengguna");
 
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
@@ -60,7 +60,7 @@ class User extends Controller
 
     private function UserAdd()
     {
-        Functions::setTitle("Add User");
+        Functions::setTitle("Tambah Pengguna");
 
         $data['form'] = $this->my_model->getUserForm();
 
@@ -69,7 +69,7 @@ class User extends Controller
 
     private function UserEdit($id)
     {
-        Functions::setTitle("Edit User");
+        Functions::setTitle("Ubah Pengguna");
 
         list($detail, $count) = $this->UserDetail($id);
         if ($count <= 0) Header("Location: " . BASE_URL . "/StaticPage/Error404");
@@ -182,7 +182,7 @@ class User extends Controller
 
     private function UserGroupDefault()
     {
-        Functions::setTitle("User Group");
+        Functions::setTitle("Level Akses");
 
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
@@ -211,7 +211,7 @@ class User extends Controller
 
     private function UserGroupAdd()
     {
-        Functions::setTitle("Add User Group");
+        Functions::setTitle("Tambah Level Akses");
 
         $data['form'] = $this->my_model->getUserGroupForm();
 
@@ -220,7 +220,7 @@ class User extends Controller
 
     private function UserGroupEdit($id)
     {
-        Functions::setTitle("Edit User Group");
+        Functions::setTitle("Ubah Level Akses");
 
         $application_model = $this->model('Application_model');
 

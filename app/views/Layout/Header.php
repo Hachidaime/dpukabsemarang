@@ -9,7 +9,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <a class="navbar-brand d-lg-none" href="{$smarty.const.BASE_URL}/Home">
-                <img src="{$smarty.const.SERVER_BASE}/assets/img/navlogo.png" alt="Logo" style="width:200px;">
+                <img src="{$smarty.const.SERVER_BASE}/assets/img/navlogo.png" alt="Logo" style="height:35px;">
             </a>
             <a class="active py-2 loading2" style="display: none;">
                 <div class="spinner-border spinner-border-sm text-light" role="status">

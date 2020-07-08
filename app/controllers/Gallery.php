@@ -80,7 +80,7 @@ class Gallery extends Controller
         $data['pager'] = $pager;
 
         // TODO: Menampilkan Tamplate
-        Functions::setTitle('Gallery');
+        Functions::setTitle('Galeri');
         $this->view('Gallery/Public', $data);
     }
 
@@ -110,7 +110,7 @@ class Gallery extends Controller
      */
     private function GalleryAdmin()
     {
-        Functions::setTitle("Gallery");
+        Functions::setTitle("Galeri");
 
         // TODO: Menampilkan Table
         $data['data'] = Functions::defaultTableData();
@@ -156,7 +156,7 @@ class Gallery extends Controller
      */
     private function GalleryAdd()
     {
-        Functions::setTitle("Tambah Data Gallery");
+        Functions::setTitle("Tambah Galeri");
 
         // TODO: Get form Gallery
         $data['form'] = $this->my_model->getGalleryForm();
@@ -171,7 +171,7 @@ class Gallery extends Controller
      */
     private function GalleryEdit(int $id)
     {
-        Functions::setTitle("Edit Gallery");
+        Functions::setTitle("Ubah Galeri");
         // TODO: Get Gallery dari Database
         list($detail, $count) = $this->GalleryDetail($id);
 

@@ -29,7 +29,7 @@ class Setup extends Controller
 
     private function SetupDefault()
     {
-        Functions::setTitle("Setup");
+        Functions::setTitle("Pengaturan SIG");
 
         $data['toolbar'][] = $this->dofetch('Component/Button', $this->btn_add);
 
@@ -79,7 +79,7 @@ class Setup extends Controller
 
     private function SetupAdd()
     {
-        Functions::setTitle("Add Setup");
+        Functions::setTitle("Tambah Pengaturan SIG");
 
         $data['form'] = $this->my_model->getSetupForm();
 
@@ -88,7 +88,7 @@ class Setup extends Controller
 
     private function SetupEdit($id)
     {
-        Functions::setTitle("Edit Setup");
+        Functions::setTitle("Ubah Pengaturan SIG");
 
         list($detail, $count) = $this->SetupDetail($id);
         if ($count <= 0) Header("Location: " . BASE_URL . "/StaticPage/Error404");

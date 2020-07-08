@@ -97,7 +97,7 @@
 
     {assign var=map_shown_controller value=$smarty.const.MAP_SHOWN_CONTROLLER}
     {if in_array($data.controller, $map_shown_controller)}
-    <script src="http://maps.google.com/maps/api/js?v=3&libraries=geometry&key={$smarty.const.GMAPS_API_KEY}" type="text/javascript"></script>
+    <script src="https://maps.google.com/maps/api/js?v=3&libraries=geometry&key={$smarty.const.GMAPS_API_KEY}" type="text/javascript"></script>
     <script type="text/javascript" src="{$smarty.const.SERVER_BASE}/assets/js/v3_epoly.js"></script>
     <script type="text/javascript" src="{$smarty.const.SERVER_BASE}/assets/js/geoxmlfull_v3.js"></script>
     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
