@@ -72,11 +72,13 @@ class Data_model extends Database
                 "{$detail_table}.kondisi",
                 "{$detail_table}.segment",
                 "{$detail_table}.koordinat",
-                "{$detail_table}.data"
+                "{$detail_table}.data",
+                "{$koordinat_table}.jml_segmented"
             ],
             'join' => [
                 "LEFT JOIN {$jalan_table} ON {$jalan_table}.no_jalan = {$detail_table}.no_jalan",
-                "LEFT JOIN {$foto_table} ON ({$foto_table}.latitude = {$detail_table}.latitude AND {$foto_table}.longitude = {$detail_table}.longitude)"
+                "LEFT JOIN {$koordinat_table} ON {$koordinat_table}.no_jalan = {$detail_table}.no_jalan"
+                // "LEFT JOIN {$foto_table} ON ({$foto_table}.latitude = {$detail_table}.latitude AND {$foto_table}.longitude = {$detail_table}.longitude)"
             ],
             'sort' => [
                 "{$detail_table}.no_jalan ASC",

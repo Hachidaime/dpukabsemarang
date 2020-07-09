@@ -532,6 +532,7 @@ class Functions
         // $row['style'] = $iconStyle[1];
         $row['koordinat'] = [(float) $longitude, (float) $latitude];
         $row['row'] = $row_id + 1;
+        // $row['row'] = $row['row_id'];
         $segment[$i] = $row;
         $i++;
       }
@@ -543,6 +544,12 @@ class Functions
         $akhir[$g] = $row;
         $g++;
       }
+
+      // print '<pre>';
+      // print_r([$row['jml_segmented'], $row_id]);
+      // print '</pre>';
+      if ($row_id == $row['jml_segmented']) $row_id = 0;
+
       unset($row['row']);
       unset($row['foto']);
 
