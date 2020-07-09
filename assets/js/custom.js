@@ -414,9 +414,9 @@ $(document)
 
       clearRoute();
       $("#routeLocation").prop("disabled", true);
-      $("#trackingLocation").prop("disabled", true);
+      // $("#trackingLocation").prop("disabled", true);
       if (this.value != "semua") $("#routeLocation").prop("disabled", false);
-      else $("#routeLocation").prop("disabled", true);
+      // else $("#routeLocation").prop("disabled", true);
 
       if (loadDataJalan(this.value) == true)
         searchCheckbox.removeAttr("disabled");
@@ -477,7 +477,7 @@ $(document)
     $("#routeLocation").click(() => {
       clearRoute();
       calcRoute();
-      $("#trackingLocation").prop("disabled", false);
+      // $("#trackingLocation").prop("disabled", false);
     });
 
     $("#trackingLocation").click(() => {
