@@ -500,7 +500,7 @@ $(document).on("click", '[data-toggle="lightbox"]', function (event) {
 });
 
 window.onscroll = function () {
-  scrollFunction();
+  // scrollFunction();
 };
 
 let cur_time = getTime();
