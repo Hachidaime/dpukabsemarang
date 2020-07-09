@@ -2,6 +2,10 @@
 
 /**
  * * app/controllers/Jalan.php
+ * @desc menangani jalan
+ *
+ * @class Jalan
+ * @extends Controler
  */
 class Jalan extends Controller
 {
@@ -432,13 +436,24 @@ class Jalan extends Controller
   private function KoordinatSetSesion()
   {
     $coord = [];
-    // ? Corrdinate from Session
-    $coord = Functions::getDataSession('coordinates', false);
 
     // ? Coordinate from Request
-    if (!empty($_REQUEST['coordinates'])) {
-      $coord = $this->KoordinatBuild($_REQUEST['coordinates'], true);
+    if (!empty($_REQUEST['segment'])) {
+      foreach ($_REQUEST as $key => $value) {
+        $$key = $value;
+      }
+
+      $filepath = TEMP_UPLOAD_DIR . $filename;
+      $kml = Functions::readKML($filepath);
+
+      foreach ($segment as $idx => $value) {
+        array_splice($kml, $segPosition[$idx], 0, [$value]);
+      }
+
+      $coord = $this->KoordinatBuild($kml, true);
     } else {
+      // ? Corrdinate from Session
+      $coord = Functions::getDataSession('coordinates', false);
       if (empty($coord)) {
         // ? Coordinates from tdetail_jalan;
         list($detail, $detail_count) = $this->DetailJalanSearch($this->no_jalan);
@@ -463,7 +478,6 @@ class Jalan extends Controller
       }
     }
 
-    // var_dump($coord);
     Functions::setDataSession('coordinates', $coord);
   }
 

@@ -773,4 +773,29 @@ class Functions
 
     return $arr[1];
   }
+
+  public static function readKml(string $filepath)
+  {
+    $kml = [];
+
+    // $xmldata = simplexml_load_file($filepath) or die("Failed to load"); // ? return object
+    $xmldata = file_get_contents($filepath) or die("Failed to load"); // ? return string
+    if (strpos($xmldata, 'coordinates') !== false) {
+      $str = self::getStringBetween($xmldata, "<coordinates>", "</coordinates>");
+      $str = trim($str);
+
+      $kml = array_map(function ($val) {
+        return explode(',', $val);
+      }, explode(" ", $str));
+    } else {
+      // $str = self::getStringBetween($xmldata, "<gx:coord>", "</gx:coord>");
+      $xml = new SimpleXMLElement(str_replace('gx:', '', $xmldata));
+      $kml = array_map(function ($val) {
+        $point = explode(' ', $val);
+        array_splice($point, 2, 1, 0);
+        return $point;
+      }, (array) $xml->Document->Placemark->MultiTrack->Track->coord);
+    }
+    return $kml;
+  }
 }

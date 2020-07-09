@@ -205,6 +205,7 @@ let genSegment = () => {
   let segmentasi = document.getElementById("segmentasi").value;
 
   let segment = [];
+  let segPosition = [];
   if (segmentasi > 0) {
     let seg = [];
     let i = 1;
@@ -231,6 +232,7 @@ let genSegment = () => {
     });
 
     i = 0;
+
     segment.forEach((x, j) => {
       let segmented = [];
       coordinates.forEach((y, k) => {
@@ -250,6 +252,8 @@ let genSegment = () => {
       x.pop();
       x.push(j + 1);
       coordinates.splice(index, 0, x);
+      // console.log(`${j + 1} ${index}`);
+      segPosition[j] = index;
       i++;
     });
 
@@ -260,7 +264,17 @@ let genSegment = () => {
   document.getElementById("panjang_text").value = roadLength.toFixed(2);
 
   let params = {};
-  params["coordinates"] = coordinates;
+  // params["coordinates"] = coordinates;
+  params["segment"] = segment;
+  params["filename"] = document.getElementById("upload_koordinat").value;
+  params["segPosition"] = segPosition;
+
+  // console.log(coordinates.length);
+  // console.log(segment.length);
+  // console.log(params);
+  console.log(segPosition);
+
+  // return false;
   $.post(
     tableUrl.replace("search", "setsession"),
     $.param(params),
