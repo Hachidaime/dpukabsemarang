@@ -467,7 +467,7 @@ $(document)
     });
 
     $("#routeLocation").prop("disabled", true);
-    $("#trackingLocation").prop("disabled", true);
+    // $("#trackingLocation").prop("disabled", true);
 
     $("#yourLocation").click(() => {
       clearRoute();
@@ -481,7 +481,8 @@ $(document)
     });
 
     $("#trackingLocation").click(() => {
-      startAnimation();
+      // startAnimation();
+      getLocation();
     });
   })
   .ajaxStart(function () {

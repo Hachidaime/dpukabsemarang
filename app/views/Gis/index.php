@@ -115,6 +115,8 @@
       </div>
     </div>
     <!--Form Map Area-->
+
+    <div id="track-error"></div>
   </div>
 </div>
 
@@ -125,8 +127,9 @@
   window.onload = function() {
     initMap();
     setTimeout(() => {
-      getLocation();
-    }, 3000); 
+      // getLocation();
+      setLocation()
+    }, 3000);
   };
 </script>
 {/literal}

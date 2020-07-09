@@ -762,7 +762,7 @@ let positionLat = null,
   positionLng = null;
 
 let loadPosition = () => {
-  // getLocation();
+  // setLocation();
   marker = new google.maps.Marker({ map });
 
   const userPosition = { lat: Number(positionLat), lng: Number(positionLng) };
@@ -786,33 +786,45 @@ const getPositionErrorMessage = (code) => {
   }
 
   msg += "\nPlease check your browser location permission.";
+  msg += "\nTry again later.";
 
   return msg;
 };
 
 let getLocation = () => {
-  // getPosition({
-  //   onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {
-  //     positionLat = lat;
-  //     positionLng = lng;
-  //   },
-  //   onError: (err) => {
-  //     alert(getPositionErrorMessage(err.code) || err.message);
-  //     $("#yourLocation").prop("disabled", true);
-  //   },
-  // });
-
   trackLocation({
     onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {
       positionLat = lat;
       positionLng = lng;
+      $("#yourLocation").prop("disabled", false);
+      document.getElementById("track-error").innerHTML = "";
     },
     onError: (err) => {
-      alert(getPositionErrorMessage(err.code) || err.message);
-      $("#yourLocation").prop("disabled", true);
+      errorLocation(err);
       navigator.geolocation.clearWatch(track);
     },
   });
+};
+
+let setLocation = () => {
+  getPosition({
+    onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {
+      positionLat = lat;
+      positionLng = lng;
+      $("#yourLocation").prop("disabled", false);
+      document.getElementById("track-error").innerHTML = "";
+    },
+    onError: (err) => {
+      errorLocation(err);
+    },
+  });
+};
+
+let errorLocation = (err) => {
+  // alert(getPositionErrorMessage(err.code) || err.message);
+  document.getElementById("track-error").innerHTML =
+    getPositionErrorMessage(err.code) || err.message;
+  // $("#yourLocation").prop("disabled", true);
 };
 
 const getPosition = ({ onSuccess, onError = () => {} }) => {
