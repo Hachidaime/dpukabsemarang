@@ -203,6 +203,7 @@ class Jembatan extends Controller
           }
         }
       }
+      $this->model('Data_model')->generateData();
     } else { // ! Proses gagal
       Functions::setDataSession('alert', ["{$tag} Jembatan failed.", 'danger']);
     }

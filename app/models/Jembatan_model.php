@@ -31,6 +31,7 @@ class Jembatan_model extends Database
     Functions::setDataSession('form', ['select', 'no_jalan', 'no_jalan', 'Ruas Jalan', $this->model('Jalan_model')->getJalanOptions(), true, false]);
     Functions::setDataSession('form', ['text', 'no_jembatan', 'no_jembatan', 'Nomor Jembatan', [], true, true]);
     Functions::setDataSession('form', ['text', 'nama_jembatan', 'nama_jembatan', 'Nama Jembatan', [], true, false]);
+    Functions::setDataSession('form', ['text', 'nama_sungai', 'nama_sungai', 'Nama Sungai', [], true, false]);
     Functions::setDataSession('form', ['number', 'lebar', 'lebar', 'Lebar (m)', [], true, false]);
     Functions::setDataSession('form', ['number', 'panjang', 'panjang', 'Panjang (m)', [], true, false]);
     Functions::setDataSession('form', ['number', 'latitude', 'latitude', 'Latitude', [], true, false]);
