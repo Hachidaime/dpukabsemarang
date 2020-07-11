@@ -8,6 +8,7 @@ td,
   font-family: "Fira Code", monospace;
   font-size: 0.75rem;
   caret-color: #3e3f3a !important;
+  border-width: 2px !important;
 }
 
 @supports (font-variation-settings: normal) {
@@ -19,7 +20,12 @@ td,
   .filter-option-inner-inner {
     font-family: "Fira Code", monospace;
     font-size: 0.75rem;
+    border-width: 2px !important;
   }
+}
+
+.bootstrap-select > .dropdown-toggle {
+  border-width: 2px !important;
 }
 
 /**
