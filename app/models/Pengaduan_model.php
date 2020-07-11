@@ -27,16 +27,33 @@ class Pengaduan_model extends Database
         return Functions::getDataSession('form');
     }
 
+    public function getResponForm()
+    {
+        Functions::setDataSession('form', ['hidden', 'id', 'id', '']);
+
+        Functions::setDataSession('form', ['textarea', 'respon', 'respon', 'Tindak Lanjut', [], true, false]);
+        Functions::setDataSession('form', ['img', 'foto_respon1', 'foto_respon1', 'Foto 1', [], true, false]);
+        Functions::setDataSession('form', ['img', 'foto_respon2', 'foto_respon2', 'Foto 2', [], false, false]);
+        Functions::setDataSession('form', ['img', 'foto_respon3', 'foto_respon3', 'Foto 3', [], false, false]);
+
+        return Functions::getDataSession('form');
+    }
+
     public function getPengaduanViewForm()
     {
         Functions::setDataSession('form', ['plain-text', 'nama', 'nama', 'Nama']);
         Functions::setDataSession('form', ['plain-textarea', 'alamat', 'alamat', 'Alamat']);
+        Functions::setDataSession('form', ['plain-text', 'telepon', 'telepon', 'Telepon']);
         Functions::setDataSession('form', ['plain-text', 'jenis', 'jenis', 'Jenis']);
         Functions::setDataSession('form', ['plain-text', 'nama_jalan', 'nama_jalan', 'Ruas Jalan']);
         Functions::setDataSession('form', ['plain-textarea', 'keterangan', 'keterangan', 'Keterangan Pengaduan']);
         Functions::setDataSession('form', ['plain-img', 'foto1', 'foto1', 'Foto 1']);
         Functions::setDataSession('form', ['plain-img', 'foto2', 'foto2', 'Foto 2']);
         Functions::setDataSession('form', ['plain-img', 'foto3', 'foto3', 'Foto 3']);
+        Functions::setDataSession('form', ['plain-textarea', 'respon', 'respon', 'Keterangan Pengaduan']);
+        Functions::setDataSession('form', ['plain-img', 'foto_respon1', 'foto_respon1', 'Foto 1']);
+        Functions::setDataSession('form', ['plain-img', 'foto_respon2', 'foto_respon2', 'Foto 2']);
+        Functions::setDataSession('form', ['plain-img', 'foto_respon3', 'foto_respon3', 'Foto 3']);
         Functions::setDataSession('form', ['plain-text', 'jarak', 'jarak', 'Jarak lokasi dari ujung/awal ruas jalan (km)']);
         Functions::setDataSession('form', ['plain-text', 'koordinat', 'koordinat', 'Koordinat']);
 
@@ -51,9 +68,7 @@ class Pengaduan_model extends Database
         Functions::setDataSession('thead', ['0', 'nama', 'Nama', 'data-halign="center" data-align="left" data-width="200"']);
         Functions::setDataSession('thead', ['0', 'alamat', 'Alamat', 'data-halign="center" data-align="left"']);
         Functions::setDataSession('thead', ['0', 'telepon', 'Telepon', 'data-halign="center" data-align="left"']);
-        Functions::setDataSession('thead', ['0', 'keterangan', 'Keterangan Pengaduan', 'data-halign="center" data-align="left"']);
-        Functions::setDataSession('thead', ['0', 'response', 'Tindak Lanjut', 'data-halign="center" data-align="left"']);
-        Functions::setDataSession('thead', ['0', 'view']);
+        Functions::setDataSession('thead', ['0', 'viewedit']);
         return Functions::getDataSession('thead');
     }
 
@@ -113,6 +128,35 @@ class Pengaduan_model extends Database
         $query = "INSERT INTO {$this->my_tables['pengaduan']} SET {$values}";
 
         $this->execute($query, $bindVar);
+        return $this->affected_rows();
+    }
+
+    public function prepareSaveRespon()
+    {
+        $values = [];
+        $bindVar = [];
+        foreach ($_POST as $key => $value) {
+            if ($key == 'id') continue;
+            $value = ($key == 'tanggal') ? Functions::formatDatetime($value, 'Y-m-d') : $value;
+            array_push($values, "{$key}=?");
+            array_push($bindVar, $value);
+        }
+        $values = implode(", ", $values);
+        $values .= ", login_id = ?, remote_ip = ?";
+
+        array_push($bindVar, Auth::User('id'), $_SERVER['REMOTE_ADDR']);
+
+        return [$values, $bindVar];
+    }
+
+    public function updatePengaduan()
+    {
+        list($values, $bindVar) = $this->prepareSaveRespon();
+        array_push($bindVar, $_POST['id']);
+
+        $query = "UPDATE {$this->my_tables['pengaduan']} SET {$values}, update_dt = NOW() WHERE id=?";
+        $this->execute($query, $bindVar);
+
         return $this->affected_rows();
     }
 

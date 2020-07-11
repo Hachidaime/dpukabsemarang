@@ -40,6 +40,12 @@ class Pengaduan extends Controller
 
         $this->PengaduanView($param2);
         break;
+      case 'edit': // ? Menampilkan halaman Edit Pengaduan
+        // TODO: Cek parameter id Pengaduan
+        if (!isset($param2)) Header("Location: " . BASE_URL . "/StaticPage/Error404"); // ! Id Gallery kosong, Redirect ke Error 404
+
+        $this->PengaduanEdit($param2);
+        break;
       default: // ? Menampilkan halaman Pengaduan
         // TODO: Cek session Admin & User
         if (isset($_SESSION['admin']) && isset($_SESSION['USER'])) { // ? Session Admin & User exist
@@ -80,8 +86,14 @@ class Pengaduan extends Controller
    */
   private function PengaduanSubmit()
   {
-    // TODO: Get Validasi form Pengaduan
-    $error = $this->PengaduanValidate();
+    // TODO: Cek input id
+    if ($_POST['id'] > 0) { // ? Id Pengaduan exist
+      // TODO: Get Validasi form Pengaduan
+      $error = $this->responValidate();
+    } else {
+      // TODO: Get Validasi form Pengaduan
+      $error = $this->PengaduanValidate();
+    }
 
     // TODO: Cek error
     if (!$error) { // ? No Error
@@ -122,24 +134,50 @@ class Pengaduan extends Controller
     return Functions::getDataSession('alert');
   }
 
+  private function responValidate()
+  {
+    $form = $this->my_model->getResponForm();
+
+    foreach ($form as $row) {
+      // TODO: Validasi form Menu
+      $this->validate($_POST, $row, 'Pengaduan_model', 'pengaduan');
+    }
+
+    // TODO: Mengembalikan hasil validasi
+    return Functions::getDataSession('alert');
+  }
+
   /**
    * * Pengaduan::PengaduanProcess()
    * ? Proses form input
    */
   private function PengaduanProcess()
   {
-    // TODO: Get form Pengaduan
-    $form = $this->my_model->getPengaduanForm();
-
-    // TODO: Proses Tambah Pengaduan
-    $result = $this->my_model->createPengaduan();
-
-    // TODO: Cek Proses
-    if ($result) { // ? Proses sucess
+    // TODO: Cek input id
+    if ($_POST['id'] > 0) { // ? Id Pengaduan exist
+      $form = $this->my_model->getResponForm();
+      // TODO: Proses edit Pengaduan
+      $result = $this->my_model->updatePengaduan();
+      $id = $_POST['id'];
+      $tag = "Edit";
+    } else { // ! Id Pengaduan not exist
+      $form = $this->my_model->getPengaduanForm();
+      // TODO: Proses add Pengaduan
+      $result = $this->my_model->createPengaduan();
       $id = $this->my_model->insert_id();
-      Functions::setDataSession('alert', ["Pengaduan Anda Berhasil.", 'success']);
+      $tag = "Add";
+    }
 
-      // TODO: Pindah foto dari temporary directory ke direktory pengaduan
+    // TODO: Cek hasil proses
+    if ($result) { // ? Process success
+      if ($tag == 'Edit') Functions::setDataSession('alert', ["{$tag} Pengaduan Berhasil.", 'success']);
+      elseif ($tag == 'Add') Functions::setDataSession('alert', ["Pengaduan Anda Berhasil.", 'success']);
+
+      // TODO: Pindah foto dari temporary directory ke direktory Pengaduan
+      // print '<pre>';
+      // print_r($form);
+      // print_r($_POST);
+      // print '</pre>';
       foreach ($form as $row) {
         if ($row['type'] == 'img') {
           if (!empty($_POST[$row['name']])) {
@@ -147,12 +185,13 @@ class Pengaduan extends Controller
           }
         }
       }
-      $this->model('Otentifikasi_model')->useToken($_POST['token']);
-    } else { // ! Proses gagal
-      Functions::setDataSession('alert', ["Pengaduan Anda Gagal.", 'danger']);
+    } else { // ! Process gagal
+      if ($tag == 'Edit')
+        Functions::setDataSession('alert', ["{$tag} Pengaduan Gagal.", 'danger']);
+      elseif ($tag == 'Add')
+        Functions::setDataSession('alert', ["Pengaduan Anda Gagal.", 'danger']);
     }
 
-    // TODO: Mengembalikan hasil proses
     return Functions::getDataSession('alert');
   }
 
@@ -239,5 +278,22 @@ class Pengaduan extends Controller
   private function PengaduanDetail(int $id)
   {
     return $this->my_model->getPengaduanDetail($id);
+  }
+
+  private function PengaduanEdit($id)
+  {
+    Functions::setTitle("Edit Menu");
+
+    // TODO: Get Menu dari Database
+    list($detail, $count) = $this->PengaduanDetail($id);
+
+    // TODO: Set detail Menu
+    $data['detail'] = $detail;
+
+    // TODO: Cek Menu exist
+    if ($count <= 0) Header("Location: " . BASE_URL . "/StaticPage/Error404");
+
+    $data['form'] = $this->my_model->getResponForm();
+    $this->form($data);
   }
 }

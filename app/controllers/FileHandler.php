@@ -101,6 +101,11 @@ class FileHandler
 
       // TODO: Pindah file
       rename(TEMP_UPLOAD_DIR . $filename, UPLOAD_DIR . "{$filedir}/{$time}{$filename}");
+      // if (file_exists(UPLOAD_DIR . "{$filedir}/{$time}{$filename}")) {
+      //   echo UPLOAD_DIR . "{$filedir}/{$time}{$filename}" . 'moved <br>';
+      // } else {
+      //   echo UPLOAD_DIR . "{$filedir}/{$time}{$filename}" . 'not moved <br>';
+      // }
     }
   }
 

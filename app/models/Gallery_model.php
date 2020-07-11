@@ -93,6 +93,7 @@ class Gallery_model extends Database
 
         return [$values, $bindVar];
     }
+
     public function createGallery()
     {
         list($values, $bindVar) = $this->prepareSaveGallery();

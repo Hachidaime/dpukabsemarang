@@ -264,20 +264,20 @@ class Controller
                 // TODO: Display message based on input type
                 switch ($input['type']) {
                     case 'select': // ? SELECT Input type
-                        Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> must be selected.", 'danger']);
+                        Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> harus dipilih.", 'danger']);
                         break;
                     case 'password': // ? PASSWORD Input type
-                        if ($data['id'] <= 0) Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> cannot be blank.", 'danger']);
+                        if ($data['id'] <= 0) Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> tidak boleh kosong.", 'danger']);
                         break;
                     default: // ? Input default
-                        Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> cannot be blank.", 'danger']);
+                        Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> tidak boleh kosong.", 'danger']);
                 }
             } else { // ? Input not empty
                 // TODO: Check input is unique
                 if ($input['unique']) { // ? Input is unique
                     // TODO: Check unique value from database
                     if ($my_model->checkUnique($my_model->getTable($checker_type), (int) $data['id'], $input['name'], $data[$input['name']])) { // ! Value is already exist in database
-                        Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> already exist.", 'danger']);
+                        Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> sudah ada di database.", 'danger']);
                     }
                 }
             }
@@ -289,7 +289,7 @@ class Controller
                 // TODO: Check input is not empty
                 if (!empty($data[$input['name']])) { // ? Input is not empty
                     // TODO: Check value is numeric
-                    if (!is_numeric($data[$input['name']])) Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> must be in numeric.", 'danger']);
+                    if (!is_numeric($data[$input['name']])) Functions::setDataSession('alert', ["<strong>{$input['label']}</strong> harus dalam angka.", 'danger']);
                 } else {
                     $_POST[$input['name']] = 0;
                 }

@@ -65,6 +65,17 @@ function viewFormatter(value, row, index) {
   ].join("");
 }
 
+function viewEditFormatter(value, row, index) {
+  return [
+    /*html*/ `<a class="info" href="javascript:void(0)" title="Info">`,
+    /*html*/ `<i class="fas fa-clipboard text-info"></i>`,
+    /*html*/ `</a>  `,
+    /*html*/ `<a class="edit" href="javascript:void(0)" title="Edit">`,
+    /*html*/ `<i class="fas fa-edit text-warning"></i>`,
+    /*html*/ `</a>  `,
+  ].join("");
+}
+
 function coordFormatter(value, row, index) {
   return [
     /*html*/ `<a class="coord" href="javascript:void(0)" title="Edit Koordinat">`,
@@ -130,6 +141,20 @@ window.viewEvents = {
     let title = $table.data("title");
     modal.find(".modal-title").text(`Detail ${title}`);
     modal.find(".modal-body").html(row.view);
+  },
+};
+
+window.viewEditEvents = {
+  "click .info": function (e, value, row, index) {
+    let modal = $("#myModal");
+    modal.modal("show");
+
+    let title = $table.data("title");
+    modal.find(".modal-title").text(`Detail ${title}`);
+    modal.find(".modal-body").html(row.view);
+  },
+  "click .edit": function (e, value, row, index) {
+    window.location.href = `${base_url}/${controller}/${method}/edit/${row.id}`;
   },
 };
 

@@ -9,6 +9,8 @@
             {assign var=theaddata value='data-halign="center" data-align="center" data-width="100" data-formatter="operateFormatter" data-events="operateEvents"'}
             {elseif $i.field eq 'view'}
             {assign var=theaddata value='data-halign="center" data-align="center" data-width="50" data-formatter="viewFormatter" data-events="viewEvents"'}
+            {elseif $i.field eq 'viewedit'}
+            {assign var=theaddata value='data-halign="center" data-align="center" data-width="50" data-formatter="viewEditFormatter" data-events="viewEditEvents"'}
             {elseif $i.field eq 'coord'}
             {assign var=theaddata value='data-halign="center" data-align="center" data-width="50" data-formatter="coordFormatter" data-events="coordEvents"'}
             {else}
