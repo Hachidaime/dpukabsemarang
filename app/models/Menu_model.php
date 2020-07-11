@@ -25,16 +25,37 @@ class Menu_model extends Database
      * * Menu_model::getMenuForm
      * ? Menu form
      */
-    public function getMenuForm()
+    public function getMenuForm(int $id = null)
     {
+
+        $menu = $this->getMenuOptions();
+        // print '<pre>';
+        // print_r($_GET);
+        // print_r($menu);
+        if (!is_null($id)) unset($menu[$id]);
+        // print_r($menu);
+        // print '</pre>';
         Functions::setDataSession('form', ['hidden', 'id', 'id', '', []]);
         Functions::setDataSession('form', ['text', 'name', 'name', 'Name', [], true, true]);
+        Functions::setDataSession('form', ['select', 'parent', 'parent', 'Parent Menu', $menu, false, false]);
         Functions::setDataSession('form', ['text', 'class_name', 'class_name', 'Class Name', [], true, false]);
+        Functions::setDataSession('form', ['text', 'method_name', 'method_name', 'Method Name', [], false, false]);
         Functions::setDataSession('form', ['text', 'sort', 'sort', 'Sort', [], true, false]);
         Functions::setDataSession('form', ['switch', 'show_website', 'show_website', 'Show on Website', [], false, false]);
         Functions::setDataSession('form', ['switch', 'show_admin', 'show_admin', 'Show on Admin', [], false, false]);
 
         return Functions::getDataSession('form');
+    }
+
+    public function getMenuOptions()
+    {
+        list($system) = $this->getMenu();
+        $system_options = [];
+        foreach ($system as $row) {
+            $system_options[$row['id']] = $row['name'];
+        }
+
+        return $system_options;
     }
 
     /**

@@ -124,7 +124,7 @@ class Menu extends Controller
         // TODO: Cek Menu exist
         if ($count <= 0) Header("Location: " . BASE_URL . "/StaticPage/Error404");
 
-        $data['form'] = $this->my_model->getMenuForm();
+        $data['form'] = $this->my_model->getMenuForm($id);
         $this->form($data);
     }
 
