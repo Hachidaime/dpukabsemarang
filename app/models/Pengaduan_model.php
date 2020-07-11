@@ -13,14 +13,18 @@ class Pengaduan_model extends Database
         Functions::setDataSession('form', ['text', 'nama', 'nama', 'Nama', [], true, false]);
         Functions::setDataSession('form', ['textarea', 'alamat', 'alamat', 'Alamat', [], true, false]);
         Functions::setDataSession('form', ['text', 'telepon', 'telepon', 'Nomor Telp', [], true, false]);
+        Functions::setDataSession('form', ['separator']);
         Functions::setDataSession('form', ['select', 'jenis', 'jenis', 'Jenis', $this->options('jenis_opt'), true, false]);
         Functions::setDataSession('form', ['select', 'no_jalan', 'no_jalan', 'Ruas Jalan', $this->model('Jalan_model')->getJalanOptions(), false, false]);
+        Functions::setDataSession('form', ['separator']);
         Functions::setDataSession('form', ['textarea', 'keterangan', 'keterangan', 'Keterangan Pengaduan', [], true, false]);
         Functions::setDataSession('form', ['img', 'foto1', 'foto1', 'Foto 1', [], true, false]);
         Functions::setDataSession('form', ['img', 'foto2', 'foto2', 'Foto 2', [], false, false]);
         Functions::setDataSession('form', ['img', 'foto3', 'foto3', 'Foto 3', [], false, false]);
+        Functions::setDataSession('form', ['separator']);
         Functions::setDataSession('form', ['text', 'jarak', 'jarak', 'Jarak (km)', [], false, false, 'Jarak lokasi dari ujung/awal ruas jalan.']);
         Functions::setDataSession('form', ['switch', 'on_site', 'on_site', 'Apakah saat ini Anda berada di lokasi pengaduan?', [], false, false]);
+        Functions::setDataSession('form', ['separator']);
         Functions::setDataSession('form', ['token', 'my_token', 'my_token', 'Kode Keamanan']);
         Functions::setDataSession('form', ['text', 'token', 'token', 'Verifikasi Kode Keamanan', [], true, true]);
 

@@ -14,6 +14,8 @@
                 </div>
             </div>
         </div>
+        {elseif $v.type eq 'separator'}
+        <div class="my-4">&nbsp;</div>
         {else}
         <div class="form-group row">
             <label for="{$v.id}" class="{if !$data.mini}col-lg-3 col-md-4{else}col-12{/if} col-form-label">{$v.label}{if $v.required}<sup><i class="text-danger fas fa-asterisk"></i></sup>{/if}</label>

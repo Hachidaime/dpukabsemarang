@@ -174,10 +174,6 @@ class Pengaduan extends Controller
       elseif ($tag == 'Add') Functions::setDataSession('alert', ["Pengaduan Anda Berhasil.", 'success']);
 
       // TODO: Pindah foto dari temporary directory ke direktory Pengaduan
-      // print '<pre>';
-      // print_r($form);
-      // print_r($_POST);
-      // print '</pre>';
       foreach ($form as $row) {
         if ($row['type'] == 'img') {
           if (!empty($_POST[$row['name']])) {
@@ -295,5 +291,20 @@ class Pengaduan extends Controller
 
     $data['form'] = $this->my_model->getResponForm();
     $this->form($data);
+  }
+
+  public function aturan()
+  {
+    echo "manual";
+  }
+
+  public function lapor()
+  {
+    Header("Location: " . BASE_URL . "/Pengaduan");
+  }
+
+  public function tindaklanjut()
+  {
+    echo "respon";
   }
 }
