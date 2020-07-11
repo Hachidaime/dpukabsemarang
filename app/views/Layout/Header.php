@@ -18,9 +18,22 @@
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav align-content-start flex-wrap">
                     {foreach from=$menu key=k item=v}
+                    {if $v.child|count > 0}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link {if $data.controller eq $v.class_name}{$active}{/if} dropdown-toggle px-3" href="#" data-toggle="dropdown">
+                            {$v.name|upper}
+                        </a>
+                        <div class="dropdown-menu py-0">
+                            {foreach from=$v.child key=i item=j}
+                            <a class="dropdown-item py-1" href="{$smarty.const.BASE_URL}/{$v.class_name}/{$j.method_name}">{$j.name}</a>
+                            {/foreach}
+                        </div>
+                    </li>
+                    {else}
                     <li class="nav-item">
                         <a class="nav-link {if $data.controller eq $v.class_name}{$active}{/if} px-3" href="{$smarty.const.BASE_URL}/{$v.class_name}">{$v.name|upper}</a>
                     </li>
+                    {/if}
                     {/foreach}
                     {if isset($smarty.session.admin) && isset($smarty.session.USER)}
                     {foreach from=$module key=idx item=row}

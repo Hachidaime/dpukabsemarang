@@ -77,6 +77,11 @@ class Controller
         $module = $this->model('Layout_model')->module();
         $menu = $this->model('Layout_model')->menu();
 
+        // print '<pre>';
+        // // print_r($module);
+        // print_r($menu);
+        // print '</pre>';
+
         // TODO: Assign system, module, & menu on Navbar
         $this->smarty->assign('system', $system);
         $this->smarty->assign('module', $module);
