@@ -128,7 +128,7 @@ class FileHandler
     }
 
     // TODO: Buat folder baru
-    mkdir($folder, 0777, true);
+    @mkdir($folder, 0777, true);
   }
 
   public static function checkUploadedFile()
