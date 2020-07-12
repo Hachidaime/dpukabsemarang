@@ -10,6 +10,8 @@ class Pengaduan_model extends Database
 
     public function getPengaduanForm()
     {
+        Functions::setDataSession('form', ['hidden', 'latitude', 'latitude']);
+        Functions::setDataSession('form', ['hidden', 'longitude', 'longitude']);
         Functions::setDataSession('form', ['text', 'nama', 'nama', 'Nama', [], true, false]);
         Functions::setDataSession('form', ['textarea', 'alamat', 'alamat', 'Alamat', [], true, false]);
         Functions::setDataSession('form', ['text', 'telepon', 'telepon', 'Nomor Telp', [], true, false]);
@@ -116,13 +118,14 @@ class Pengaduan_model extends Database
         }
 
         $remote_ip = $_SERVER['REMOTE_ADDR'];
-        if (isset($_POST['on_site'])) {
-            $geo = Functions::getGeo($remote_ip);
-            if ($geo['geoplugin_status'] == '200') {
-                array_push($values, "latitude=?", "longitude=?");
-                array_push($bindVar, $geo['geoplugin_latitude'], $geo['geoplugin_longitude']);
-            }
-        }
+        // if (isset($_POST['on_site'])) {
+        //     $geo = Functions::getGeo($remote_ip);
+        //     var_dump($geo);
+        //     if ($geo['geoplugin_status'] == '200') {
+        //         array_push($values, "latitude=?", "longitude=?");
+        //         array_push($bindVar, $geo['geoplugin_latitude'], $geo['geoplugin_longitude']);
+        //     }
+        // }
 
         $values = implode(", ", $values);
         $values .= ", insert_dt = NOW(), remote_ip = ?";

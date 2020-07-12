@@ -785,26 +785,6 @@ let loadPosition = () => {
   map.panTo(userPosition);
 };
 
-const getPositionErrorMessage = (code) => {
-  let msg;
-  switch (code) {
-    case 1:
-      msg = "Permission denied.";
-      break;
-    case 2:
-      msg = "Position unavailable.";
-      break;
-    case 3:
-      msg = "Timeout reached.";
-      break;
-  }
-
-  msg += "\nPlease check your browser location permission.";
-  msg += "\nTry again later.";
-
-  return msg;
-};
-
 let getLocation = () => {
   trackLocation({
     onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {

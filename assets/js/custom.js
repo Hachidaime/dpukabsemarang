@@ -484,6 +484,27 @@ $(document)
       // startAnimation();
       getLocation();
     });
+
+    $('<span class="ml-2" id="on_site_answer">Tidak</span>').insertAfter(
+      $("#on_site").siblings("label")
+    );
+
+    $("input[type=checkbox]#on_site").change(function () {
+      $("#latitude").val("");
+      $("#longitude").val("");
+      if (this.checked) {
+        $("#on_site_answer").text("Ya");
+        userPosition({
+          onSuccess: ({ coords: { latitude: lat, longitude: lng } }) => {
+            $("#latitude").val(lat);
+            $("#longitude").val(lng);
+          },
+          onError: (err) => {
+            getPositionErrorMessage(err.code) || err.message;
+          },
+        });
+      } else $("#on_site_answer").text("Tidak");
+    });
   })
   .ajaxStart(function () {
     // TODO: Menampilkan loading spinner

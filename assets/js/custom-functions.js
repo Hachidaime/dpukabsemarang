@@ -282,3 +282,32 @@ let downloadXlsx = () => {
     formats: ["xlsx"],
   });
 };
+
+const userPosition = ({ onSuccess, onError = () => {} }) => {
+  // Omitted for brevity
+  return navigator.geolocation.getCurrentPosition(onSuccess, onError, {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0,
+  });
+};
+
+const getPositionErrorMessage = (code) => {
+  let msg;
+  switch (code) {
+    case 1:
+      msg = "Permission denied.";
+      break;
+    case 2:
+      msg = "Position unavailable.";
+      break;
+    case 3:
+      msg = "Timeout reached.";
+      break;
+  }
+
+  msg += "\nPlease check your browser location permission.";
+  msg += "\nTry again later.";
+
+  return msg;
+};
