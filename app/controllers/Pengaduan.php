@@ -46,6 +46,9 @@ class Pengaduan extends Controller
 
         $this->PengaduanEdit($param2);
         break;
+      case 'respon':
+        $this->responSearch();
+        break;
       default: // ? Menampilkan halaman Pengaduan
         // TODO: Cek session Admin & User
         if (isset($_SESSION['admin']) && isset($_SESSION['USER'])) { // ? Session Admin & User exist
@@ -312,7 +315,7 @@ class Pengaduan extends Controller
         $this->dofetch('Layout/Table', [
           'data' =>  Functions::defaultTableData(),
           'thead' =>  $this->model('Pengaduan_model')->getResponThead(),
-          'url' =>  BASE_URL . "/Pengaduan/index/search"
+          'url' =>  BASE_URL . "/Pengaduan/index/respon"
         ])
       ],
       'modal' => [
@@ -328,5 +331,50 @@ class Pengaduan extends Controller
 
   public function responSearch()
   {
+    // TODO: Get listing Pengaduan
+    list($list, $count) = $this->my_model->getPengaduan();
+    // TODO: Get total Pengaduan
+    $total = $this->my_model->totalPengaduan();
+
+    // TODO: Modify listing Pengaduan
+    $rows = [];
+    foreach ($list as $idx => $row) {
+      $newRow['tanggal'] = Functions::formatDatetime($row['insert_dt'], 'd/m/Y H:i');
+      $newRow['nama'] = $row['nama'];
+      $newRow['alamat'] = $row['alamat'];
+      $newRow['telepon'] = substr_replace($row['telepon'], 'xxx', -3, 3);
+      $newRow['keterangan'] = $row['keterangan'];
+      $newRow['respon'] = $row['respon'];
+      $newRow['view'] = $this->responView($row['id']);
+      $newRow['row'] = Functions::getSearch()['offset'] + $idx + 1;
+      array_push($rows, $newRow);
+    }
+
+    // TODO: Mengembalikan result
+    Functions::setDataTable($rows, $count, $total);
+    exit;
+  }
+
+  public function responView(int $id)
+  {
+    // TODO: Get Gallery dari Database
+    list($detail, $count) = $this->PengaduanDetail($id);
+    $detail['nama_jalan'] = $this->jalan_options[$detail['no_jalan']];
+    $detail['koordinat'] = (!empty($detail['latitude'])) ? "{$detail['latitude']}, {$detail['longitude']}" : '-';
+
+    // TODO: Set detail Gallery
+    $data['detail'] = $detail;
+
+    // TODO: Cek Gallery exist
+    if ($count <= 0) Header("Location: " . BASE_URL . "/StaticPage/Error404");
+
+    // TODO: Get form Gallery
+    $form = $this->my_model->getResponViewForm();
+
+    // TODO: Set Form Element
+    $data['form'] = $form;
+
+    // TODO: Menampilkan Form
+    return $this->dofetch('Layout/Form', $data);
   }
 }

@@ -66,6 +66,20 @@ class Pengaduan_model extends Database
         return Functions::getDataSession('form');
     }
 
+    public function getResponViewForm()
+    {
+        Functions::setDataSession('form', ['plain-textarea', 'keterangan', 'keterangan', 'Keterangan Pengaduan']);
+        Functions::setDataSession('form', ['plain-img', 'foto1', 'foto1', 'Foto 1']);
+        Functions::setDataSession('form', ['plain-img', 'foto2', 'foto2', 'Foto 2']);
+        Functions::setDataSession('form', ['plain-img', 'foto3', 'foto3', 'Foto 3']);
+        Functions::setDataSession('form', ['plain-textarea', 'respon', 'respon', 'Keterangan Pengaduan']);
+        Functions::setDataSession('form', ['plain-img', 'foto_respon1', 'foto_respon1', 'Foto 1']);
+        Functions::setDataSession('form', ['plain-img', 'foto_respon2', 'foto_respon2', 'Foto 2']);
+        Functions::setDataSession('form', ['plain-img', 'foto_respon3', 'foto_respon3', 'Foto 3']);
+
+        return Functions::getDataSession('form');
+    }
+
     public function getPengaduanThead()
     {
         // TODO: Set column table
