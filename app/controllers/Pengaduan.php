@@ -305,6 +305,28 @@ class Pengaduan extends Controller
 
   public function tindaklanjut()
   {
-    echo "respon";
+    Functions::setTitle("Tindak Lanjut");
+
+    $data = [
+      'main' => [
+        $this->dofetch('Layout/Table', [
+          'data' =>  Functions::defaultTableData(),
+          'thead' =>  $this->model('Pengaduan_model')->getResponThead(),
+          'url' =>  BASE_URL . "/Pengaduan/index/search"
+        ])
+      ],
+      'modal' => [
+        [
+          'modalId' => 'myModal',
+        ]
+      ]
+    ];
+
+    // TODO: Menampilkan Template
+    $this->view('Layout/Default', $data);
+  }
+
+  public function responSearch()
+  {
   }
 }

@@ -78,6 +78,20 @@ class Pengaduan_model extends Database
         return Functions::getDataSession('thead');
     }
 
+    public function getResponThead()
+    {
+        // TODO: Set column table
+        Functions::setDataSession('thead', ['0', 'row', '#']);
+        Functions::setDataSession('thead', ['0', 'tanggal', 'Tanggal', 'data-halign="center" data-align="left" data-width="200"']);
+        Functions::setDataSession('thead', ['0', 'nama', 'Nama', 'data-halign="center" data-align="left" data-width="200"']);
+        Functions::setDataSession('thead', ['0', 'alamat', 'Alamat', 'data-halign="center" data-align="left"']);
+        Functions::setDataSession('thead', ['0', 'telepon', 'Telepon', 'data-halign="center" data-align="left"']);
+        Functions::setDataSession('thead', ['0', 'keterangan', 'Keterangan Pengaduan', 'data-halign="center" data-align="left"']);
+        Functions::setDataSession('thead', ['0', 'respon', 'Tindak Lanjut', 'data-halign="center" data-align="left"']);
+        Functions::setDataSession('thead', ['0', 'view']);
+        return Functions::getDataSession('thead');
+    }
+
     public function getPengaduan()
     {
         $params = [];
