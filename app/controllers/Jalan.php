@@ -352,6 +352,10 @@ class Jalan extends Controller
         $row['foto_file'] = Functions::getPopupLink($filedir, $row['foto'], null, null, 'fas fa-image');
       }
 
+      if ($row['segment'] > 0) {
+        $row['segment'] = Functions::formatSegment($row['segment']);
+      }
+
       if ($idx >= $search['offset'] && $idx <= ($search['offset'] + $search['limit'] - 1)) {
         $list_koordinat[] = $row;
       } elseif (empty($search['offset']) && empty($search['limit'])) {

@@ -533,6 +533,7 @@ class Functions
         $row['koordinat'] = [(float) $longitude, (float) $latitude];
         $row['row'] = $row_id + 1;
         // $row['row'] = $row['row_id'];
+        $row['segment'] = Functions::formatSegment($row['segment']);
         $segment[$i] = $row;
         $i++;
       }
@@ -804,5 +805,11 @@ class Functions
       }, (array) $xml->Document->Placemark->MultiTrack->Track->coord);
     }
     return $kml;
+  }
+
+  public static function formatSegment($segment)
+  {
+    $segLoc = number_format($segment * 200, 0, '', '+');
+    return "{$segment} (STA {$segLoc})";
   }
 }
