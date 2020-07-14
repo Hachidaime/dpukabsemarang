@@ -1,0 +1,1 @@
+<embed src="{$smarty.const.SERVER_BASE}/assets/doc/prosedur-pengaduan.pdf?t={$smarty.now|time}" type="application/pdf" width="100%" height="600px" />

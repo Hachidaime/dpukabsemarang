@@ -298,7 +298,9 @@ class Pengaduan extends Controller
 
   public function aturan()
   {
-    echo "manual";
+    Functions::setTitle("Aturan Pengaduan");
+
+    $this->view('Pengaduan/Aturan');
   }
 
   public function lapor()
