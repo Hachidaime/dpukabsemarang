@@ -363,6 +363,7 @@ class Jalan_model extends Database
           $longitude[$n] = $z[0]['longitude'];
 
           // ? no_detail, no_jalan, latitude, longitude, perkerasan, kondisi, segment, koordinat, data, update_dt, login_id, remote_ip
+          $segment = (is_int($segment)) ? $segment : 0;
           array_push($val, $n, $no_jalan, $latitude[$n], $longitude[$n], $perkerasan, $kondisi, $segment, $c, $f, "NOW()", Auth::User('id'), $_SERVER['REMOTE_ADDR']);
           foreach ($field as $k => $v) {
             $value[$n][$v] = $val[$k];
@@ -394,7 +395,9 @@ class Jalan_model extends Database
 
     $query = "INSERT INTO {$this->my_tables['detail']} ({$field}) VALUES {$values}";
     $this->execute($query);
-
+    // print '<pre>';
+    // print_r($this->db);
+    // print '</pre>';
     return $this->affected_rows();
   }
 

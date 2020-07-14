@@ -1,5 +1,7 @@
 <?php
 
+use PhpOffice\PhpSpreadsheet\Shared\OLE\PPS;
+
 /**
  * * app/controllers/Jalan.php
  * @desc menangani jalan
@@ -393,7 +395,7 @@ class Jalan extends Controller
       foreach ($coord[1] as $row) {
         $old["{$row['longitude']},{$row['latitude']}"] = $row;
       }
-      var_dump($old);
+      // var_dump($old);
     }
 
     $awal       = [];
@@ -441,25 +443,35 @@ class Jalan extends Controller
   {
     $coord = [];
 
-    // ? Coordinate from Request
-    if (!empty($_REQUEST['segment'])) {
-      foreach ($_REQUEST as $key => $value) {
-        $$key = $value;
-      }
+    foreach ($_REQUEST as $key => $value) {
+      $$key = $value;
+    }
 
+    if (isset($filename)) {
       $filepath = TEMP_UPLOAD_DIR . $filename;
       $kml = Functions::readKML($filepath);
+      if (isset($segment)) {
+        foreach ($segment as $idx => $value) {
+          array_splice($kml, $segPosition[$idx], 0, [$value]);
+        }
+      }
 
-      foreach ($segment as $idx => $value) {
-        array_splice($kml, $segPosition[$idx], 0, [$value]);
+      if (isset($newCoord)) {
+        foreach ($newCoord as $idx => $value) {
+          array_splice($kml, $newPosition[$idx], 0, [$value]);
+        }
+      }
+
+      if (isset($updateCoord)) {
+        foreach ($updateCoord as $idx => $value) {
+          array_splice($kml, $updatePosition[$idx], 0, [$value]);
+        }
       }
 
       $coord = $this->KoordinatBuild($kml, true);
     } else {
-      // ? Corrdinate from Session
       $coord = Functions::getDataSession('coordinates', false);
       if (empty($coord)) {
-        // ? Coordinates from tdetail_jalan;
         list($detail, $detail_count) = $this->DetailJalanSearch($this->no_jalan);
         if ($detail_count > 0) {
           $coordinates = [];
@@ -470,15 +482,47 @@ class Jalan extends Controller
               }
             }
           }
+
+          // print '<pre>';
+          // print_r($coordinates);
+          // print '</pre>';
           $coord = $this->KoordinatBuild($coordinates);
-          // var_dump($coord);
         } else {
-          // ? Coordinates form tkoordinat_jalan;
           list($coord) = $this->KoordinatJalanSearch($this->no_jalan);
           $coordinates = (!empty($coord['segmented'])) ? $coord['segmented'] : $coord['ori'];
           $coordinates = json_decode($coordinates, true);
           $coord = $this->KoordinatBuild($coordinates, true);
         }
+      } else {
+
+        // print '<pre>';
+        // print_r($newCoord);
+        // print '</pre>';
+        $coordinates = $coord['3'];
+        if (isset($newCoord)) {
+          // foreach ($newCoord as $row) {
+          //   $latitude = number_format($row[1], 8);
+          //   $longitude = number_format($row[0], 8);
+          //   $segment = $row[3];
+          //   $rows = $this->my_model->populateKoordinatDetail($row);
+          //   $rows[0] = $latitude;
+          //   $rows[1] = $longitude;
+          //   $rows[5] = $segment;
+          //   $rows[3] = '';
+          //   // $rows = $this->my_model->makeKoordinatDetail($rows);
+          //   // $rows['new'] = true;
+          //   $new[] = $rows;
+          // }
+
+          foreach ($newCoord as $idx => $value) {
+            array_splice($coordinates, $newPosition[$idx], 0, [$value]);
+          }
+        }
+
+        // print '<pre>';
+        // print_r($coordinates);
+        // print '</pre>';
+        $coord = $this->KoordinatBuild($coordinates, true);
       }
     }
 

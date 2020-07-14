@@ -321,7 +321,10 @@ let addPoint = (distance) => {
     coordinates.splice(index, 0, newPoint);
 
     let params = {};
-    params["coordinates"] = coordinates;
+    // params["coordinates"] = coordinates;
+    params["newCoord"] = [newPoint];
+    params["newPosition"] = [index];
+
     $.post(
       tableUrl.replace("search", "setsession"),
       $.param(params),
