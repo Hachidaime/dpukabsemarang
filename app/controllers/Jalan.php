@@ -483,9 +483,6 @@ class Jalan extends Controller
             }
           }
 
-          // print '<pre>';
-          // print_r($coordinates);
-          // print '</pre>';
           $coord = $this->KoordinatBuild($coordinates);
         } else {
           list($coord) = $this->KoordinatJalanSearch($this->no_jalan);
@@ -494,34 +491,13 @@ class Jalan extends Controller
           $coord = $this->KoordinatBuild($coordinates, true);
         }
       } else {
-
-        // print '<pre>';
-        // print_r($newCoord);
-        // print '</pre>';
         $coordinates = $coord['3'];
         if (isset($newCoord)) {
-          // foreach ($newCoord as $row) {
-          //   $latitude = number_format($row[1], 8);
-          //   $longitude = number_format($row[0], 8);
-          //   $segment = $row[3];
-          //   $rows = $this->my_model->populateKoordinatDetail($row);
-          //   $rows[0] = $latitude;
-          //   $rows[1] = $longitude;
-          //   $rows[5] = $segment;
-          //   $rows[3] = '';
-          //   // $rows = $this->my_model->makeKoordinatDetail($rows);
-          //   // $rows['new'] = true;
-          //   $new[] = $rows;
-          // }
-
           foreach ($newCoord as $idx => $value) {
             array_splice($coordinates, $newPosition[$idx], 0, [$value]);
           }
         }
 
-        // print '<pre>';
-        // print_r($coordinates);
-        // print '</pre>';
         $coord = $this->KoordinatBuild($coordinates, true);
       }
     }
