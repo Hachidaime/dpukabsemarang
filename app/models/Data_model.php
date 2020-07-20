@@ -65,6 +65,7 @@ class Data_model extends Database
                 "{$jalan_table}.kepemilikan",
                 "FORMAT({$jalan_table}.panjang/1000, 2) as panjang",
                 "{$jalan_table}.lebar_rata",
+                "{$jalan_table}.segmentasi",
                 "{$detail_table}.no_detail",
                 "{$detail_table}.latitude",
                 "{$detail_table}.longitude",

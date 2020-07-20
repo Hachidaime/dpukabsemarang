@@ -66,6 +66,7 @@ class Gis_model extends Database
                 "{$jalan_table}.nama_jalan",
                 "{$jalan_table}.kepemilikan",
                 "{$jalan_table}.lebar_rata",
+                "{$jalan_table}.segmentasi",
                 "{$detail_table}.no_detail",
                 "{$detail_table}.latitude",
                 "{$detail_table}.longitude",

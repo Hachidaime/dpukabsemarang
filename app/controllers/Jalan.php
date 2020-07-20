@@ -333,6 +333,7 @@ class Jalan extends Controller
   {
     $this->KoordinatSetSesion();
     $final = Functions::getDataSession('coordinates', false)[1];
+    $segmentasi = Functions::getDataSession('segmentasi', false);
 
     $perkerasan_opt = $this->options('perkerasan_opt');
     $kondisi_opt = $this->options('kondisi_opt');
@@ -355,7 +356,7 @@ class Jalan extends Controller
       }
 
       if ($row['segment'] > 0) {
-        $row['segment'] = Functions::formatSegment($row['segment']);
+        $row['segment'] = Functions::formatSegment($row['segment'], $segmentasi);
       }
 
       if ($idx >= $search['offset'] && $idx <= ($search['offset'] + $search['limit'] - 1)) {
@@ -445,6 +446,16 @@ class Jalan extends Controller
 
     foreach ($_REQUEST as $key => $value) {
       $$key = $value;
+    }
+
+    if (isset($segmentasi)) {
+      Functions::setDataSession('segmentasi', $segmentasi);
+    } else {
+      if (!empty($this->no_jalan)) {
+        list($jalan) = $this->JalanDetail($this->no_jalan);
+        $segmentasi = $jalan['segmentasi'];
+        Functions::setDataSession('segmentasi', $segmentasi);
+      }
     }
 
     if (isset($filename)) {

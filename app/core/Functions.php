@@ -533,7 +533,7 @@ class Functions
         $row['koordinat'] = [(float) $longitude, (float) $latitude];
         $row['row'] = $row_id + 1;
         // $row['row'] = $row['row_id'];
-        $row['segment'] = Functions::formatSegment($row['segment']);
+        $row['segment'] = Functions::formatSegment($row['segment'], $row['segmentasi']);
         $segment[$i] = $row;
         $i++;
       }
@@ -807,9 +807,9 @@ class Functions
     return $kml;
   }
 
-  public static function formatSegment($segment)
+  public static function formatSegment($segment, $segmentasi = 200)
   {
-    $segLoc = number_format($segment * 200, 0, '', '+');
+    $segLoc = number_format($segment * $segmentasi, 0, '', '+');
     return "{$segment} (STA {$segLoc})";
   }
 }
