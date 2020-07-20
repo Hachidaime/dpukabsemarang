@@ -190,17 +190,23 @@ let getCoordinates = (type = "ori") => {
   if (importFilename != "") {
     importFilename = /*html*/ `${server_base}/upload/temp/${importFilename}`;
     coordinates = getKML(importFilename);
+    // console.log("from file");
   } else {
     koordinat = getAJAX(tableUrl.replace("search", `search${type}`));
     coordinates = JSON.parse(koordinat);
+    // console.log("from table");
   }
 
   roadPath = makePath(coordinates);
   roadLength = countLength(roadPath);
+  // console.log(roadLength);
 };
 
 let genSegment = () => {
   getCoordinates();
+
+  document.getElementById("panjang").value = roadLength.toFixed(2);
+  document.getElementById("panjang_text").value = roadLength.toFixed(2);
 
   let segmentasi = document.getElementById("segmentasi").value;
 
@@ -257,22 +263,20 @@ let genSegment = () => {
       i++;
     });
 
-    roadLength = countLength(makePath(coordinates));
+    // roadLength = countLength(makePath(coordinates));
   }
-
-  document.getElementById("panjang").value = roadLength.toFixed(2);
-  document.getElementById("panjang_text").value = roadLength.toFixed(2);
 
   let params = {};
   // params["coordinates"] = coordinates;
   params["segment"] = segment;
   params["filename"] = document.getElementById("upload_koordinat").value;
   params["segPosition"] = segPosition;
+  params["segmentasi"] = segmentasi;
 
   // console.log(coordinates.length);
   // console.log(segment.length);
   // console.log(params);
-  console.log(segPosition);
+  // console.log(segPosition);
 
   // return false;
   $.post(
